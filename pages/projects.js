@@ -3,7 +3,8 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 const ProjectsPage = () => {
-  const [projects, setProjects] = useState([])
+  const _projects = [{ id: 1, name: 'ROST' }]
+  const [projects, setProjects] = useState(_projects)
   const router = useRouter()
 
   useEffect(() => {

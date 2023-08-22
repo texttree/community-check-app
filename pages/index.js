@@ -4,11 +4,7 @@ import Projects from './projects'
 const Index = () => {
   return (
     <>
-      <div>
-        <Link href="/projects">
-          <Projects />
-        </Link>
-      </div>
+      <Projects />
     </>
   )
 }
