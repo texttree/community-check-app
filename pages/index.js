@@ -1,14 +1,16 @@
-import Link from "next/link";
-import Projects from "./projects";
+import Link from 'next/link'
+import Projects from './projects'
 
 const Index = () => {
-    return (
-      <>
-        <div>
-          <Link href="/components"><Projects /></Link>
-        </div>
-      </>
-    );
-  };
-  
-  export default Index;
+  return (
+    <>
+      <div>
+        <Link href="/projects">
+          <Projects />
+        </Link>
+      </div>
+    </>
+  )
+}
+
+export default Index
