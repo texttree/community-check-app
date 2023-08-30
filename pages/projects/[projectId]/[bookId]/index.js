@@ -36,9 +36,14 @@ const BookDetailsPage = () => {
           {checks.map((check) => (
             <tr key={check.id}>
               <td>{check.num}</td>
-              <Link href={`/projects/${projectId}/${bookId}/${check.id}`}>
-                <td>{check.name}</td>
-              </Link>
+
+              <td>
+                {' '}
+                <Link href={`/projects/${projectId}/${bookId}/${check.id}`}>
+                  {check.name}
+                </Link>
+              </td>
+
               <td>{check.date}</td>
               <td>Скачать</td>
               <td>{check.checkActivity}</td>

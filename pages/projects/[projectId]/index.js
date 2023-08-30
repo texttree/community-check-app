@@ -5,14 +5,7 @@ import { useRouter } from 'next/router'
 const ProjectDetailsPage = () => {
   const _books = [{ id: 2, name: 'Rut' }]
   const [books, setProjects] = useState(_books)
-  // const [project] = useState({
-  //   id: '1',
-  //   name: 'ROST',
-  //   creationDate: '21.08.2023',
-  //   lastCheckDate: '01.09.2023',
-  //   totalChecks: 8,
-  //   activeChecks: 4,
-  // })
+
   const router = useRouter()
 
   console.log(router.query.projectId)
@@ -36,13 +29,10 @@ const ProjectDetailsPage = () => {
         <tbody>
           <tr>
             <td>{books[0].id}</td>
-            <Link href={`/projects/${projectId}/${books[0].id}`}>
-              <td>{books[0].name}</td>
-            </Link>
-            {/* <td>{project.creationDate}</td>
-            <td>{project.lastCheckDate}</td>
-            <td>{project.totalChecks}</td>
-            <td>{project.activeChecks}</td> */}
+
+            <td>
+              <Link href={`/projects/${projectId}/${books[0].id}`}>{books[0].name} </Link>
+            </td>
           </tr>
         </tbody>
       </table>
