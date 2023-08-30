@@ -1,17 +1,25 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import axios from 'axios'
 
 const NewProjectPage = () => {
   const [projectName, setProjectName] = useState('')
   const router = useRouter()
 
   const createProject = () => {
-    const newProject = {
-      id: projectName,
-      name: projectName,
+    const name = projectName.trim()
+    if (name) {
+      axios.post('/api/projects', { name }).then((res) => {
+        if (res) {
+          router.push('/projects/' + res.data.id)
+        } else {
+          console.log(res.data.error)
+        }
+      })
+    } else {
+      console.log('имя не может быть пустым')
     }
-    router.push(`/projects?newProject=${encodeURI(projectName)}`)
   }
 
   return (
