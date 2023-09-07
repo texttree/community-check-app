@@ -6,23 +6,23 @@ import { fetcher } from '@/helpers/fetcher'
 const ProjectsPage = () => {
   const { data: projects, error } = useSWR('/api/projects', fetcher)
   return (
-    <div>
-      <h1>Список проектов</h1>
-      <p className="text-3xl">text</p>
-      <p>text</p>
-      <ul>
+    <div className="mx-6 my-6">
+      <h1 class="text-3xl font-bold">Проекты</h1>
+      <div class="'grid grid-cols-1 gap-3 py-10 content-start md:grid-cols-2 xl:grid-cols-3 sm:gap-7 md:py-10'">
         {error ? (
-          <li key="error">Возникла ошибка</li>
+          <p className="text-red-600" key="error">
+            Возникла ошибка
+          </p>
         ) : projects ? (
           projects.map((project) => (
-            <li key={project.id}>
+            <div className="flex flex-col gap-3 py-10 sm:gap-7" key={project.id}>
               <Link href={`/projects/${project.id}`}>{project.name}</Link>
-            </li>
+            </div>
           ))
         ) : (
           <li key="loading">Загрузка</li>
         )}
-      </ul>
+      </div>
       <Link href="/projects/new">Создать проект</Link>
     </div>
   )
