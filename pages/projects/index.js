@@ -1,29 +1,38 @@
 import Link from 'next/link'
-
 import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
 
 const ProjectsPage = () => {
   const { data: projects, error } = useSWR('/api/projects', fetcher)
+
   return (
-    <div className="mx-6 my-6">
-      <h1 class="text-3xl font-bold">Проекты</h1>
-      <div class="'grid grid-cols-1 gap-3 py-10 content-start md:grid-cols-2 xl:grid-cols-3 sm:gap-7 md:py-10'">
-        {error ? (
-          <p className="text-red-600" key="error">
-            Возникла ошибка
-          </p>
-        ) : projects ? (
-          projects.map((project) => (
-            <div className="flex flex-col gap-3 py-10 sm:gap-7" key={project.id}>
-              <Link href={`/projects/${project.id}`}>{project.name}</Link>
-            </div>
-          ))
-        ) : (
-          <li key="loading">Загрузка</li>
-        )}
+    <div className="bg-gray-200 min-h-screen py-8">
+      <div className="max-w-6xl mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-4">Проекты</h1>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {error ? (
+            <p className="text-red-600">Возникла ошибка</p>
+          ) : projects ? (
+            projects.map((project) => (
+              <Link key={project.id} href={`/projects/${project.id}`}>
+                <div className="block text-center">
+                  <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105">
+                    <p className="text-3xl font-semibold text-blue-600">{project.name}</p>
+                  </div>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <p>Загрузка...</p>
+          )}
+        </div>
+        <Link
+          href="/projects/new"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 inline-block rounded-md"
+        >
+          Создать проект
+        </Link>
       </div>
-      <Link href="/projects/new">Создать проект</Link>
     </div>
   )
 }
