@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import { ChevronLeft } from 'feather-icons-react'
+import LeftArrow from 'public/left.svg'
 
 const BookDetailsPage = () => {
   const [bookName, setBookName] = useState('Test')
@@ -19,11 +19,12 @@ const BookDetailsPage = () => {
   return (
     <div className="bg-gray-200 min-h-screen py-8">
       <div className="max-w-6xl mx-auto p-4">
-        <Link href={`/projects/${projectId}`}>
-          <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 mb-4 rounded-md inline-flex items-center">
-            <ChevronLeft size={18} />
-            Назад
-          </button>
+        <Link
+          href={`/projects/${projectId}`}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 mb-4 rounded-md inline-flex items-center"
+        >
+          <LeftArrow className="h-5 w-5 mr-1" />
+          Назад
         </Link>
         <h1 className="text-3xl font-bold mb-4">{bookName}</h1>
         <h2 className="text-2xl font-semibold mb-2">Проверки книги</h2>

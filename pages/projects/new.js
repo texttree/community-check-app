@@ -2,7 +2,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import axios from 'axios'
-import { ChevronLeft } from 'feather-icons-react'
+
+import LeftArrow from 'public/left.svg'
 
 const NewProjectPage = () => {
   const [projectName, setProjectName] = useState('')
@@ -27,11 +28,12 @@ const NewProjectPage = () => {
     <div className="bg-gray-200 min-h-screen py-8">
       <div className="max-w-6xl mx-auto p-4">
         <div className="flex items-center mb-4">
-          <Link href="/projects">
-            <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md inline-flex items-center">
-              <ChevronLeft size={18} />
-              Личный кабинет
-            </button>
+          <Link
+            href="/projects"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md inline-flex items-center"
+          >
+            <LeftArrow className="h-5 w-5 mr-1" />
+            Личный кабинет
           </Link>
         </div>
         <h1 className="text-3xl font-bold mb-4">Создание проекта</h1>

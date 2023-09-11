@@ -7,7 +7,6 @@
         {
             "endOfLine": "auto"
         }
-    ],
-    "@next/next/no-img-element": "off"
+    ]
   }
 }

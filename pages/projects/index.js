@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import useSWR from 'swr'
+import { useTranslation } from 'next-i18next'
 import { fetcher } from '@/helpers/fetcher'
 
 const ProjectsPage = () => {
+  const { t } = useTranslation()
   const { data: projects, error } = useSWR('/api/projects', fetcher)
 
   return (
@@ -30,7 +32,7 @@ const ProjectsPage = () => {
           href="/projects/new"
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 inline-block rounded-md"
         >
-          Создать проект
+          {t('createProject')}
         </Link>
       </div>
     </div>
