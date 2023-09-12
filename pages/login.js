@@ -2,8 +2,11 @@ import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export default function login() {
+  const { t } = useTranslation()
   const user = useUser()
   const supabase = useSupabaseClient()
   const router = useRouter()
@@ -48,7 +51,7 @@ export default function login() {
                 href={'/projects'}
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Go to projects
+                {t('goToProjects')}
               </Link>
 
               <br />
@@ -56,7 +59,7 @@ export default function login() {
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 onClick={handleLogout}
               >
-                Logout
+                {t('logout')}
               </button>
             </div>
           </div>
@@ -66,13 +69,13 @@ export default function login() {
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
               <h2 className="mt-10 text-center text-2xl font-bold leading-9 mb-4 tracking-tight text-gray-900">
-                Sign in to your account
+                {t('signAccount')}
               </h2>
             </div>
             <form className="space-y-6">
               <div>
                 <label className="block text-sm font-medium leading-6 text-gray-900">
-                  Email
+                  {t('email')}
                 </label>
                 <input
                   type="email"
@@ -85,7 +88,7 @@ export default function login() {
               <div>
                 <div className="flex items-center justify-between">
                   <label className="block text-sm font-medium leading-6 text-gray-900">
-                    Password
+                    {t('password')}
                   </label>
                 </div>
                 <div className="mt-2">
@@ -105,11 +108,18 @@ export default function login() {
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               onClick={handleLogin}
             >
-              Sign in
+              {t('signIn')}
             </button>
           </div>
         </div>
       )}
     </div>
   )
+}
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }

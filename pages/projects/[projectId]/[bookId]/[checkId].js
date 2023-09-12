@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import LeftArrow from 'public/left.svg'
 
 const CheckId = () => {
+  const { t } = useTranslation()
   const router = useRouter()
   const { projectId, bookId } = router.query
 
@@ -26,11 +29,11 @@ const CheckId = () => {
           className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md inline-flex items-center"
         >
           <LeftArrow className="h-5 w-5 mr-1" />
-          Назад
+          {t('back')}
         </Link>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block font-medium text-gray-700">Название:</label>
+            <label className="block font-medium text-gray-700">{t('name')}</label>
             <input
               type="text"
               value={checkType}
@@ -38,7 +41,7 @@ const CheckId = () => {
               className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
             />
             <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md inline-block mt-2">
-              Загрузить материал
+              {t('downloadMaterial')}
             </button>
             <input
               type="checkbox"
@@ -55,7 +58,9 @@ const CheckId = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block font-medium text-gray-700">Дата окончания:</label>
+            <label className="block font-medium text-gray-700">
+              {t('expirationDate')}
+            </label>
             <input
               type="text"
               value={endDate}
@@ -63,7 +68,7 @@ const CheckId = () => {
               className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
             />
             <label className="block font-medium text-gray-700 mt-2">
-              Укажите ссылку на материал:
+              {t('provideLink')}
             </label>
             <input
               type="text"
@@ -73,12 +78,19 @@ const CheckId = () => {
             />
           </div>
           <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block">
-            Создать книгу
+            {t('createBook')}
           </button>
         </form>
       </div>
     </div>
   )
+}
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default CheckId

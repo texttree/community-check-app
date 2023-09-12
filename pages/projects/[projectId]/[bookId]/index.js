@@ -1,9 +1,13 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import LeftArrow from 'public/left.svg'
 
 const BookDetailsPage = () => {
+  const { t } = useTranslation()
   const [bookName, setBookName] = useState('Test')
   const router = useRouter()
   const { projectId, bookId } = router.query
@@ -24,19 +28,19 @@ const BookDetailsPage = () => {
           className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 mb-4 rounded-md inline-flex items-center"
         >
           <LeftArrow className="h-5 w-5 mr-1" />
-          Назад
+          {t('back')}
         </Link>
         <h1 className="text-3xl font-bold mb-4">{bookName}</h1>
-        <h2 className="text-2xl font-semibold mb-2">Проверки книги</h2>
+        <h2 className="text-2xl font-semibold mb-2">{t('bookChecks')}</h2>
         <div className="bg-white p-4 rounded-lg shadow-md mt-2">
           <table className="w-full border-collapse">
             <thead>
               <tr>
-                <th className="border p-2 text-center">Номер</th>
-                <th className="border p-2 text-center">Название</th>
-                <th className="border p-2 text-center">Дата окончания</th>
-                <th className="border p-2 text-center">Скачать заметки</th>
-                <th className="border p-2 text-center">Активность (кол-во проверок)</th>
+                <th className="border p-2 text-center">{t('number')}</th>
+                <th className="border p-2 text-center">{t('titleInTable')}</th>
+                <th className="border p-2 text-center">{t('checEkndDate')}</th>
+                <th className="border p-2 text-center">{t('downloadNotes')}</th>
+                <th className="border p-2 text-center">{t('activity')}</th>
               </tr>
             </thead>
             <tbody>
@@ -52,7 +56,7 @@ const BookDetailsPage = () => {
                     </Link>
                   </td>
                   <td className="border p-2 text-center">{check.date}</td>
-                  <td className="border p-2 text-center">Скачать</td>
+                  <td className="border p-2 text-center">{t('download')}</td>
                   <td className="border p-2 text-center">{check.checkActivity}</td>
                 </tr>
               ))}
@@ -63,11 +67,18 @@ const BookDetailsPage = () => {
           href={`/projects/${projectId}/${bookId}`}
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 rounded-md inline-block"
         >
-          Начать новую проверку
+          {t('startNewCheck')}
         </Link>
       </div>
     </div>
   )
+}
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default BookDetailsPage

@@ -3,9 +3,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import LeftArrow from 'public/left.svg'
 
 const NewProjectPage = () => {
+  const { t } = useTranslation()
   const [projectName, setProjectName] = useState('')
   const router = useRouter()
 
@@ -33,14 +37,14 @@ const NewProjectPage = () => {
             className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md inline-flex items-center"
           >
             <LeftArrow className="h-5 w-5 mr-1" />
-            Личный кабинет
+            {t('personalArea')}
           </Link>
         </div>
-        <h1 className="text-3xl font-bold mb-4">Создание проекта</h1>
+        <h1 className="text-3xl font-bold mb-4">{t('createAProject')}</h1>
         <div className="bg-white p-4 rounded-lg shadow-md">
           <div className="mb-4">
             <label htmlFor="projectName" className="block font-medium text-gray-700">
-              Название
+              {t('titleProject')}
             </label>
             <input
               type="text"
@@ -54,12 +58,19 @@ const NewProjectPage = () => {
             onClick={createProject}
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
           >
-            Создать
+            {t('create')}
           </button>
         </div>
       </div>
     </div>
   )
+}
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default NewProjectPage

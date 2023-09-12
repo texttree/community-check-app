@@ -1,9 +1,13 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import LeftArrow from 'public/left.svg'
 
 const NewBookPage = () => {
+  const { t } = useTranslation()
   const [bookName, setBookName] = useState('')
   const router = useRouter()
   const { projectId } = router.query
@@ -18,9 +22,9 @@ const NewBookPage = () => {
           className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md inline-flex items-center"
         >
           <LeftArrow className="h-5 w-5 mr-1" />
-          Назад
+          {t('back')}
         </Link>
-        <h1 className="text-2xl font-semibold">Название книги</h1>
+        <h1 className="text-2xl font-semibold">{t('bookTitle')}</h1>
 
         <input
           type="text"
@@ -33,11 +37,18 @@ const NewBookPage = () => {
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 inline-block rounded-md"
           onClick={handleCreateBook}
         >
-          Создать книгу
+          {t('createBook')}
         </Link>
       </div>
     </div>
   )
+}
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default NewBookPage

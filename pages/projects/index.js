@@ -10,15 +10,14 @@ import AppBar from 'components/appBar'
 const ProjectsPage = () => {
   const { t } = useTranslation()
   const { data: projects, error } = useSWR('/api/projects', fetcher)
-
   return (
     <div className="bg-gray-200 min-h-screen py-8">
       <div className="max-w-6xl mx-auto p-4">
         <AppBar />
-        <h1 className="text-3xl font-bold mb-4">Проекты</h1>
+        <h1 className="text-3xl font-bold mb-4">{t('projects')}</h1>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {error ? (
-            <p className="text-red-600">Возникла ошибка</p>
+            <p className="text-red-600">{t('errorOccurred')}</p>
           ) : projects ? (
             projects.map((project) => (
               <Link key={project.id} href={`/projects/${project.id}`}>
@@ -30,7 +29,7 @@ const ProjectsPage = () => {
               </Link>
             ))
           ) : (
-            <p>Загрузка...</p>
+            <p>{t('loading')}...</p>
           )}
         </div>
         <Link
@@ -44,11 +43,10 @@ const ProjectsPage = () => {
   )
 }
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps({ locale }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
-      // Will be passed to the page component as props
     },
   }
 }
