@@ -1,7 +1,11 @@
 import Link from 'next/link'
 import useSWR from 'swr'
-import { useTranslation } from 'next-i18next'
 import { fetcher } from '@/helpers/fetcher'
+
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import AppBar from 'components/appBar'
 
 const ProjectsPage = () => {
   const { t } = useTranslation()
@@ -10,6 +14,7 @@ const ProjectsPage = () => {
   return (
     <div className="bg-gray-200 min-h-screen py-8">
       <div className="max-w-6xl mx-auto p-4">
+        <AppBar />
         <h1 className="text-3xl font-bold mb-4">Проекты</h1>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {error ? (
@@ -37,6 +42,15 @@ const ProjectsPage = () => {
       </div>
     </div>
   )
+}
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  }
 }
 
 export default ProjectsPage
