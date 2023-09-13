@@ -1,6 +1,5 @@
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import i18nextConfig from 'next-i18next.config'
 
 const SwitchLanguage = () => {
   const { i18n } = useTranslation()
@@ -18,13 +17,6 @@ const SwitchLanguage = () => {
       <button onClick={() => changeLanguage('ru')}>Ру</button>
     </div>
   )
-}
-export async function getServerSideProps({ locale }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  }
 }
 
 export default SwitchLanguage

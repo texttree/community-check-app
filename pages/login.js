@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-export default function login() {
+export default function Login() {
   const { t } = useTranslation()
   const user = useUser()
   const supabase = useSupabaseClient()
