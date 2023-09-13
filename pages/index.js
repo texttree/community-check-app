@@ -1,4 +1,5 @@
-import Link from 'next/link'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import Projects from './projects'
 
 const Index = () => {
