@@ -5,8 +5,6 @@ import { fetcher } from '@/helpers/fetcher'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import AppBar from 'components/appBar'
-
 const ProjectsPage = () => {
   const { t } = useTranslation()
   const { data: projects, error } = useSWR('/api/projects', fetcher)
