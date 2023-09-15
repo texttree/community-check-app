@@ -1,14 +1,22 @@
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+
+const useChangeLanguage = (locale) => {
+  let { i18n } = useTranslation()
+  useEffect(() => {
+    i18n.changeLanguage(locale)
+  }, [locale, i18n])
+}
 
 const SwitchLanguage = () => {
   const { t, i18n } = useTranslation()
   const router = useRouter()
 
+  useChangeLanguage(i18n.language)
+
   const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng).then(() => {
-      router.push(router.asPath, undefined, { locale: lng })
-    })
+    router.push(router.asPath, undefined, { locale: lng })
   }
 
   return (
