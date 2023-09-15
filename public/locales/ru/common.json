@@ -34,5 +34,7 @@
     "signAccount": "Войти в аккаунт",
     "startNewCheck": "Начать новую проверку",
     "titleInTable": "Заголовок",
-    "titleProject": "Заголовок проекта"
+    "titleProject": "Заголовок проекта",
+    "english": "Английский",
+    "russian": "Русский"
 }

@@ -3,6 +3,7 @@ import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
 
 import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 const ProjectsPage = () => {
   const { t } = useTranslation()
@@ -38,5 +39,11 @@ const ProjectsPage = () => {
     </div>
   )
 }
-
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
+}
 export default ProjectsPage
