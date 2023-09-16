@@ -38,5 +38,9 @@
     "titleProject": "Title project",
     "english": "English",
     "russian": "Russian",
-    "nameEmpty": "name cannot be empty"
+    "nameEmpty": "name cannot be empty",
+    "welcomeTo": "Welcome to Community Check",
+    "youLoggedIn": "You are already logged in.",
+    "loginToAccess": "Please login to access full functionality.",
+    "comeON": "To come in"
 }
