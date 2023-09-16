@@ -12,12 +12,15 @@ import LeftArrow from 'public/left.svg'
 const ProjectEditPage = () => {
   const { t } = useTranslation()
   const [projectName, setProjectName] = useState('')
+  const [isNameMissing, setIsNameMissing] = useState(false)
   const router = useRouter()
   const projectId = router.query.projectId
+
   const { data: project, error } = useSWR(
     projectId && '/api/projects/' + projectId,
     fetcher
   )
+
   useEffect(() => {
     if (project?.name) {
       setProjectName(project.name)
@@ -36,6 +39,7 @@ const ProjectEditPage = () => {
       })
     } else {
       console.log('имя не может быть пустым')
+      setIsNameMissing(true)
     }
   }
 
@@ -50,7 +54,7 @@ const ProjectEditPage = () => {
           {t('back')}
         </Link>
         {error ? (
-          <p className="text-red-600">Возникла ошибка</p>
+          <p className="text-red-600">{t('errorOccurred')}</p>
         ) : project ? (
           <>
             <div>
@@ -65,6 +69,7 @@ const ProjectEditPage = () => {
                 onChange={(e) => setProjectName(e.target.value)}
                 className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
               />
+              {isNameMissing && <p className="text-red-600">{t('nameEmpty')}</p>}
             </div>
             <button
               onClick={editProject}

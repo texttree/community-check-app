@@ -32,9 +32,11 @@
     "provideLink": "Provide a link to the material:",
     "signIn": "Sign in",
     "signAccount": "Sign in to your account",
+    "signOut": "Sign Out",
     "startNewCheck": "Start a new check",
     "titleInTable": "Title",
     "titleProject": "Title project",
     "english": "English",
-    "russian": "Russian"
+    "russian": "Russian",
+    "nameEmpty": "name cannot be empty"
 }

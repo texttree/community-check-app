@@ -20,7 +20,7 @@ const SwitchLanguage = () => {
   }
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center justify-center space-x-2">
       <button
         onClick={() => changeLanguage('en')}
         className={`${

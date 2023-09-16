@@ -22,7 +22,7 @@
     "goToProjects": "Перейти к проектам",
     "loading": "Загрузка",
     "logout": "Выйти",
-    "name": "Имя:",
+    "name": "Название:",
     "number": "Номер",
     "NumberChecks": "Количество проверок",
     "password": "Пароль",
@@ -32,9 +32,11 @@
     "provideLink": "Укажите ссылку на материал:",
     "signIn": "Войти",
     "signAccount": "Войти в аккаунт",
+    "signOut": "Выйти",
     "startNewCheck": "Начать новую проверку",
     "titleInTable": "Заголовок",
     "titleProject": "Заголовок проекта",
     "english": "Английский",
-    "russian": "Русский"
+    "russian": "Русский",
+    "nameEmpty": "имя не может быть пустым"
 }
