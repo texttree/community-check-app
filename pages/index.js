@@ -17,7 +17,7 @@ const Index = () => {
             href="/projects"
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-flex items-center"
           >
-            Перейти к проектам
+            {t('goToProjects')}
           </Link>
         </div>
       </div>
