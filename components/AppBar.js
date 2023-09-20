@@ -13,15 +13,13 @@ const AppBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef(null)
 
-  console.log(isMenuOpen)
-
   const handleLogout = async () => {
     try {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
       router.push('/login')
     } catch (error) {
-      console.error('Ошибка при выходе:', error)
+      console.error('Logout error:', error)
     }
   }
   useEffect(() => {
@@ -45,9 +43,7 @@ const AppBar = () => {
         <div>
           <button
             className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-200 px-3 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-            onClick={() => {
-              setIsMenuOpen(true)
-            }}
+            onClick={() => setIsMenuOpen(true)}
           >
             <Bar className="h-7 w-7" />
           </button>
@@ -55,7 +51,7 @@ const AppBar = () => {
         {isMenuOpen && (
           <div
             ref={menuRef}
-            className="absolute right-0  mt-2 w-56 p-2 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            className="absolute right-0 mt-2 w-56 p-2 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
           >
             <SwitchLanguage />
             {user ? (
@@ -63,7 +59,7 @@ const AppBar = () => {
                 className="py-1 text-center px-2 mt-2 bg-gray-200 rounded-md hover:bg-red-500"
                 onClick={handleLogout}
               >
-                <a href="#" className="text-gray-700 block  px-4 py-2 text-sm ">
+                <a href="#" className="text-gray-700 block px-4 py-2 text-sm">
                   {t('signOut')}
                 </a>
               </div>

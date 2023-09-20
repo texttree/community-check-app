@@ -13,7 +13,7 @@
     "dateCreation": "Дата создания",
     "dateLastCheck": "Дата последней проверки",
     "download": "Скачать",
-    "downloadMaterial": "Скачать материал",
+    "uploadMaterial": "Загрузить материал",
     "downloadNotes": "Скачать заметки",
     "editProject": "Редактировать проект",
     "email": "Электронная почта",
@@ -35,12 +35,10 @@
     "signOut": "Выйти",
     "startNewCheck": "Начать новую проверку",
     "titleInTable": "Заголовок",
-    "titleProject": "Заголовок проекта",
-    "english": "Английский",
-    "russian": "Русский",
-    "nameEmpty": "имя не может быть пустым",
+    "titleProject": "Название проекта",
+    "nameEmpty": "Название не может быть пустым",
     "welcomeTo": "Добро пожаловать в Community Check",
-    "youLoggedIn": "Вы уже вошли в систему..",
+    "youLoggedIn": "Вы уже вошли в систему.",
     "loginToAccess": "Пожалуйста, войдите, чтобы получить доступ к полному функционалу.",
-    "comeON": "Войти"
+    "createCheck": "Создать проверку"
 }

@@ -9,7 +9,7 @@ const ProjectsPage = () => {
   const { t } = useTranslation()
   const { data: projects, error } = useSWR('/api/projects', fetcher)
   return (
-    <div className="bg-gray-200 min-h-screen py-8">
+    <div className="bg-gray-200 py-8">
       <div className="max-w-6xl mx-auto p-4">
         <h1 className="text-3xl font-bold mb-4">{t('projects')}</h1>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

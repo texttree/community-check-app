@@ -14,15 +14,16 @@ const books = [
 
 const ProjectDetailsPage = () => {
   const { t } = useTranslation()
-  const router = useRouter()
-  const projectId = router.query.projectId
+  const {
+    query: { projectId },
+  } = useRouter()
   const { data: project, error } = useSWR(
     projectId && '/api/projects/' + projectId,
     fetcher
   )
 
   return (
-    <div className="bg-gray-200 min-h-screen py-8">
+    <div className="bg-gray-200 py-8">
       <div className="max-w-6xl mx-auto p-4">
         <div className="flex items-center mb-4">
           <Link

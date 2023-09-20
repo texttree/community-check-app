@@ -60,14 +60,14 @@ const ProjectEditPage = () => {
             <div>
               <label className="text-2xl font-semibold" htmlFor="projectName">
                 {t('name')}
-              </label>{' '}
-              <br />
+              </label>
+
               <input
                 type="text"
                 id="projectName"
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
-                className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
+                className="mt-1 px-2 py-1 mb-2 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
               />
               {isNameMissing && <p className="text-red-600">{t('nameEmpty')}</p>}
             </div>

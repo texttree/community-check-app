@@ -6,22 +6,24 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import LeftArrow from 'public/left.svg'
 
+const _checks = [
+  { id: 3, num: 1, name: 'Общественная', date: '22.08.2023', checkActivity: 4 },
+  { id: 4, num: 2, name: 'Редакторская', date: '28.08.2023', checkActivity: 2 },
+  { id: 5, num: 3, name: 'Лингвистическая', date: '31.08.2023', checkActivity: 1 },
+  { id: 6, num: 4, name: 'Пасторская', date: '22.09.2023', checkActivity: 3 },
+]
+
 const BookDetailsPage = () => {
   const { t } = useTranslation()
   const [bookName, setBookName] = useState('Test')
   const router = useRouter()
   const { projectId, bookId } = router.query
-  const _checks = [
-    { id: 3, num: 1, name: 'Общественная', date: '22.08.2023', checkActivity: 4 },
-    { id: 4, num: 2, name: 'Редакторская', date: '28.08.2023', checkActivity: 2 },
-    { id: 5, num: 3, name: 'Лингвистическая', date: '31.08.2023', checkActivity: 1 },
-    { id: 6, num: 4, name: 'Пасторская', date: '22.09.2023', checkActivity: 3 },
-  ]
+
   const [checks, setChecks] = useState(_checks)
   const handleCreateBook = () => {}
 
   return (
-    <div className="bg-gray-200 min-h-screen py-8">
+    <div className="bg-gray-200 py-8">
       <div className="max-w-6xl mx-auto p-4">
         <Link
           href={`/projects/${projectId}`}
@@ -64,7 +66,7 @@ const BookDetailsPage = () => {
           </table>
         </div>
         <Link
-          href={`/projects/${projectId}/${bookId}`}
+          href={`/projects/${projectId}/${bookId}/new`}
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 rounded-md inline-block"
         >
           {t('startNewCheck')}

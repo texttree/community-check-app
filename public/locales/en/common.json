@@ -13,7 +13,7 @@
     "dateCreation": "Date of creation",
     "dateLastCheck": "Date of last check",
     "download": "Download",
-    "downloadMaterial": "Download material",
+    "uploadMaterial": "Upload material",
     "downloadNotes": "Download notes",
     "editProject": "Edit project",
     "email": "Email",
@@ -36,11 +36,9 @@
     "startNewCheck": "Start a new check",
     "titleInTable": "Title",
     "titleProject": "Title project",
-    "english": "English",
-    "russian": "Russian",
-    "nameEmpty": "name cannot be empty",
+    "nameEmpty": "Title cannot be empty",
     "welcomeTo": "Welcome to Community Check",
     "youLoggedIn": "You are already logged in.",
     "loginToAccess": "Please login to access full functionality.",
-    "comeON": "To come in"
+    "createCheck": "Create a Check"
 }
