@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import SwitchLanguage from './SwitchLanguage'
 import Bar from 'public/bar.svg'
@@ -37,7 +38,9 @@ const AppBar = () => {
 
   return (
     <header className="bg-blue-500 p-4 flex justify-between items-center rounded-t-lg">
-      <div className="text-white cursor-pointer text-2xl font-bold">Community Check</div>
+      <Link href={'/'} className="text-white cursor-pointer text-2xl font-bold">
+        Community Check
+      </Link>
 
       <div className="relative inline-block text-left">
         <div>

@@ -38,7 +38,6 @@ const ProjectEditPage = () => {
         }
       })
     } else {
-      console.log('имя не может быть пустым')
       setIsNameMissing(true)
     }
   }
