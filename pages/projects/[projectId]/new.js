@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import LeftArrow from 'public/left.svg'
@@ -12,7 +13,20 @@ const NewBookPage = () => {
   const router = useRouter()
   const { projectId } = router.query
 
-  const handleCreateBook = () => {}
+  const handleCreateBook = () => {
+    const name = bookName.trim()
+    if (name) {
+      axios.post(`/api/projects/${projectId}/books`, { name }).then((res) => {
+        if (res) {
+          // router.push(`/projects/${projectId}/${res.data.id}`)
+        } else {
+          console.log(res.data.error)
+        }
+      })
+    } else {
+      setIsNameMissing(true)
+    }
+  }
 
   return (
     <div className="bg-gray-200 py-8">
