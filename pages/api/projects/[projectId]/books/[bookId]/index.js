@@ -9,19 +9,19 @@ export default async function handler(req, res) {
   }
 
   const {
-    query: { projectId },
+    query: { bookId },
     body: { name },
     method,
   } = req
 
   switch (method) {
-    case 'GET': // получить книги
+    case 'GET': // получить книгу
       try {
         const { data, error } = await supabase
           .from('books')
-          .select()
-          .eq('project_id', projectId)
-
+          .select('*')
+          .eq('id', bookId)
+          .single()
         if (error) {
           throw error
         }
@@ -29,26 +29,24 @@ export default async function handler(req, res) {
       } catch (error) {
         return res.status(404).json({ error })
       }
-    case 'POST': // создать новую книгу
+
+    case 'POST': // обновить книгу
       try {
         const { data: book, error } = await supabase
           .from('books')
-          .insert([
-            {
-              name,
-              project_id: projectId,
-            },
-          ])
-          .single()
-          .select('id')
+          .update({
+            name,
+          })
+          .eq('id', bookId)
+          .select()
         if (error) throw error
-        return res.status(200).json(book)
+        return res.status(200).json(project)
       } catch (error) {
-        console.log(error)
         return res.status(404).json({ error })
       }
+
     default:
-      res.setHeader('Allow', ['GET', 'POST'])
+      res.setHeader('Allow', ['POST', 'GET'])
       return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

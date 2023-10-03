@@ -18,7 +18,7 @@ const NewBookPage = () => {
     if (name) {
       axios.post(`/api/projects/${projectId}/books`, { name }).then((res) => {
         if (res) {
-          // router.push(`/projects/${projectId}/${res.data.id}`)
+          router.push(`/projects/${projectId}/${res.data.id}`)
         } else {
           console.log(res.data.error)
         }

@@ -14,6 +14,7 @@ const ProjectDetailsPage = () => {
   const {
     query: { projectId },
   } = useRouter()
+
   const { data: project, error } = useSWR(
     projectId && '/api/projects/' + projectId,
     fetcher

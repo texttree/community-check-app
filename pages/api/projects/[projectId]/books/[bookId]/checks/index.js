@@ -9,18 +9,18 @@ export default async function handler(req, res) {
   }
 
   const {
-    query: { projectId },
+    query: { bookId },
     body: { name },
     method,
   } = req
 
   switch (method) {
-    case 'GET': // получить книги
+    case 'GET': // получить проверки
       try {
         const { data, error } = await supabase
-          .from('books')
+          .from('checks')
           .select()
-          .eq('project_id', projectId)
+          .eq('book_id', bookId)
 
         if (error) {
           throw error
@@ -29,14 +29,14 @@ export default async function handler(req, res) {
       } catch (error) {
         return res.status(404).json({ error })
       }
-    case 'POST': // создать новую книгу
+    case 'POST': // создать новую проверку
       try {
-        const { data: book, error } = await supabase
-          .from('books')
+        const { data: check, error } = await supabase
+          .from('checks')
           .insert([
             {
               name,
-              project_id: projectId,
+              book_id: bookId,
             },
           ])
           .single()
