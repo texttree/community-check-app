@@ -40,7 +40,7 @@ export default async function handler(req, res) {
           .eq('id', bookId)
           .select()
         if (error) throw error
-        return res.status(200).json(project)
+        return res.status(200).json(book)
       } catch (error) {
         return res.status(404).json({ error })
       }

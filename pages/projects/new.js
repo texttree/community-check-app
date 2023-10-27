@@ -11,21 +11,28 @@ import LeftArrow from 'public/left.svg'
 const NewProjectPage = () => {
   const { t } = useTranslation()
   const [projectName, setProjectName] = useState('')
-  const [isNameMissing, setIsNameMissing] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
 
   const createProject = () => {
+    setErrorMessage('')
     const name = projectName.trim()
     if (name) {
-      axios.post('/api/projects', { name }).then((res) => {
-        if (res) {
-          router.push('/projects/' + res.data.id)
-        } else {
-          console.log(res.data.error)
-        }
-      })
+      axios
+        .post('/api/projects', { name })
+        .then((res) => {
+          if (res.status === 200) {
+            router.push('/projects/' + res.data.id)
+          } else {
+            throw res
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+          setErrorMessage(error.message)
+        })
     } else {
-      setIsNameMissing(true)
+      setErrorMessage(t('nameEmpty'))
     }
   }
 
@@ -54,7 +61,7 @@ const NewProjectPage = () => {
               onChange={(e) => setProjectName(e.target.value)}
               className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
             />
-            {isNameMissing && <p className="text-red-600">{t('nameEmpty')}</p>}
+            {errorMessage && <p className="text-red-600">{errorMessage}</p>}
           </div>
           <button
             onClick={createProject}

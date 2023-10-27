@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
@@ -11,7 +10,7 @@ const CheckList = ({ projectId, bookId }) => {
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
     fetcher
   )
-  const handleCreateBook = () => {}
+
   return (
     <>
       <h2 className="text-2xl font-semibold mb-2">{t('bookChecks')}</h2>
@@ -24,7 +23,7 @@ const CheckList = ({ projectId, bookId }) => {
               <tr>
                 <th className="border p-2 text-center">{t('number')}</th>
                 <th className="border p-2 text-center">{t('titleInTable')}</th>
-                <th className="border p-2 text-center">{t('checEkndDate')}</th>
+                <th className="border p-2 text-center">{t('checkEndDate')}</th>
                 <th className="border p-2 text-center">{t('downloadNotes')}</th>
                 <th className="border p-2 text-center">{t('activity')}</th>
               </tr>

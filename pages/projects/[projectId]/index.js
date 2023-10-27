@@ -44,6 +44,13 @@ const ProjectDetailsPage = () => {
               {t('editProject')}
             </Link>
             <BookList projectId={projectId} />
+
+            <Link
+              href={`/projects/${projectId}/new`}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 inline-block rounded-md"
+            >
+              {t('createBook')}
+            </Link>
           </>
         ) : (
           <p>{t('loading')}</p>

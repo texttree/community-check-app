@@ -44,7 +44,6 @@ export default async function handler(req, res) {
         if (error) throw error
         return res.status(200).json(book)
       } catch (error) {
-        console.log(error)
         return res.status(404).json({ error })
       }
     default:

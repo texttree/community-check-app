@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { useState } from 'react'
 import useSWR from 'swr'
 import { useRouter } from 'next/router'
 import { fetcher } from '@/helpers/fetcher'
@@ -19,7 +18,6 @@ const BookDetailsPage = () => {
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}`,
     fetcher
   )
-  console.log(book)
 
   return (
     <div className="bg-gray-200 py-8">

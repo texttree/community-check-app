@@ -42,9 +42,8 @@ export default async function handler(req, res) {
           .single()
           .select('id')
         if (error) throw error
-        return res.status(200).json(book)
+        return res.status(200).json(check)
       } catch (error) {
-        console.log(error)
         return res.status(404).json({ error })
       }
     default:
