@@ -48,7 +48,7 @@ const NewProjectPage = () => {
             {t('personalArea')}
           </Link>
         </div>
-        <h1 className="text-3xl font-bold mb-4">{t('createAProject')}</h1>
+        <h1 className="text-3xl font-bold mb-4">{t('createProject')}</h1>
         <div className="bg-white p-4 rounded-lg shadow-md">
           <div className="mb-4">
             <label htmlFor="projectName" className="block font-medium text-gray-700">

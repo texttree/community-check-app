@@ -25,7 +25,7 @@ const BookList = ({ projectId }) => {
                 <th className="border p-2 text-center">{t('titleInTable')}</th>
                 <th className="border p-2 text-center">{t('dateCreation')}</th>
                 <th className="border p-2 text-center">{t('dateLastCheck')}</th>
-                <th className="border p-2 text-center">{t('NumberChecks')}</th>
+                <th className="border p-2 text-center">{t('numberChecks')}</th>
                 <th className="border p-2 text-center">{t('activeChecks')}</th>
               </tr>
             </thead>
