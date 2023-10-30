@@ -40,33 +40,8 @@ const CheckId = () => {
               onChange={(e) => setCheckType(e.target.value)}
               className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
             />
-            <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md inline-block mt-2">
-              {t('downloadMaterial')}
-            </button>
-            <input
-              type="checkbox"
-              checked={hasMaterial}
-              onChange={(e) => setHasMaterial(e.target.checked)}
-              className="ml-2"
-            />
-            <label className="ml-1">tit.usfm?</label>
-            <input
-              type="checkbox"
-              checked={hasLink}
-              onChange={(e) => setHasLink(e.target.checked)}
-              className="ml-2"
-            />
           </div>
           <div className="mb-4">
-            <label className="block font-medium text-gray-700">
-              {t('expirationDate')}
-            </label>
-            <input
-              type="text"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
-            />
             <label className="block font-medium text-gray-700 mt-2">
               {t('provideLink')}
             </label>
@@ -74,6 +49,15 @@ const CheckId = () => {
               type="text"
               value={materialLink}
               onChange={(e) => setMaterialLink(e.target.value)}
+              className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
+            />
+            <label className="block font-medium text-gray-700">
+              {t('expirationDate')}
+            </label>
+            <input
+              type="text"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
               className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
             />
           </div>

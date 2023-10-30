@@ -12,7 +12,7 @@ import LeftArrow from 'public/left.svg'
 const ProjectEditPage = () => {
   const { t } = useTranslation()
   const [projectName, setProjectName] = useState('')
-  const [isNameMissing, setIsNameMissing] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
   const projectId = router.query.projectId
 
@@ -28,17 +28,24 @@ const ProjectEditPage = () => {
   }, [project?.name])
 
   const editProject = () => {
+    setErrorMessage('')
     const name = projectName.trim()
     if (name) {
-      axios.post('/api/projects/' + projectId, { name, id: project.id }).then((res) => {
-        if (res) {
-          router.push('/projects/' + projectId)
-        } else {
-          console.log(res.data.error)
-        }
-      })
+      axios
+        .post('/api/projects/' + projectId)
+        .then((res) => {
+          if (res.status === 200) {
+            router.push('/projects/' + projectId)
+          } else {
+            throw res
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+          setErrorMessage(error.message)
+        })
     } else {
-      setIsNameMissing(true)
+      setErrorMessage(t('nameEmpty'))
     }
   }
 
@@ -68,7 +75,7 @@ const ProjectEditPage = () => {
                 onChange={(e) => setProjectName(e.target.value)}
                 className="mt-1 px-2 py-1 mb-2 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
               />
-              {isNameMissing && <p className="text-red-600">{t('nameEmpty')}</p>}
+              {errorMessage && <p className="text-red-600">{errorMessage}</p>}
             </div>
             <button
               onClick={editProject}

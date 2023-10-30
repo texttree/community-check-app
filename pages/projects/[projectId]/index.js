@@ -5,18 +5,16 @@ import { fetcher } from '@/helpers/fetcher'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import LeftArrow from 'public/left.svg'
+import BookList from '@/components/BookList'
 
-const books = [
-  { id: 2, name: 'Ruth', finished_at: 'dd:mm:yyyy', checks: '2' },
-  { id: 3, name: 'testBook', finished_at: 'dd:mm:yyyy', checks: '2' },
-]
+import LeftArrow from 'public/left.svg'
 
 const ProjectDetailsPage = () => {
   const { t } = useTranslation()
   const {
     query: { projectId },
   } = useRouter()
+
   const { data: project, error } = useSWR(
     projectId && '/api/projects/' + projectId,
     fetcher
@@ -45,40 +43,8 @@ const ProjectDetailsPage = () => {
             >
               {t('editProject')}
             </Link>
-            <h1 className="text-2xl font-semibold">{t('projectBooks')}</h1>
-            <div className="bg-white p-4 rounded-lg shadow-md mt-2">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr>
-                    <th className="border p-2 text-center">ID</th>
-                    <th className="border p-2 text-center">{t('titleInTable')}</th>
-                    <th className="border p-2 text-center">{t('dateCreation')}</th>
-                    <th className="border p-2 text-center">{t('dateLastCheck')}</th>
-                    <th className="border p-2 text-center">{t('NumberChecks')}</th>
-                    <th className="border p-2 text-center">{t('activeChecks')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {books.map((book) => (
-                    <tr key={book.id}>
-                      <td className="border p-2 text-center">{book.id}</td>
-                      <td className="border p-2 text-center">
-                        <Link
-                          href={`/projects/${projectId}/${book.id}`}
-                          className="text-blue-600 hover:underline"
-                        >
-                          {book.name}
-                        </Link>
-                      </td>
-                      <td className="border p-2 text-center">{book.finished_at}</td>
-                      <td className="border p-2 text-center">{book.finished_at}</td>
-                      <td className="border p-2 text-center">{book.checks}</td>
-                      <td className="border p-2 text-center">{book.checks}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <BookList projectId={projectId} />
+
             <Link
               href={`/projects/${projectId}/new`}
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 inline-block rounded-md"
