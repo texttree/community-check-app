@@ -1,5 +1,13 @@
 import serverApi from '@/helpers/serverApi'
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '8mb',
+    },
+  },
+}
+
 export default async function handler(req, res) {
   let supabase
   try {
@@ -10,7 +18,7 @@ export default async function handler(req, res) {
 
   const {
     query: { checkId },
-    body: { content },
+    body: { id, content },
     method,
   } = req
 
@@ -30,16 +38,19 @@ export default async function handler(req, res) {
       } catch (error) {
         return res.status(404).json({ error })
       }
+
     case 'POST': // создать новый или обновить существующий материал
       try {
+        const postData = {
+          content,
+          check_id: checkId,
+        }
+        if (id) {
+          postData.id = id
+        }
         const { data: material, error } = await supabase
           .from('materials')
-          .upsert([
-            {
-              content,
-              check_id: checkId,
-            },
-          ])
+          .upsert([postData])
           .single()
           .select('id')
         if (error) throw error

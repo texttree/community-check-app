@@ -19,14 +19,15 @@ const CheckId = () => {
   const [endDate, setEndDate] = useState('')
   const [materialLink, setMaterialLink] = useState('')
   const [hasLink, setHasLink] = useState(false)
-  const [material, setMaterial] = useState('')
-  const { data: check, error } = useSWR(
+
+  const { data: material, error } = useSWR(
     projectId &&
       bookId &&
       checkId &&
-      `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
+      `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
     fetcher
   )
+
   const [checkName, setCheckName] = useState()
 
   const handleSubmit = (e) => {
@@ -41,11 +42,9 @@ const CheckId = () => {
           const jsonData = usfm.toJSON(res.data)
           if (Object.keys(jsonData?.chapters).length > 0) {
             // const chapter = parseChapter(jsonData.chapters[1])
-            setMaterial(jsonData)
             updateCheck()
-              .then((checkId) => {
-                console.log(checkId)
-                return upsertMaterial(checkId)
+              .then(() => {
+                return upsertMaterial(jsonData)
               })
               .then((materialId) => {
                 console.log(materialId)
@@ -67,22 +66,25 @@ const CheckId = () => {
     }
   }
   const updateCheck = async () => {
-    return await axios
-      .post(`/api/projects/${projectId}/books/${bookId}/checks/${checkId}`, {
+    return await axios.post(
+      `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
+      {
         name: checkName,
         material_link: materialLink,
-      })
-      .then((res) => {
-        const checkId = res.data.id
-        console.log(checkId)
-        return checkId
-      })
+      }
+    )
   }
-  const upsertMaterial = (checkId) => {
+  const upsertMaterial = (jsonData) => {
+    const postData = { content: jsonData }
+    if (material?.id) {
+      postData.id = material.id
+    }
+    console.log(postData)
     return axios
-      .post(`/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`, {
-        content: material,
-      })
+      .post(
+        `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
+        postData
+      )
       .then((res) => {
         const materialId = res.data.id
         return materialId
