@@ -19,7 +19,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-i18next": "^13.2.2",
-    "swr": "^2.2.2"
+    "swr": "^2.2.2",
+    "usfm-js": "^3.4.2"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",

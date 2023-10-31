@@ -3,6 +3,7 @@ import useSWR from 'swr'
 import { useRouter } from 'next/router'
 import { fetcher } from '@/helpers/fetcher'
 import { useTranslation } from 'next-i18next'
+import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import CheckList from '@/components/CheckList'
@@ -10,6 +11,7 @@ import LeftArrow from 'public/left.svg'
 
 const BookDetailsPage = () => {
   const { t } = useTranslation()
+  const router = useRouter()
   const {
     query: { projectId, bookId },
   } = useRouter()
@@ -18,6 +20,21 @@ const BookDetailsPage = () => {
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}`,
     fetcher
   )
+
+  const handleCreateCheck = () => {
+    const name = 'Name Check'
+    axios
+      .post(`/api/projects/${projectId}/books/${bookId}/checks`, { name: name })
+      .then((res) => {
+        if (res) {
+          const checkId = res.data.id
+          router.push(`/projects/${projectId}/${bookId}/${checkId}`)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
 
   return (
     <div className="bg-gray-200 py-8">
@@ -39,12 +56,12 @@ const BookDetailsPage = () => {
         ) : (
           <p>{t('loading')}</p>
         )}
-        <Link
-          href={`/projects/${projectId}/${bookId}/new`}
+        <button
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 rounded-md inline-block"
+          onClick={handleCreateCheck}
         >
           {t('startNewCheck')}
-        </Link>
+        </button>
       </div>
     </div>
   )
