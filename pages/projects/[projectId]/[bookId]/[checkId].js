@@ -7,7 +7,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import usfm from 'usfm-js'
 import LeftArrow from 'public/left.svg'
 import axios from 'axios'
-import { parseChapter } from '@/helpers/usfmHelper'
 import { fetcher } from '@/helpers/fetcher'
 
 const CheckId = () => {
@@ -27,8 +26,8 @@ const CheckId = () => {
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
     fetcher
   )
-
-  const [checkName, setCheckName] = useState()
+  console.log(checkId)
+  const [checkName, setCheckName] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -100,6 +99,13 @@ const CheckId = () => {
         >
           <LeftArrow className="h-5 w-5 mr-1" />
           {t('back')}
+        </Link>
+        <Link
+          href={`/checks/${checkId}`}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md
+          inline-flex items-center"
+        >
+          <LeftArrow className="h-5 w-5 mr-1" />
         </Link>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

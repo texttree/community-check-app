@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import useSWR from 'swr'
+import useSWR, { useSWRConfig } from 'swr'
 import { useRouter } from 'next/router'
 import { fetcher } from '@/helpers/fetcher'
 import { useTranslation } from 'next-i18next'
@@ -20,15 +20,18 @@ const BookDetailsPage = () => {
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}`,
     fetcher
   )
+  const { mutate } = useSWRConfig()
 
   const handleCreateCheck = () => {
     const name = 'Name Check'
     axios
-      .post(`/api/projects/${projectId}/books/${bookId}/checks`, { name: name })
+      .post(`/api/projects/${projectId}/books/${bookId}/checks`, { name })
       .then((res) => {
         if (res) {
-          const checkId = res.data.id
-          router.push(`/projects/${projectId}/${bookId}/${checkId}`)
+          mutate(key, data, options)
+          console.log(res.data)
+          // const checkId = res.data.id
+          // router.push(`/projects/${projectId}/${bookId}/${checkId}`)
         }
       })
       .catch((error) => {

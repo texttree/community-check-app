@@ -1,5 +1,13 @@
 import serverApi from '@/helpers/serverApi'
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '8mb',
+    },
+  },
+}
+
 export default async function handler(req, res) {
   let supabase
   try {
@@ -9,18 +17,19 @@ export default async function handler(req, res) {
   }
 
   const {
-    query: { bookId },
-    body: { name },
+    query: { checkId },
+    body: { id, content },
     method,
   } = req
-  console.log({ bookId, name })
+
   switch (method) {
-    case 'GET': // получить проверки
+    case 'GET': // получить материалы
       try {
         const { data, error } = await supabase
-          .from('checks')
+          .from('materials')
           .select()
-          .eq('book_id', bookId)
+          .eq('check_id', checkId)
+          .single()
 
         if (error) {
           throw error
@@ -29,16 +38,23 @@ export default async function handler(req, res) {
       } catch (error) {
         return res.status(404).json({ error })
       }
-    case 'POST': // создать новую проверку
+
+    case 'POST': // создать новый или обновить существующий материал
       try {
-        const { data: check, error } = await supabase.from('checks').insert([
-          {
-            name,
-            book_id: parseInt(bookId),
-          },
-        ])
+        const postData = {
+          content,
+          check_id: checkId,
+        }
+        if (id) {
+          postData.id = id
+        }
+        const { data: material, error } = await supabase
+          .from('materials')
+          .upsert([postData])
+          .single()
+          .select('id')
         if (error) throw error
-        return res.status(200).json(check)
+        return res.status(200).json(material)
       } catch (error) {
         return res.status(404).json({ error })
       }
