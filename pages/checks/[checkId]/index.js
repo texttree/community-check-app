@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
+import axios from 'axios'
 import { fetcher } from '@/helpers/fetcher'
 
 import { parseChapter } from '@/helpers/usfmHelper'
@@ -11,10 +12,12 @@ const CheckDetail = () => {
   const [chapter, setChapter] = useState('')
   const { data: material, error } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
   const [editableVerseIndex, setEditableVerseIndex] = useState(null)
-  let [currentChapterIndex, setCurrentChapterIndex] = useState(1)
+  const [currentChapterIndex, setCurrentChapterIndex] = useState(1)
   const [notes, setNotes] = useState(new Array(chapter.length).fill(''))
   const [arrayLenght, setArrayLenght] = useState('')
-  console.log(arrayLenght)
+  const [testNotes, setTestNotes] = useState('')
+  console.log(editableVerseIndex, testNotes)
+
   useEffect(() => {
     if (material?.content) {
       const chapters = material.content.chapters
@@ -24,7 +27,6 @@ const CheckDetail = () => {
       setArrayLenght(numberChapters.length)
     }
   }, [material, currentChapterIndex])
-
   const editVerse = (index) => {
     setEditableVerseIndex(index)
   }
@@ -37,13 +39,37 @@ const CheckDetail = () => {
       setCurrentChapterIndex(currentChapterIndex - 1)
     }
   }
-  console.log(currentChapterIndex)
   const nextChapter = () => {
     if (currentChapterIndex < arrayLenght) {
       setCurrentChapterIndex(currentChapterIndex + 1)
     }
   }
 
+  const uploadNotes = () => {
+    const note = testNotes
+    const chapter = currentChapterIndex
+    const verse = editableVerseIndex + 1
+    const materialId = material.id
+    const deleted_at = material.deleted_at
+    axios
+      .post(`/api/checks/${checkId}/notes`, {
+        materialId,
+        note,
+        chapter,
+        verse,
+        deleted_at,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          console.log('uploadTrue')
+        } else {
+          throw res
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
   return (
     <div className="bg-gray-200">
       <div className="max-w-6xl mx-auto p-4">
@@ -53,17 +79,11 @@ const CheckDetail = () => {
             <div className="flex justify-between mb-4">
               <button
                 onClick={PreviousChapter}
-                className={`${
-                  (currentChapterIndex = 1)
-                    ? 'bg-slate-500 text-black cursor-not-allowed'
-                    : 'bg-blue-500 text-white'
-                } py-2 px-4 rounded`}
+                className="bg-blue-500 text-white py-2 px-4 rounded"
               >
                 Предыдущая глава
               </button>
-              {/* <p h1 className="text-2xl font-bold">
-                {currentChapterIndex}
-              </p> */}
+              <p className="text-2xl font-bold">{currentChapterIndex.toString()}</p>
               <button
                 onClick={nextChapter}
                 className="bg-blue-500 text-white py-2 px-4 rounded"
@@ -83,6 +103,7 @@ const CheckDetail = () => {
                         const newNotes = [...notes]
                         newNotes[index] = e.target.value
                         setNotes(newNotes)
+                        setTestNotes(e.target.value)
                       }}
                       className="w-full border rounded p-1"
                     />
@@ -105,6 +126,7 @@ const CheckDetail = () => {
                 )}
               </div>
             ))}
+            <button onClick={uploadNotes}>text</button>
           </div>
         )}
       </div>

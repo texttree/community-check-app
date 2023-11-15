@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
   const {
     query: { checkId },
-    body: { id, content },
+    body: { id, content, deleted_at },
     method,
   } = req
 
@@ -44,6 +44,7 @@ export default async function handler(req, res) {
         const postData = {
           content,
           check_id: checkId,
+          deleted_at,
         }
         if (id) {
           postData.id = id

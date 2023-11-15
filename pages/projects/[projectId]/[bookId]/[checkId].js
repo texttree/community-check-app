@@ -17,7 +17,6 @@ const CheckId = () => {
   const [hasMaterial, setHasMaterial] = useState(false)
   const [endDate, setEndDate] = useState('')
   const [materialLink, setMaterialLink] = useState('')
-  const [hasLink, setHasLink] = useState(false)
 
   const { data: material, error } = useSWR(
     projectId &&
@@ -26,9 +25,8 @@ const CheckId = () => {
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
     fetcher
   )
-  console.log(checkId)
   const [checkName, setCheckName] = useState('')
-
+  console.log(router.query)
   const handleSubmit = (e) => {
     e.preventDefault()
   }
@@ -40,7 +38,6 @@ const CheckId = () => {
         .then((res) => {
           const jsonData = usfm.toJSON(res.data)
           if (Object.keys(jsonData?.chapters).length > 0) {
-            // const chapter = parseChapter(jsonData.chapters[1])
             updateCheck()
               .then(() => {
                 return upsertMaterial(jsonData)
@@ -64,17 +61,19 @@ const CheckId = () => {
       setErrorMessage(t('nameEmpty'))
     }
   }
+
   const updateCheck = async () => {
     return await axios.post(
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
       {
+        finished_at: endDate,
         name: checkName,
         material_link: materialLink,
       }
     )
   }
   const upsertMaterial = (jsonData) => {
-    const postData = { content: jsonData }
+    const postData = { content: jsonData, deleted_at: endDate }
     if (material?.id) {
       postData.id = material.id
     }
@@ -131,7 +130,7 @@ const CheckId = () => {
               {t('expirationDate')}
             </label>
             <input
-              type="text"
+              type="datetime-local"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
