@@ -29,9 +29,6 @@ const BookDetailsPage = () => {
       .then((res) => {
         if (res) {
           mutate(key, data, options)
-          console.log(res.data)
-          // const checkId = res.data.id
-          // router.push(`/projects/${projectId}/${bookId}/${checkId}`)
         }
       })
       .catch((error) => {

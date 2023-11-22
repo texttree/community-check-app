@@ -17,10 +17,15 @@ export default async function handler(req, res) {
   switch (method) {
     case 'GET': // получить заметки
       try {
+        const { data: material, err } = await supabase
+          .from('materials')
+          .select()
+          .eq('check_id', checkId)
+          .single()
         const { data, error } = await supabase
           .from('notes')
           .select()
-          .eq(' material_id', materialId)
+          .eq(' material_id', material.id)
 
         if (error) {
           throw error
@@ -32,16 +37,14 @@ export default async function handler(req, res) {
     case 'POST': // создать новую заметку
       console.log(note, chapter, verse, materialId, checkId, deleted_at)
       try {
-        const { data, error } = await supabase.from('notes').insert([
-          {
-            chapter,
-            inspector_id: null,
-            material_id: materialId,
-            note,
-            verse,
-            deleted_at,
-          },
-        ])
+        const { data, error } = await supabase.rpc('insert_note', {
+          note,
+          inspector_id: null,
+          check_id: checkId,
+          material_id: materialId,
+          chapter,
+          verse,
+        })
 
         if (error) console.error(error)
         else console.log(data)

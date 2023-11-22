@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import useSWR from 'swr'
+import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import usfm from 'usfm-js'
 import LeftArrow from 'public/left.svg'
-import axios from 'axios'
+import Copy from 'public/copy.svg'
+
 import { fetcher } from '@/helpers/fetcher'
 
 const CheckId = () => {
@@ -14,9 +16,11 @@ const CheckId = () => {
   const router = useRouter()
   const { projectId, bookId, checkId } = router.query
   const [errorMessage, setErrorMessage] = useState('')
-  const [hasMaterial, setHasMaterial] = useState(false)
   const [endDate, setEndDate] = useState('')
   const [materialLink, setMaterialLink] = useState('')
+  const [checkName, setCheckName] = useState('')
+  const chechPageRef = useRef(null)
+  const [copySuccess, setCopySuccess] = useState(false)
 
   const { data: material, error } = useSWR(
     projectId &&
@@ -25,11 +29,39 @@ const CheckId = () => {
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
     fetcher
   )
-  const [checkName, setCheckName] = useState('')
-  console.log(router.query)
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const { data: checks, err } = useSWR(
+    projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
+    fetcher
+  )
+  const copyToClipboard = () => {
+    const textToCopy = chechPageRef.current.innerText
+
+    navigator.clipboard.writeText(textToCopy).then(
+      () => {
+        setCopySuccess(true)
+        setTimeout(() => setCopySuccess(false), 2000)
+      },
+      (err) => {
+        console.error('Unable to copy text', err)
+      }
+    )
   }
+  useEffect(() => {
+    if (checks) {
+      checks.map((el) => {
+        if (checkId === el.id) {
+          const formattedFinishedDate = new Date(el.finished_at)
+            .toISOString()
+            .slice(0, 16)
+          setMaterialLink(el.material_link)
+          setCheckName(el.name)
+          setEndDate(formattedFinishedDate)
+          console.log(el)
+        }
+      })
+    }
+  }, [checkId, checks, material])
+
   const updateResourse = async () => {
     setErrorMessage('')
     if (checkName && materialLink) {
@@ -73,11 +105,10 @@ const CheckId = () => {
     )
   }
   const upsertMaterial = (jsonData) => {
-    const postData = { content: jsonData, deleted_at: endDate }
+    const postData = { content: jsonData }
     if (material?.id) {
       postData.id = material.id
     }
-    console.log(postData)
     return axios
       .post(
         `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
@@ -99,14 +130,7 @@ const CheckId = () => {
           <LeftArrow className="h-5 w-5 mr-1" />
           {t('back')}
         </Link>
-        <Link
-          href={`/checks/${checkId}`}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md
-          inline-flex items-center"
-        >
-          <LeftArrow className="h-5 w-5 mr-1" />
-        </Link>
-        <form onSubmit={handleSubmit}>
+        <form>
           <div className="mb-4">
             <label className="block font-medium text-gray-700">{t('name')}</label>
             <input
@@ -135,6 +159,14 @@ const CheckId = () => {
               onChange={(e) => setEndDate(e.target.value)}
               className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
             />
+          </div>
+          <div className="flex my-4">
+            <Link href={`/checks/${checkId}`} ref={chechPageRef}>
+              https://community-check-app.netlify.app/checks/{checkId}
+            </Link>
+            {copySuccess && <div className="ml-2 text-green-500">Copied!</div>}
+
+            <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
           </div>
           {errorMessage && <p className="text-red-600">{errorMessage}</p>}
 

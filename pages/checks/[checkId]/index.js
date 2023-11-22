@@ -16,7 +16,6 @@ const CheckDetail = () => {
   const [notes, setNotes] = useState(new Array(chapter.length).fill(''))
   const [arrayLenght, setArrayLenght] = useState('')
   const [testNotes, setTestNotes] = useState('')
-  console.log(editableVerseIndex, testNotes)
 
   useEffect(() => {
     if (material?.content) {
@@ -108,7 +107,7 @@ const CheckDetail = () => {
                       className="w-full border rounded p-1"
                     />
                     <button
-                      onClick={() => saveNotes(index)}
+                      onClick={uploadNotes}
                       className="bg-blue-500 text-white py-1 px-2 rounded ml-2"
                     >
                       Сохранить
@@ -126,7 +125,6 @@ const CheckDetail = () => {
                 )}
               </div>
             ))}
-            <button onClick={uploadNotes}>text</button>
           </div>
         )}
       </div>
