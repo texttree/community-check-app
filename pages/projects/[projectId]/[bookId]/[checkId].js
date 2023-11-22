@@ -56,7 +56,6 @@ const CheckId = () => {
           setMaterialLink(el.material_link)
           setCheckName(el.name)
           setEndDate(formattedFinishedDate)
-          console.log(el)
         }
       })
     }
@@ -74,9 +73,7 @@ const CheckId = () => {
               .then(() => {
                 return upsertMaterial(jsonData)
               })
-              .then((materialId) => {
-                console.log(materialId)
-              })
+              .then((materialId) => {})
               .catch((error) => {
                 console.error(error)
                 setErrorMessage(error.message)
@@ -164,7 +161,7 @@ const CheckId = () => {
             <Link href={`/checks/${checkId}`} ref={chechPageRef}>
               https://community-check-app.netlify.app/checks/{checkId}
             </Link>
-            {copySuccess && <div className="ml-2 text-green-500">Copied!</div>}
+            {copySuccess && <div className="ml-2 text-green-500">{t('copied')}!</div>}
 
             <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
           </div>
@@ -174,7 +171,7 @@ const CheckId = () => {
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
             onClick={updateResourse}
           >
-            {t('createCheck')}
+            {t('save')}
           </button>
         </form>
       </div>

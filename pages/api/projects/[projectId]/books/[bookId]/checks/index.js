@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     body: { name },
     method,
   } = req
-  console.log({ bookId, name })
+
   switch (method) {
     case 'GET': // получить проверки
       try {

@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
 import axios from 'axios'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import { fetcher } from '@/helpers/fetcher'
 
 import { parseChapter } from '@/helpers/usfmHelper'
 
 const CheckDetail = () => {
+  const { t } = useTranslation()
   const router = useRouter()
   const { checkId } = router.query
   const [chapter, setChapter] = useState('')
@@ -72,7 +76,7 @@ const CheckDetail = () => {
   return (
     <div className="bg-gray-200">
       <div className="max-w-6xl mx-auto p-4">
-        <h1 className="text-2xl font-bold">Детали проверки</h1>
+        <h1 className="text-2xl font-bold">{t('checkDetails')}</h1>
         {chapter && (
           <div className="mt-4">
             <div className="flex justify-between mb-4">
@@ -80,14 +84,14 @@ const CheckDetail = () => {
                 onClick={PreviousChapter}
                 className="bg-blue-500 text-white py-2 px-4 rounded"
               >
-                Предыдущая глава
+                {t('previousChapter')}
               </button>
               <p className="text-2xl font-bold">{currentChapterIndex.toString()}</p>
               <button
                 onClick={nextChapter}
                 className="bg-blue-500 text-white py-2 px-4 rounded"
               >
-                Следующая глава
+                {t('nextChapter')}
               </button>
             </div>
             {chapter.map((verse, index) => (
@@ -110,7 +114,7 @@ const CheckDetail = () => {
                       onClick={uploadNotes}
                       className="bg-blue-500 text-white py-1 px-2 rounded ml-2"
                     >
-                      Сохранить
+                      {t('save')}
                     </button>
                   </div>
                 ) : (
@@ -119,7 +123,7 @@ const CheckDetail = () => {
                       onClick={() => editVerse(index)}
                       className="bg-blue-500 text-white py-1 px-2 rounded  ml-2"
                     >
-                      комментарий
+                      {t('note')}
                     </button>
                   </div>
                 )}
@@ -130,6 +134,13 @@ const CheckDetail = () => {
       </div>
     </div>
   )
+}
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default CheckDetail
