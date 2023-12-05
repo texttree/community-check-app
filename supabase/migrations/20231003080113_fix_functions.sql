@@ -27,7 +27,7 @@ AS $function$
 $function$
 ;
 
-CREATE OR REPLACE FUNCTION public.check_user_books(project_id int8)
+CREATE OR REPLACE FUNCTION public.check_user_books(project_id bigint)
  RETURNS boolean
  LANGUAGE plpgsql
  SECURITY DEFINER

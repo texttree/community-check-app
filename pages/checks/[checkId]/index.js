@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
 import axios from 'axios'
+import toast, { Toaster } from 'react-hot-toast'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -13,58 +14,50 @@ const CheckDetail = () => {
   const { t } = useTranslation()
   const router = useRouter()
   const { checkId } = router.query
-  const [chapter, setChapter] = useState('')
+  const [chapter, setChapter] = useState([])
   const { data: material, error } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
   const [editableVerseIndex, setEditableVerseIndex] = useState(null)
   const [currentChapterIndex, setCurrentChapterIndex] = useState(1)
   const [notes, setNotes] = useState(new Array(chapter.length).fill(''))
-  const [arrayLenght, setArrayLenght] = useState('')
-  const [testNotes, setTestNotes] = useState('')
-
+  const [arrayLength, setArrayLength] = useState('')
+  const [note, setNote] = useState('')
   useEffect(() => {
     if (material?.content) {
       const chapters = material.content.chapters
       const numberChapters = Object.keys(chapters)
       const _chapter = parseChapter(chapters[currentChapterIndex])
       setChapter(_chapter)
-      setArrayLenght(numberChapters.length)
+      setArrayLength(numberChapters.length)
     }
   }, [material, currentChapterIndex])
   const editVerse = (index) => {
     setEditableVerseIndex(index)
   }
-
-  const saveNotes = (index) => {
-    setEditableVerseIndex(null)
-  }
-  const PreviousChapter = () => {
+  const previousChapter = () => {
     if (currentChapterIndex > 1) {
       setCurrentChapterIndex(currentChapterIndex - 1)
     }
   }
   const nextChapter = () => {
-    if (currentChapterIndex < arrayLenght) {
+    if (currentChapterIndex < arrayLength) {
       setCurrentChapterIndex(currentChapterIndex + 1)
     }
   }
 
   const uploadNotes = () => {
-    const note = testNotes
     const chapter = currentChapterIndex
     const verse = editableVerseIndex + 1
     const materialId = material.id
-    const deleted_at = material.deleted_at
     axios
       .post(`/api/checks/${checkId}/notes`, {
         materialId,
         note,
         chapter,
         verse,
-        deleted_at,
       })
       .then((res) => {
         if (res.status === 200) {
-          console.log('uploadTrue')
+          toast.success(t('noteSaved'))
         } else {
           throw res
         }
@@ -77,11 +70,11 @@ const CheckDetail = () => {
     <div className="bg-gray-200">
       <div className="max-w-6xl mx-auto p-4">
         <h1 className="text-2xl font-bold">{t('checkDetails')}</h1>
-        {chapter && (
+        {chapter && chapter.length && (
           <div className="mt-4">
             <div className="flex justify-between mb-4">
               <button
-                onClick={PreviousChapter}
+                onClick={previousChapter}
                 className="bg-blue-500 text-white py-2 px-4 rounded"
               >
                 {t('previousChapter')}
@@ -106,7 +99,7 @@ const CheckDetail = () => {
                         const newNotes = [...notes]
                         newNotes[index] = e.target.value
                         setNotes(newNotes)
-                        setTestNotes(e.target.value)
+                        setNote(e.target.value)
                       }}
                       className="w-full border rounded p-1"
                     />
@@ -132,6 +125,7 @@ const CheckDetail = () => {
           </div>
         )}
       </div>
+      <Toaster />
     </div>
   )
 }

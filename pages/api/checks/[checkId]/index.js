@@ -1,4 +1,4 @@
-import serverApi from '@/helpers/serverApi'
+import { supabaseService } from '@/helpers/supabaseService'
 
 export const config = {
   api: {
@@ -9,57 +9,29 @@ export const config = {
 }
 
 export default async function handler(req, res) {
-  let supabase
-  try {
-    supabase = await serverApi(req, res)
-  } catch (error) {
-    return res.status(401).json({ error })
-  }
-
   const {
     query: { checkId },
-    body: { id, content },
     method,
   } = req
 
   switch (method) {
     case 'GET': // получить материалы
-      try {
-        const { data, error } = await supabase
-          .from('materials')
-          .select()
-          .eq('check_id', checkId)
-          .single()
-
-        if (error) {
-          throw error
-        }
-        return res.status(200).json(data)
-      } catch (error) {
-        return res.status(404).json({ error })
+      // try {
+      const { data, error } = await supabaseService
+        .from('materials')
+        .select('id, content')
+        .eq('check_id', checkId)
+        .single()
+      if (error) {
+        throw error
       }
+      return res.status(200).json(data)
+    // } catch (error) {
+    //   return res.status(404).json({ error })
+    // }
 
-    case 'POST': // создать новый или обновить существующий материал
-      try {
-        const postData = {
-          content,
-          check_id: checkId,
-        }
-        if (id) {
-          postData.id = id
-        }
-        const { data: material, error } = await supabase
-          .from('materials')
-          .upsert([postData])
-          .single()
-          .select('id')
-        if (error) throw error
-        return res.status(200).json(material)
-      } catch (error) {
-        return res.status(404).json({ error })
-      }
     default:
-      res.setHeader('Allow', ['GET', 'POST'])
+      res.setHeader('Allow', ['GET'])
       return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

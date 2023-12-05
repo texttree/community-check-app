@@ -19,10 +19,9 @@ export default async function handler(req, res) {
       try {
         const { data, error } = await supabase
           .from('checks')
-          .select()
+          .select('*')
           .eq('id', checkId)
           .single()
-
         if (error) {
           throw error
         }

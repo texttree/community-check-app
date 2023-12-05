@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import useSWR, { useSWRConfig } from 'swr'
+import useSWR from 'swr'
 import { useRouter } from 'next/router'
 import { fetcher } from '@/helpers/fetcher'
 import { useTranslation } from 'next-i18next'
@@ -20,15 +20,15 @@ const BookDetailsPage = () => {
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}`,
     fetcher
   )
-  const { mutate } = useSWRConfig()
 
   const handleCreateCheck = () => {
     const name = 'Name Check'
     axios
       .post(`/api/projects/${projectId}/books/${bookId}/checks`, { name })
       .then((res) => {
-        if (res) {
-          mutate(key, data, options)
+        if (res.status === 200) {
+          router.push(`/projects/${projectId}/${bookId}`)
+          // пока это не работает. Нужно узнать ID созданной проверки и перейте на страницу ее редактирования
         }
       })
       .catch((error) => {

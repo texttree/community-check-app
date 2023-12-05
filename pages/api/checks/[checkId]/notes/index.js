@@ -1,21 +1,21 @@
 import serverApi from '@/helpers/serverApi'
+import { supabaseService } from '@/helpers/supabaseService'
 
 export default async function handler(req, res) {
-  let supabase
-  try {
-    supabase = await serverApi(req, res)
-  } catch (error) {
-    return res.status(401).json({ error })
-  }
-
   const {
     query: { checkId },
-    body: { note, chapter, verse, materialId, deleted_at },
+    body: { note, chapter, verse, materialId },
     method,
   } = req
 
   switch (method) {
     case 'GET': // получить заметки
+      let supabase
+      try {
+        supabase = await serverApi(req, res)
+      } catch (error) {
+        return res.status(401).json({ error })
+      }
       try {
         const { data: material, err } = await supabase
           .from('materials')
@@ -35,9 +35,8 @@ export default async function handler(req, res) {
         return res.status(404).json({ error })
       }
     case 'POST': // создать новую заметку
-      console.log(note, chapter, verse, materialId, checkId, deleted_at)
       try {
-        const { data, error } = await supabase.rpc('insert_note', {
+        const { data, error } = await supabaseService.rpc('insert_note', {
           note,
           inspector_id: null,
           check_id: checkId,
@@ -46,12 +45,10 @@ export default async function handler(req, res) {
           verse,
         })
 
-        if (error) console.error(error)
-        else console.log(data)
         if (error) throw error
         return res.status(200).json(data)
       } catch (error) {
-        return res.status(404).json({ error: 123 })
+        return res.status(404).json({ error })
       }
     default:
       res.setHeader('Allow', ['GET', 'POST'])

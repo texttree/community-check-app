@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import useSWR from 'swr'
 import axios from 'axios'
+import toast, { Toaster } from 'react-hot-toast'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import usfm from 'usfm-js'
@@ -16,11 +17,10 @@ const CheckId = () => {
   const router = useRouter()
   const { projectId, bookId, checkId } = router.query
   const [errorMessage, setErrorMessage] = useState('')
-  const [endDate, setEndDate] = useState('')
+  const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 16))
   const [materialLink, setMaterialLink] = useState('')
   const [checkName, setCheckName] = useState('')
-  const chechPageRef = useRef(null)
-  const [copySuccess, setCopySuccess] = useState(false)
+  const checkPageRef = useRef(null)
 
   const { data: material, error } = useSWR(
     projectId &&
@@ -29,37 +29,33 @@ const CheckId = () => {
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
     fetcher
   )
-  const { data: checks, err } = useSWR(
-    projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
+  const { data: check, error: err } = useSWR(
+    projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
     fetcher
   )
+
   const copyToClipboard = () => {
-    const textToCopy = chechPageRef.current.innerText
+    const textToCopy = checkPageRef.current.innerText
 
     navigator.clipboard.writeText(textToCopy).then(
       () => {
-        setCopySuccess(true)
-        setTimeout(() => setCopySuccess(false), 2000)
+        toast.success(t('copied'))
       },
       (err) => {
-        console.error('Unable to copy text', err)
+        toast.error('Unable to copy text', err)
       }
     )
   }
   useEffect(() => {
-    if (checks) {
-      checks.map((el) => {
-        if (checkId === el.id) {
-          const formattedFinishedDate = new Date(el.finished_at)
-            .toISOString()
-            .slice(0, 16)
-          setMaterialLink(el.material_link)
-          setCheckName(el.name)
-          setEndDate(formattedFinishedDate)
-        }
-      })
+    if (check) {
+      const formattedFinishedDate = new Date(check.finished_at).toISOString().slice(0, 16)
+      setMaterialLink(check.material_link)
+      setCheckName(check.name)
+      if (check.finished_at) {
+        setEndDate(formattedFinishedDate)
+      }
     }
-  }, [checkId, checks, material])
+  }, [checkId, check, material])
 
   const updateResourse = async () => {
     setErrorMessage('')
@@ -71,15 +67,14 @@ const CheckId = () => {
           if (Object.keys(jsonData?.chapters).length > 0) {
             updateCheck()
               .then(() => {
-                return upsertMaterial(jsonData)
+                upsertMaterial(jsonData)
               })
-              .then((materialId) => {})
               .catch((error) => {
                 console.error(error)
                 setErrorMessage(error.message)
               })
           } else {
-            setErrorMessage('Введите правильную ссылку на ресурс')
+            setErrorMessage(t('enterCorrectLink'))
           }
         })
         .catch((error) => {
@@ -112,8 +107,7 @@ const CheckId = () => {
         postData
       )
       .then((res) => {
-        const materialId = res.data.id
-        return materialId
+        return res.data.id
       })
   }
 
@@ -127,7 +121,11 @@ const CheckId = () => {
           <LeftArrow className="h-5 w-5 mr-1" />
           {t('back')}
         </Link>
-        <form>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+          }}
+        >
           <div className="mb-4">
             <label className="block font-medium text-gray-700">{t('name')}</label>
             <input
@@ -158,10 +156,9 @@ const CheckId = () => {
             />
           </div>
           <div className="flex my-4">
-            <Link href={`/checks/${checkId}`} ref={chechPageRef}>
+            <Link href={`/checks/${checkId}`} ref={checkPageRef}>
               https://community-check-app.netlify.app/checks/{checkId}
             </Link>
-            {copySuccess && <div className="ml-2 text-green-500">{t('copied')}!</div>}
 
             <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
           </div>
@@ -175,6 +172,7 @@ const CheckId = () => {
           </button>
         </form>
       </div>
+      <Toaster />
     </div>
   )
 }
