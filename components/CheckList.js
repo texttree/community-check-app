@@ -11,7 +11,7 @@ const CheckList = ({ projectId, bookId }) => {
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
     fetcher
   )
-  console.log(checks)
+
   return (
     <>
       <h2 className="text-2xl font-semibold mb-2">{t('bookChecks')}</h2>

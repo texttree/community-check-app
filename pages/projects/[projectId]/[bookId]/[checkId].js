@@ -49,7 +49,7 @@ const CheckId = () => {
   useEffect(() => {
     if (check) {
       const formattedFinishedDate = new Date(check.finished_at).toISOString().slice(0, 16)
-      setMaterialLink(check.material_link)
+      setMaterialLink(check.material_link || '')
       setCheckName(check.name)
       if (check.finished_at) {
         setEndDate(formattedFinishedDate)
@@ -65,9 +65,10 @@ const CheckId = () => {
         .then((res) => {
           const jsonData = usfm.toJSON(res.data)
           if (Object.keys(jsonData?.chapters).length > 0) {
-            updateCheck()
+            upsertMaterial(jsonData)
               .then(() => {
-                upsertMaterial(jsonData)
+                updateCheck()
+                toast.success(t('save'))
               })
               .catch((error) => {
                 console.error(error)
@@ -143,6 +144,7 @@ const CheckId = () => {
               type="text"
               value={materialLink}
               onChange={(e) => setMaterialLink(e.target.value)}
+              placeholder={t('linkResource')}
               className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
             />
             <label className="block font-medium text-gray-700">
