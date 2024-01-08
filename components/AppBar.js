@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'

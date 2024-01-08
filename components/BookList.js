@@ -21,7 +21,6 @@ const BookList = ({ projectId }) => {
           <table className="w-full border-collapse">
             <thead>
               <tr>
-                <th className="border p-2 text-center">ID</th>
                 <th className="border p-2 text-center">{t('titleInTable')}</th>
                 <th className="border p-2 text-center">{t('dateCreation')}</th>
                 <th className="border p-2 text-center">{t('dateLastCheck')}</th>
@@ -32,7 +31,6 @@ const BookList = ({ projectId }) => {
             <tbody>
               {books.map((book) => (
                 <tr key={book.id}>
-                  <td className="border p-2 text-center">{book.id}</td>
                   <td className="border p-2 text-center">
                     <Link
                       href={`/projects/${projectId}/${book.id}`}

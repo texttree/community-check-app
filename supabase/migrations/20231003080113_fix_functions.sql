@@ -50,7 +50,7 @@ AS $function$
 $function$
 ;
 
-CREATE OR REPLACE FUNCTION public.check_user_notes(material_id bigint)
+CREATE OR REPLACE FUNCTION public.check_user_notes(material_id int8)
  RETURNS boolean
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -78,7 +78,7 @@ AS $function$
 $function$
 ;
 
-CREATE OR REPLACE FUNCTION public.insert_note(note text, inspector_id uuid, check_id uuid, material_id bigint, chapter text, verse text)
+CREATE OR REPLACE FUNCTION public.insert_note(note text, inspector_id uuid, check_id uuid, material_id int8, chapter text, verse text)
  RETURNS boolean
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -114,14 +114,14 @@ AS $function$
 $function$
 ;
 
-CREATE OR REPLACE FUNCTION public.update_note(note_id bigint, note text, inspector_id uuid, check_id uuid, material_id bigint)
+CREATE OR REPLACE FUNCTION public.update_note(note_id int8, note text, inspector_id uuid, check_id uuid, material_id int8)
  RETURNS boolean
  LANGUAGE plpgsql
  SECURITY DEFINER
 AS $function$
   declare
     current_check record;
-    note_in_table bigint;
+    note_in_table int8;
   begin
     -- проверить now() так как с учетом часового пояса может не сработать
     select c.id as check_id, i.id as inspector_id, m.id as material_id
