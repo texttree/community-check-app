@@ -32,7 +32,7 @@ const ProjectEditPage = () => {
     const name = projectName.trim()
     if (name) {
       axios
-        .post('/api/projects/' + projectId)
+        .post('/api/projects/' + projectId, { name })
         .then((res) => {
           if (res.status === 200) {
             router.push('/projects/' + projectId)
