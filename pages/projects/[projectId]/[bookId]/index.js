@@ -5,7 +5,7 @@ import { fetcher } from '@/helpers/fetcher'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
+import toast, { Toaster } from 'react-hot-toast'
 import CheckList from '@/components/CheckList'
 import LeftArrow from 'public/left.svg'
 
@@ -22,7 +22,7 @@ const BookDetailsPage = () => {
   )
 
   const handleCreateCheck = () => {
-    const name = 'Name Check'
+    const name = t('nameCheck')
     axios
       .post(`/api/projects/${projectId}/books/${bookId}/checks`, { name })
       .then((res) => {
@@ -31,6 +31,11 @@ const BookDetailsPage = () => {
           // пока это не работает. Нужно узнать ID созданной проверки и перейте на страницу ее редактирования
         }
       })
+      .then(
+        toast.success(t('messageAboutNewCheck'), {
+          duration: 20000,
+        })
+      )
       .catch((error) => {
         console.error(error)
       })
@@ -63,6 +68,7 @@ const BookDetailsPage = () => {
           {t('startNewCheck')}
         </button>
       </div>
+      <Toaster />
     </div>
   )
 }

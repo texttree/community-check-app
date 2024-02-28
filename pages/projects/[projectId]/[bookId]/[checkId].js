@@ -122,57 +122,49 @@ const CheckId = () => {
           <LeftArrow className="h-5 w-5 mr-1" />
           {t('back')}
         </Link>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-          }}
+        <div className="mb-4">
+          <label className="block font-medium text-gray-700">{t('name')}</label>
+          <input
+            type="text"
+            value={checkName}
+            onChange={(e) => setCheckName(e.target.value)}
+            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block font-medium text-gray-700 mt-2">
+            {t('provideLink')}
+          </label>
+          <input
+            type="text"
+            value={materialLink}
+            onChange={(e) => setMaterialLink(e.target.value)}
+            placeholder={t('linkResource')}
+            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
+          />
+          <label className="block font-medium text-gray-700">{t('expirationDate')}</label>
+          <input
+            type="datetime-local"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
+          />
+        </div>
+        <div className="flex my-4">
+          <Link href={`/checks/${checkId}`} ref={checkPageRef}>
+            https://community-check-app.netlify.app/checks/{checkId}
+          </Link>
+
+          <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
+        </div>
+        {errorMessage && <p className="text-red-600">{errorMessage}</p>}
+
+        <button
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
+          onClick={updateResourse}
         >
-          <div className="mb-4">
-            <label className="block font-medium text-gray-700">{t('name')}</label>
-            <input
-              type="text"
-              value={checkName}
-              onChange={(e) => setCheckName(e.target.value)}
-              className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block font-medium text-gray-700 mt-2">
-              {t('provideLink')}
-            </label>
-            <input
-              type="text"
-              value={materialLink}
-              onChange={(e) => setMaterialLink(e.target.value)}
-              placeholder={t('linkResource')}
-              className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
-            />
-            <label className="block font-medium text-gray-700">
-              {t('expirationDate')}
-            </label>
-            <input
-              type="datetime-local"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
-            />
-          </div>
-          <div className="flex my-4">
-            <Link href={`/checks/${checkId}`} ref={checkPageRef}>
-              https://community-check-app.netlify.app/checks/{checkId}
-            </Link>
-
-            <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
-          </div>
-          {errorMessage && <p className="text-red-600">{errorMessage}</p>}
-
-          <button
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
-            onClick={updateResourse}
-          >
-            {t('save')}
-          </button>
-        </form>
+          {t('save')}
+        </button>
       </div>
       <Toaster />
     </div>

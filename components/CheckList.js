@@ -4,6 +4,7 @@ import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
 import downloadNotes from '@/helpers/downloadNotes'
 import Download from 'public/download.svg'
+import toast from 'react-hot-toast'
 const CheckList = ({ projectId, bookId }) => {
   const { t } = useTranslation()
 
@@ -11,7 +12,24 @@ const CheckList = ({ projectId, bookId }) => {
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
     fetcher
   )
+  const handleDownloadNotes = (check) => {
+    downloadNotes(check)
+      .then((notes) => {
+        const blob = new Blob([notes])
 
+        const link = document.createElement('a')
+        link.href = window.URL.createObjectURL(blob)
+        link.download = `${check.name}.tsv`
+
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      })
+      .catch((error) => {
+        const message = t('errorDownloadNotes') + ' ' + error
+        toast.error(message)
+      })
+  }
   return (
     <>
       <h2 className="text-2xl font-semibold mb-2">{t('bookChecks')}</h2>
@@ -29,7 +47,7 @@ const CheckList = ({ projectId, bookId }) => {
               </tr>
             </thead>
             <tbody>
-              {checks.map((check, index) => (
+              {checks.map((check) => (
                 <tr key={check.id}>
                   <td className="border p-2 text-center">
                     <Link
@@ -42,7 +60,7 @@ const CheckList = ({ projectId, bookId }) => {
                   <td className="border p-2 text-center">{check.finished_at}</td>
                   <td className="border p-2 text-center">
                     {
-                      <button onClick={() => downloadNotes(check)}>
+                      <button onClick={() => handleDownloadNotes(check)}>
                         <Download className="h-5 w-5 mr-1" />
                       </button>
                     }
