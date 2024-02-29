@@ -9,19 +9,19 @@ export default async function handler(req, res) {
   }
 
   const {
-    query: { bookId },
-    body: { name },
+    query: { checkId },
+    body: { name, material_link, finished_at },
     method,
   } = req
 
   switch (method) {
-    case 'GET': // получить проверки
+    case 'GET': // получить проверку
       try {
         const { data, error } = await supabase
           .from('checks')
-          .select()
-          .eq('book_id', bookId)
-
+          .select('*')
+          .eq('id', checkId)
+          .single()
         if (error) {
           throw error
         }
@@ -29,14 +29,20 @@ export default async function handler(req, res) {
       } catch (error) {
         return res.status(404).json({ error })
       }
-    case 'POST': // создать новую проверку
+    case 'POST': // обновить проверку
       try {
-        const { data: check, error } = await supabase.from('checks').insert([
-          {
-            name,
-            book_id: parseInt(bookId),
-          },
-        ])
+        const { data: check, error } = await supabase
+          .from('checks')
+          .update([
+            {
+              name,
+              material_link,
+              finished_at,
+            },
+          ])
+          .eq('id', checkId)
+          .select()
+          .single()
         if (error) throw error
         return res.status(200).json(check)
       } catch (error) {
