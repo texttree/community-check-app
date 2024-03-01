@@ -28,18 +28,28 @@ export default async function handler(req, res) {
     case 'POST': // создать новый проект
       try {
         const user_id = (await supabase.auth.getUser()).data.user.id
-        const { data: project, error } = await supabase
-          .from('projects')
-          .insert([
-            {
-              name,
-              user_id,
-            },
-          ])
-          .single()
-          .select('id')
-        if (error) throw error
-        return res.status(200).json(project)
+
+        const projectExists = await supabase.rpc('check_existing_project', {
+          user_id,
+          project_name: name,
+        })
+
+        console.log(projectExists, 38)
+        if (projectExists.error) throw projectExists.error
+
+        if (projectExists.data) {
+          return res
+            .status(400)
+            .json({ error: 'A project with the same name already exists for this user.' })
+        }
+
+        const { data: newProject, error: createError } = await supabase.rpc(
+          'create_project',
+          { user_id, project_name: name }
+        )
+        if (createError) throw createError
+
+        return res.status(200).json(newProject)
       } catch (error) {
         return res.status(404).json({ error })
       }

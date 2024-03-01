@@ -29,7 +29,7 @@ const NewProjectPage = () => {
         })
         .catch((error) => {
           console.error(error)
-          setErrorMessage(error.message)
+          setErrorMessage(error.response.data.error)
         })
     } else {
       setErrorMessage(t('nameEmpty'))
