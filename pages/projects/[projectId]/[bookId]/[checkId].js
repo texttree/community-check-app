@@ -26,6 +26,7 @@ const CheckId = () => {
     projectId &&
       bookId &&
       checkId &&
+      materialLink &&
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
     fetcher
   )
