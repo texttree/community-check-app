@@ -1,3 +1,4 @@
+import { processTokenWithoutUserId } from '@/helpers/checkToken'
 import serverApi from '@/helpers/serverApi'
 
 export default async function handler(req, res) {
@@ -28,6 +29,12 @@ export default async function handler(req, res) {
     case 'POST': // создать новый проект
       try {
         const user_id = (await supabase.auth.getUser()).data.user.id
+
+        const tokenResult = await processTokenWithoutUserId(req, user_id)
+        if (!tokenResult.success) {
+          return res.status(401).json({ error: tokenResult.error })
+        }
+
         const { data: project, error } = await supabase
           .from('projects')
           .insert([

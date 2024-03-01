@@ -1,4 +1,5 @@
 import serverApi from '@/helpers/serverApi'
+import { processTokenWithoutUserId } from '@/helpers/checkToken'
 
 export default async function handler(req, res) {
   let supabase
@@ -31,6 +32,13 @@ export default async function handler(req, res) {
       }
     case 'POST': // создать новую книгу
       try {
+        const user_id = (await supabase.auth.getUser()).data.user.id
+
+        const tokenResult = await processTokenWithoutUserId(req, user_id)
+        if (!tokenResult.success) {
+          return res.status(401).json({ error: tokenResult.error })
+        }
+
         const { data: book, error } = await supabase
           .from('books')
           .insert([

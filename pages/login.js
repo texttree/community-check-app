@@ -4,6 +4,8 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { getCookie, setCookie } from '@/helpers/cookiesHelper'
+import { accessTokenManager } from '@/helpers/accessTokenManager'
 
 export default function Login() {
   const { t } = useTranslation()
@@ -13,6 +15,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [error, setError] = useState(false)
   const [password, setPassword] = useState('')
+
   const handleLogout = async () => {
     try {
       const { error } = await supabase.auth.signOut()
@@ -29,13 +32,100 @@ export default function Login() {
         email,
         password,
       })
-      if (error) throw error
+
+      if (error) {
+        throw error
+      }
+
+      const userId = (await supabase.auth.getUser()).data.user.id
+
+      // Вызываем функцию для генерации и сохранения токена
+      await handleGenerateTokens(userId, email)
+
+      // await handleCheckToken(userId)
+
       setError(false)
       router.push(router.query?.redirectedFrom ?? '/projects')
     } catch (error) {
       setError(error.message)
     }
   }
+
+  const handleGenerateTokens = async (userId, email) => {
+    try {
+      const response = await fetch('/api/generate-tokens', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, email }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to generate tokens')
+      }
+
+      const { accessToken, refreshToken } = await response.json()
+
+      accessTokenManager.setAccessToken(accessToken)
+      setCookie('refreshTokenCookie', refreshToken, { secure: true, 'max-age': 3600 })
+
+      console.log('accessToken and refreshToken recorded')
+    } catch (error) {
+      console.error('Error generating tokens:', error.message)
+    }
+  }
+
+  const handleCheckToken = async (userId) => {
+    try {
+      const accessToken = getCookie('accessTokenCookie')
+
+      if (!accessToken) {
+        console.error('Access token not found')
+        return
+      }
+
+      const response = await fetch(`/api/serviceApi?user_id=${userId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+
+      if (response.status === 401) {
+        const errorData = await response.json()
+        console.error('Error fetching data from the service API:', errorData.error)
+
+        const success = await refreshAccessToken()
+
+        if (success) {
+          const updatedResponse = await fetch(`/api/serviceApi?user_id=${userId}`, {
+            headers: {
+              Authorization: `Bearer ${getAccessToken()}`,
+            },
+          })
+
+          if (updatedResponse.ok) {
+            const data = await updatedResponse.json()
+            console.log(data)
+          } else {
+            throw new Error(
+              `Error fetching data from the service API: ${updatedResponse.statusText}`
+            )
+          }
+        }
+      } else if (!response.ok) {
+        throw new Error(
+          `Error fetching data from the service API: ${response.statusText}`
+        )
+      } else {
+        const data = await response.json()
+        console.log(data)
+      }
+    } catch (error) {
+      console.error('Error handling response:', error.message)
+    }
+  }
+
   return (
     <div>
       {user?.email ? (

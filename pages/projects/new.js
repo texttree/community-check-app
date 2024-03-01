@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import LeftArrow from 'public/left.svg'
+import { refreshAccessToken } from '@/helpers/refreshAccessToken'
+import { accessTokenManager } from '@/helpers/accessTokenManager'
 
 const NewProjectPage = () => {
   const { t } = useTranslation()
@@ -14,23 +15,54 @@ const NewProjectPage = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
 
-  const createProject = () => {
+  const createProject = async () => {
     setErrorMessage('')
     const name = projectName.trim()
+
     if (name) {
-      axios
-        .post('/api/projects', { name })
-        .then((res) => {
-          if (res.status === 200) {
-            router.push('/projects/' + res.data.id)
-          } else {
-            throw res
+      try {
+        const response = await fetch('/api/projects', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessTokenManager.getAccessToken()}`,
+          },
+          body: JSON.stringify({ name }),
+        })
+
+        if (response.status === 401) {
+          const errorData = await response.json()
+          console.error('Error fetching data from the service API:', errorData.error)
+
+          const success = await refreshAccessToken()
+
+          if (success) {
+            const updatedResponse = await fetch('/api/projects', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessTokenManager.getAccessToken()}`,
+              },
+              body: JSON.stringify({ name }),
+            })
+
+            if (updatedResponse.ok) {
+              const data = await updatedResponse.json()
+              router.push('/projects/' + data.id)
+            } else {
+              throw new Error(`Failed to create project: ${updatedResponse.statusText}`)
+            }
           }
-        })
-        .catch((error) => {
-          console.error(error)
-          setErrorMessage(error.message)
-        })
+        } else if (!response.ok) {
+          throw new Error(`Failed to create project: ${response.statusText}`)
+        } else {
+          const data = await response.json()
+          router.push('/projects/' + data.id)
+        }
+      } catch (error) {
+        console.error(error)
+        setErrorMessage(error.message)
+      }
     } else {
       setErrorMessage(t('nameEmpty'))
     }

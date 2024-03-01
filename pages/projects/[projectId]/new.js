@@ -2,8 +2,10 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import { accessTokenManager } from '@/helpers/accessTokenManager'
+import { refreshAccessToken } from '@/helpers/refreshAccessToken'
 
 import LeftArrow from 'public/left.svg'
 
@@ -14,23 +16,54 @@ const NewBookPage = () => {
   const router = useRouter()
   const { projectId } = router.query
 
-  const handleCreateBook = () => {
+  const handleCreateBook = async () => {
     setErrorMessage('')
     const name = bookName.trim()
+
     if (name) {
-      axios
-        .post(`/api/projects/${projectId}/books`, { name })
-        .then((res) => {
-          if (res) {
-            router.push(`/projects/${projectId}/${res.data.id}`)
-          } else {
-            throw res
+      try {
+        const response = await fetch(`/api/projects/${projectId}/books`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessTokenManager.getAccessToken()}`,
+          },
+          body: JSON.stringify({ name }),
+        })
+
+        if (response.status === 401) {
+          const errorData = await response.json()
+          console.error('Error fetching data from the service API:', errorData.error)
+
+          const success = await refreshAccessToken()
+
+          if (success) {
+            const updatedResponse = await fetch(`/api/projects/${projectId}/books`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessTokenManager.getAccessToken()}`,
+              },
+              body: JSON.stringify({ name }),
+            })
+
+            if (updatedResponse.ok) {
+              const data = await updatedResponse.json()
+              router.push(`/projects/${projectId}/${data.id}`)
+            } else {
+              throw new Error(`Failed to create book: ${updatedResponse.statusText}`)
+            }
           }
-        })
-        .catch((error) => {
-          console.error(error)
-          setErrorMessage(error.message)
-        })
+        } else if (!response.ok) {
+          throw new Error(`Failed to create book: ${response.statusText}`)
+        } else {
+          const data = await response.json()
+          router.push(`/projects/${projectId}/${data.id}`)
+        }
+      } catch (error) {
+        console.error(error)
+        setErrorMessage(error.message)
+      }
     } else {
       setErrorMessage(t('nameEmpty'))
     }
