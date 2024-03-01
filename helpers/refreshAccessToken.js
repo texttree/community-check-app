@@ -33,5 +33,5 @@ export const refreshAccessToken = async () => {
 }
 
 const updateAccessToken = (newAccessToken) => {
-  accessTokenManager.setAccessToken(newAccessToken)
+  accessTokenManager.accessToken = newAccessToken
 }

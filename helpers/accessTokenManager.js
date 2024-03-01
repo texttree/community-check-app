@@ -1,17 +1,14 @@
 function createAccessTokenManager() {
-  let accessToken
-
-  function setAccessToken(token) {
-    accessToken = token
-  }
-
-  function getAccessToken() {
-    return accessToken
-  }
+  let _accessToken
 
   return {
-    setAccessToken,
-    getAccessToken,
+    set accessToken(token) {
+      _accessToken = token
+    },
+
+    get accessToken() {
+      return _accessToken
+    },
   }
 }
 

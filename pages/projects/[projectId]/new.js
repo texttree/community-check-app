@@ -26,7 +26,7 @@ const NewBookPage = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessTokenManager.getAccessToken()}`,
+            Authorization: `Bearer ${accessTokenManager.accessToken}`,
           },
           body: JSON.stringify({ name }),
         })
@@ -42,7 +42,7 @@ const NewBookPage = () => {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${accessTokenManager.getAccessToken()}`,
+                Authorization: `Bearer ${accessTokenManager.accessToken}`,
               },
               body: JSON.stringify({ name }),
             })

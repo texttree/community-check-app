@@ -67,7 +67,7 @@ export default function Login() {
 
       const { accessToken, refreshToken } = await response.json()
 
-      accessTokenManager.setAccessToken(accessToken)
+      accessTokenManager.accessToken = accessToken
       setCookie('refreshTokenCookie', refreshToken, { secure: true, 'max-age': 3600 })
 
       console.log('accessToken and refreshToken recorded')
