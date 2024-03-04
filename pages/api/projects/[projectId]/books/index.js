@@ -31,18 +31,29 @@ export default async function handler(req, res) {
       }
     case 'POST': // создать новую книгу
       try {
-        const { data: book, error } = await supabase
-          .from('books')
-          .insert([
-            {
-              name,
-              project_id: projectId,
-            },
-          ])
-          .single()
-          .select('id')
-        if (error) throw error
-        return res.status(200).json(book)
+        const bookExists = await supabase.rpc('check_existing_book', {
+          project_id: projectId,
+          book_name: name,
+        })
+
+        if (bookExists.error) throw bookExists.error
+
+        if (bookExists.data) {
+          return res
+            .status(400)
+            .json({ error: 'A book with the same name already exists for this project.' })
+        }
+
+        const { data: newBook, error: createError } = await supabase.rpc('create_book', {
+          project_id: projectId,
+          book_name: name,
+        })
+
+        console.log(createError, 40)
+
+        if (createError) throw createError
+
+        return res.status(200).json(newBook)
       } catch (error) {
         return res.status(404).json({ error })
       }
