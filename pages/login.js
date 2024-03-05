@@ -51,56 +51,6 @@ export default function Login() {
     }
   }
 
-  const handleCheckToken = async (userId) => {
-    try {
-      const accessToken = getCookie('accessTokenCookie')
-
-      if (!accessToken) {
-        console.error('Access token not found')
-        return
-      }
-
-      const response = await fetch(`/api/serviceApi?user_id=${userId}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-
-      if (response.status === 401) {
-        const errorData = await response.json()
-        console.error('Error fetching data from the service API:', errorData.error)
-
-        const success = await refreshAccessToken()
-
-        if (success) {
-          const updatedResponse = await fetch(`/api/serviceApi?user_id=${userId}`, {
-            headers: {
-              Authorization: `Bearer ${getAccessToken()}`,
-            },
-          })
-
-          if (updatedResponse.ok) {
-            const data = await updatedResponse.json()
-            console.log(data)
-          } else {
-            throw new Error(
-              `Error fetching data from the service API: ${updatedResponse.statusText}`
-            )
-          }
-        }
-      } else if (!response.ok) {
-        throw new Error(
-          `Error fetching data from the service API: ${response.statusText}`
-        )
-      } else {
-        const data = await response.json()
-        console.log(data)
-      }
-    } catch (error) {
-      console.error('Error handling response:', error.message)
-    }
-  }
-
   return (
     <div>
       {user?.email ? (
