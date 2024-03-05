@@ -4,11 +4,10 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).end()
   }
-
-  const { userId, email } = req.body
+  const { user_id } = req.body
   try {
-    const { accessToken, refreshToken } = await generateAndStoreToken(userId, email)
-    res.status(200).json({ accessToken, refreshToken })
+    const accessToken = await generateAndStoreToken(user_id)
+    res.status(200).json(accessToken)
   } catch (error) {
     res.status(500).json({ error: error.message })
   }

@@ -51,31 +51,6 @@ export default function Login() {
     }
   }
 
-  const handleGenerateTokens = async (userId, email) => {
-    try {
-      const response = await fetch('/api/generate-tokens', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId, email }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to generate tokens')
-      }
-
-      const { accessToken, refreshToken } = await response.json()
-
-      accessTokenManager.accessToken = accessToken
-      setCookie('refreshTokenCookie', refreshToken, { secure: true, 'max-age': 3600 })
-
-      console.log('accessToken and refreshToken recorded')
-    } catch (error) {
-      console.error('Error generating tokens:', error.message)
-    }
-  }
-
   const handleCheckToken = async (userId) => {
     try {
       const accessToken = getCookie('accessTokenCookie')
