@@ -30,9 +30,13 @@ export default async function handler(req, res) {
       try {
         const user_id = (await supabase.auth.getUser()).data.user.id
 
-        const tokenResult = await checkTokenExistsInDatabase(req)
-        if (!tokenResult) {
-          return res.status(401).json({ error: tokenResult.error })
+        // Если это не комчек, делал проверку наличия токена
+        if (!COM_CHECK_APP) {
+          //Проверка наличия токена в БД
+          const tokenResult = await checkTokenExistsInDatabase(req)
+          if (!tokenResult) {
+            return res.status(401).json({ error: tokenResult.error })
+          }
         }
 
         const { data: project, error } = await supabase
