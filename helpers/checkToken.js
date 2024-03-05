@@ -1,60 +1,21 @@
-const jwt = require('jsonwebtoken')
+import { supabaseService } from './supabaseService'
 
-export async function processTokenWithUserId(req) {
+export async function checkTokenExistsInDatabase(req) {
   try {
-    const token = req.headers.authorization?.replace('Bearer ', '')
-    if (!token) {
+    const access_token = req.headers.authorization?.replace('Bearer ', '')
+    if (!access_token) {
       throw new Error('Unauthorized, no token')
     }
-    const userId = req.query.user_id
-    if (!userId) {
-      throw new Error('Bad Request, no user_id in query')
-    }
-
-    const jwtSecret = process.env.JWT_SECRET
-
-    jwt.verify(token, jwtSecret, (err, decoded) => {
-      if (err) {
-        throw new Error('Unauthorized: invalid token')
-      }
-
-      if (decoded.sub !== userId) {
-        throw new Error('Unauthorized: invalid user_id in token')
-      }
+    const { data, error } = await supabaseService.rpc('find_token', {
+      p_access_token: access_token,
     })
-
-    return { success: true, message: 'Access is allowed' }
-  } catch (error) {
-    console.error('Error processing token:', error.message)
-    return { success: false, error: error.message }
-  }
-}
-
-export async function processTokenWithoutUserId(req, userId) {
-  try {
-    const token = req.headers.authorization?.replace('Bearer ', '')
-    if (!token) {
-      throw new Error('Unauthorized, no token')
+    if (error) {
+      console.error('Error calling find_token RPC:', error.message)
+      return false
     }
-    if (!userId) {
-      throw new Error('Bad Request, no user_id in query')
-    }
-
-    const jwtSecret = process.env.JWT_SECRET
-
-    jwt.verify(token, jwtSecret, (err, decoded) => {
-      if (err) {
-        throw new Error('Unauthorized: invalid token')
-      }
-
-      if (decoded.sub !== userId) {
-        throw new Error('Unauthorized: invalid user_id in token')
-      }
-    })
-
-    return { success: true, message: 'Access is allowed' }
+    return data
   } catch (error) {
-    console.error('Error processing token:', error.message)
-    return { success: false, error: error.message }
+    console.error('Unexpected error:', error.message)
+    return false
   }
 }
