@@ -1,4 +1,4 @@
-import { processTokenWithoutUserId } from '@/helpers/checkToken'
+import { checkTokenExistsInDatabase } from '@/helpers/checkToken'
 import serverApi from '@/helpers/serverApi'
 
 export default async function handler(req, res) {
@@ -30,8 +30,8 @@ export default async function handler(req, res) {
       try {
         const user_id = (await supabase.auth.getUser()).data.user.id
 
-        const tokenResult = await processTokenWithoutUserId(req, user_id)
-        if (!tokenResult.success) {
+        const tokenResult = await checkTokenExistsInDatabase(req)
+        if (!tokenResult) {
           return res.status(401).json({ error: tokenResult.error })
         }
 

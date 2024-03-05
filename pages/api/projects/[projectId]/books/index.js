@@ -1,5 +1,5 @@
 import serverApi from '@/helpers/serverApi'
-import { processTokenWithoutUserId } from '@/helpers/checkToken'
+import { checkTokenExistsInDatabase } from '@/helpers/checkToken'
 
 export default async function handler(req, res) {
   let supabase
@@ -32,9 +32,7 @@ export default async function handler(req, res) {
       }
     case 'POST': // создать новую книгу
       try {
-        const user_id = (await supabase.auth.getUser()).data.user.id
-
-        const tokenResult = await processTokenWithoutUserId(req, user_id)
+        const tokenResult = await checkTokenExistsInDatabase(req)
         if (!tokenResult.success) {
           return res.status(401).json({ error: tokenResult.error })
         }
