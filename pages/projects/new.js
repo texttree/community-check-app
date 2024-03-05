@@ -18,14 +18,14 @@ const NewProjectPage = () => {
   const createProject = async () => {
     setErrorMessage('')
     const name = projectName.trim()
-
+    const tokenLocal = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzA5NjQzMTQ5fQ.KAOXtTIERj3ln-vBO2FXbhx6hSJdhqZJvxMKaX9ihmM`
     if (name) {
       try {
         const response = await fetch('/api/projects', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessTokenManager.accessToken}`,
+            Authorization: `Bearer ${tokenLocal}`,
           },
           body: JSON.stringify({ name }),
         })
@@ -33,26 +33,6 @@ const NewProjectPage = () => {
         if (response.status === 401) {
           const errorData = await response.json()
           console.error('Error fetching data from the service API:', errorData.error)
-
-          const success = await refreshAccessToken()
-
-          if (success) {
-            const updatedResponse = await fetch('/api/projects', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${accessTokenManager.accessToken}`,
-              },
-              body: JSON.stringify({ name }),
-            })
-
-            if (updatedResponse.ok) {
-              const data = await updatedResponse.json()
-              router.push('/projects/' + data.id)
-            } else {
-              throw new Error(`Failed to create project: ${updatedResponse.statusText}`)
-            }
-          }
         } else if (!response.ok) {
           throw new Error(`Failed to create project: ${response.statusText}`)
         } else {
