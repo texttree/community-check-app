@@ -16,3 +16,21 @@ BEGIN
     VALUES (p_user_id, p_access_token);
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION public.find_token(
+    p_access_token text
+)
+RETURNS BOOLEAN AS $$
+DECLARE
+    token_exists BOOLEAN;
+BEGIN
+    SELECT EXISTS(
+        SELECT 1
+        FROM public.tokens
+        WHERE access_token = p_access_token
+    ) INTO token_exists;
+
+    RETURN token_exists;
+END;
+$$ LANGUAGE plpgsql;
