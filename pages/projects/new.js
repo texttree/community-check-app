@@ -6,8 +6,6 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import LeftArrow from 'public/left.svg'
-import { refreshAccessToken } from '@/helpers/refreshAccessToken'
-import { accessTokenManager } from '@/helpers/accessTokenManager'
 
 const NewProjectPage = () => {
   const { t } = useTranslation()
@@ -18,7 +16,8 @@ const NewProjectPage = () => {
   const createProject = async () => {
     setErrorMessage('')
     const name = projectName.trim()
-    const tokenLocal = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzA5NjQzMTQ5fQ.KAOXtTIERj3ln-vBO2FXbhx6hSJdhqZJvxMKaX9ihmM`
+    const tokenLocal = `1eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzA5NjQzMTQ5fQ.KAOXtTIERj3ln-vBO2FXbhx6hSJdhqZJvxMKaX9ihmM`
+
     if (name) {
       try {
         const response = await fetch('/api/projects', {

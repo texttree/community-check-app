@@ -4,9 +4,6 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { accessTokenManager } from '@/helpers/accessTokenManager'
-import { refreshAccessToken } from '@/helpers/refreshAccessToken'
-
 import LeftArrow from 'public/left.svg'
 
 const NewBookPage = () => {
@@ -19,14 +16,14 @@ const NewBookPage = () => {
   const handleCreateBook = async () => {
     setErrorMessage('')
     const name = bookName.trim()
-
+    const tokenLocal = `1eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzA5NjQzMTQ5fQ.KAOXtTIERj3ln-vBO2FXbhx6hSJdhqZJvxMKaX9ihmM`
     if (name) {
       try {
         const response = await fetch(`/api/projects/${projectId}/books`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessTokenManager.accessToken}`,
+            Authorization: `Bearer ${tokenLocal}`,
           },
           body: JSON.stringify({ name }),
         })
@@ -34,26 +31,6 @@ const NewBookPage = () => {
         if (response.status === 401) {
           const errorData = await response.json()
           console.error('Error fetching data from the service API:', errorData.error)
-
-          const success = await refreshAccessToken()
-
-          if (success) {
-            const updatedResponse = await fetch(`/api/projects/${projectId}/books`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${accessTokenManager.accessToken}`,
-              },
-              body: JSON.stringify({ name }),
-            })
-
-            if (updatedResponse.ok) {
-              const data = await updatedResponse.json()
-              router.push(`/projects/${projectId}/${data.id}`)
-            } else {
-              throw new Error(`Failed to create book: ${updatedResponse.statusText}`)
-            }
-          }
         } else if (!response.ok) {
           throw new Error(`Failed to create book: ${response.statusText}`)
         } else {
