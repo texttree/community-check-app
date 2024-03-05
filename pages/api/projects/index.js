@@ -1,4 +1,4 @@
-import { checkTokenExistsInDatabase } from '@/helpers/checkToken'
+import { checkComCheckAppMiddleware } from '@/helpers/checkComCheckAppMiddleware '
 import serverApi from '@/helpers/serverApi'
 
 export default async function handler(req, res) {
@@ -14,49 +14,33 @@ export default async function handler(req, res) {
     method,
   } = req
 
-  switch (method) {
-    case 'GET': // получить список проектов
-      try {
+  try {
+    switch (method) {
+      case 'GET': // получить список проектов
         const { data, error } = await supabase.from('projects').select('*')
         if (error) {
           throw error
         }
         return res.status(200).json(data)
-      } catch (error) {
-        return res.status(404).json({ error })
-      }
 
-    case 'POST': // создать новый проект
-      try {
-        const user_id = (await supabase.auth.getUser()).data.user.id
+      case 'POST': // создать новый проект
+        await checkComCheckAppMiddleware(req, res, async () => {
+          const user_id = (await supabase.auth.getUser()).data.user.id
+          const { data: project, error } = await supabase
+            .from('projects')
+            .insert([{ name, user_id }])
+            .single()
+            .select('id')
+          if (error) throw error
+          return res.status(200).json(project)
+        })
+        break
 
-        // Если это не комчек, делал проверку наличия токена
-        if (!COM_CHECK_APP) {
-          //Проверка наличия токена в БД
-          const tokenResult = await checkTokenExistsInDatabase(req)
-          if (!tokenResult) {
-            return res.status(401).json({ error: tokenResult.error })
-          }
-        }
-
-        const { data: project, error } = await supabase
-          .from('projects')
-          .insert([
-            {
-              name,
-              user_id,
-            },
-          ])
-          .single()
-          .select('id')
-        if (error) throw error
-        return res.status(200).json(project)
-      } catch (error) {
-        return res.status(404).json({ error })
-      }
-
-    default:
-      res.setHeader('Allow', ['POST', 'GET'])
-      return res.status(405).end(`Method ${method} Not Allowed`)
+      default:
+        res.setHeader('Allow', ['POST', 'GET'])
+        return res.status(405).end(`Method ${method} Not Allowed`)
+    }
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' })
   }
 }
