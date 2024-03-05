@@ -3,6 +3,8 @@ import { useState } from 'react'
 
 const TokenGeneration = () => {
   const [accessToken, setAccessToken] = useState('')
+  const [isTokenGenerated, setIsTokenGenerated] = useState(false)
+  const [errorText, setErrorText] = useState('')
   const supabase = useSupabaseClient()
 
   const handleGenerateToken = async () => {
@@ -16,6 +18,7 @@ const TokenGeneration = () => {
         },
         body: JSON.stringify({ user_id: userId }),
       })
+
       if (!response.ok) {
         throw new Error('Failed to generate tokens')
       }
@@ -23,8 +26,12 @@ const TokenGeneration = () => {
       const accessTokenNew = await response.json()
 
       setAccessToken(accessTokenNew)
+      setIsTokenGenerated(true)
+      setErrorText('')
     } catch (error) {
       console.error('Error generating tokens:', error.message)
+      setIsTokenGenerated(false)
+      setErrorText('Failed to generate tokens')
     }
   }
 
@@ -45,6 +52,10 @@ const TokenGeneration = () => {
         >
           Generate Token
         </button>
+        {isTokenGenerated && (
+          <p className="text-green-500">Token generated successfully!</p>
+        )}
+        {errorText && <p className="text-red-500">{errorText}</p>}{' '}
       </div>
       <div>
         {accessToken && (
