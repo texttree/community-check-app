@@ -1,5 +1,5 @@
 import serverApi from '@/helpers/serverApi'
-import { checkComCheckAppMiddleware } from '@/helpers/checkComCheckAppMiddleware '
+import { checkComCheckAppMiddleware } from '@/middleware'
 
 export default async function handler(req, res) {
   let supabase
