@@ -4,8 +4,6 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { getCookie, setCookie } from '@/helpers/cookiesHelper'
-import { accessTokenManager } from '@/helpers/accessTokenManager'
 
 export default function Login() {
   const { t } = useTranslation()
@@ -36,13 +34,6 @@ export default function Login() {
       if (error) {
         throw error
       }
-
-      const userId = (await supabase.auth.getUser()).data.user.id
-
-      // Вызываем функцию для генерации и сохранения токена
-      await handleGenerateTokens(userId, email)
-
-      // await handleCheckToken(userId)
 
       setError(false)
       router.push(router.query?.redirectedFrom ?? '/projects')
