@@ -37,7 +37,7 @@ export const checkComCheckAppMiddleware = async (req, res, next) => {
       const tokenResult = await checkTokenExistsInDatabase(req)
       console.log('API GOOD')
 
-      if (!tokenResult) {
+      if (!tokenResult.success) {
         return res.status(401).json({ error: 'Unauthorized' })
       }
     }
