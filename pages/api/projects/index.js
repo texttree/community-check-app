@@ -25,14 +25,14 @@ export default async function handler(req, res) {
 
       case 'POST': // создать новый проект
         await checkComCheckAppMiddleware(req, res, async () => {
-          const user_id = (await supabase.auth.getUser()).data.user.id
-          const { data: project, error } = await supabase
-            .from('projects')
-            .insert([{ name, user_id }])
-            .single()
-            .select('id')
-          if (error) throw error
-          return res.status(200).json(project)
+          const { data: projectId, error } = await supabase.rpc('create_project', {
+            p_name: name,
+          })
+
+          if (error) {
+            throw error
+          }
+          return res.status(200).json(projectId)
         })
         break
 

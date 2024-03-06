@@ -36,7 +36,7 @@ const NewProjectPage = () => {
           throw new Error(`Failed to create project: ${response.statusText}`)
         } else {
           const data = await response.json()
-          router.push('/projects/' + data.id)
+          router.push('/projects/' + data)
         }
       } catch (error) {
         console.error(error)
