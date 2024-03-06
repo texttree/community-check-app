@@ -1,6 +1,6 @@
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from 'next/server'
-import { checkTokenExistsInDatabase } from './checkToken'
+import { checkTokenExistsInDatabase } from './helpers/checkToken'
 
 const COM_CHECK_APP = process.env.COM_CHECK_APP
 

@@ -1,11 +1,14 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const TokenGeneration = () => {
   const [accessToken, setAccessToken] = useState('')
   const [isTokenGenerated, setIsTokenGenerated] = useState(false)
   const [errorText, setErrorText] = useState('')
   const supabase = useSupabaseClient()
+  const { t } = useTranslation()
 
   const handleGenerateToken = async () => {
     try {
@@ -55,7 +58,7 @@ const TokenGeneration = () => {
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 inline-block rounded-md"
           onClick={handleGenerateToken}
         >
-          Generate Token
+          {t('generateToken')}
         </button>
         {isTokenGenerated && (
           <p className="text-green-500">Token generated successfully!</p>
@@ -75,7 +78,7 @@ const TokenGeneration = () => {
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 ml-2 rounded-md"
               onClick={handleCopyToken}
             >
-              Copy Token
+              {t('copyToken')}
             </button>
           </div>
         )}
@@ -83,5 +86,11 @@ const TokenGeneration = () => {
     </div>
   )
 }
-
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
+}
 export default TokenGeneration
