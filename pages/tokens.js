@@ -9,14 +9,11 @@ const TokenGeneration = () => {
 
   const handleGenerateToken = async () => {
     try {
-      const userId = (await supabase.auth.getUser()).data.user.id
-
       const response = await fetch('/api/generate-token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user_id: userId }),
       })
 
       if (!response.ok) {
@@ -25,13 +22,21 @@ const TokenGeneration = () => {
 
       const accessTokenNew = await response.json()
 
+      const { error } = await supabase.rpc('add_token', {
+        p_access_token: accessTokenNew,
+      })
+
+      if (error) {
+        throw new Error(`Failed to store token in the database: ${error.message}`)
+      }
+
       setAccessToken(accessTokenNew)
       setIsTokenGenerated(true)
       setErrorText('')
     } catch (error) {
-      console.error('Error generating tokens:', error.message)
+      console.error('Error generating or storing tokens:', error.message)
       setIsTokenGenerated(false)
-      setErrorText('Failed to generate tokens')
+      setErrorText('Failed to generate or store tokens')
     }
   }
 
