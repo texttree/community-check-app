@@ -29,7 +29,7 @@ export default async function handler(req, res) {
         return res.status(200).json(data)
 
       case 'POST': // создать новую книгу
-        await checkComCheckAppMiddleware(req, res, async () => {
+        await checkComCheckAppMiddleware(supabase, req, res, async () => {
           const { data: book, error } = await supabase
             .from('books')
             .insert([

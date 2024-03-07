@@ -1,14 +1,12 @@
-import { supabaseService } from './supabaseService'
-
-export async function checkTokenExistsInDatabase(req) {
+export async function checkTokenExistsInDatabase(supabase, req) {
   try {
     const access_token = req.headers.authorization?.replace('Bearer ', '')
     if (!access_token) {
       return { success: false, statusCode: 401, errorMessage: 'Unauthorized, no token' }
     }
-    const { data, error } = await supabaseService.rpc('find_token', {
-      p_access_token: access_token,
-    })
+
+    const { data, error } = await supabase.rpc('find_token', { token_id: access_token })
+
     if (error) {
       console.error('Error calling find_token RPC:', error.message)
       return {

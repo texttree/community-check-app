@@ -31,10 +31,10 @@ export const config = {
   matcher: '/projects/:path*',
 }
 
-export const checkComCheckAppMiddleware = async (req, res, next) => {
+export const checkComCheckAppMiddleware = async (supabase, req, res, next) => {
   try {
     if (!COM_CHECK_APP) {
-      const tokenResult = await checkTokenExistsInDatabase(req)
+      const tokenResult = await checkTokenExistsInDatabase(supabase, req)
       console.log('API GOOD')
 
       if (!tokenResult.success) {
@@ -44,6 +44,7 @@ export const checkComCheckAppMiddleware = async (req, res, next) => {
     console.log('GOOD')
     next()
   } catch (error) {
+    console.error('Error in checkComCheckAppMiddleware:', error)
     return res.status(500).json({ error: 'Internal Server Error' })
   }
 }
