@@ -17,7 +17,8 @@ export default async function handler(req, res) {
   try {
     switch (method) {
       case 'GET': // получить список проектов
-        const { data, error } = await supabase.from('projects').select('*')
+        const { data, error } = await supabase.rpc('get_user_project_info')
+
         if (error) {
           throw error
         }

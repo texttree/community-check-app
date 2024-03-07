@@ -92,3 +92,22 @@ CREATE POLICY checks_security_policy
 ALTER TABLE public.projects FORCE ROW LEVEL SECURITY;
 ALTER TABLE public.books FORCE ROW LEVEL SECURITY;
 ALTER TABLE public.checks FORCE ROW LEVEL SECURITY;
+
+
+CREATE OR REPLACE FUNCTION get_user_project_info()
+RETURNS TABLE (
+    project_id bigint,
+    project_name text
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        id AS project_id,
+        name AS project_name
+    FROM
+        public.projects
+    WHERE
+        user_id = auth.uid() AND
+        deleted_at IS NULL;
+END;
+$$ LANGUAGE plpgsql;
