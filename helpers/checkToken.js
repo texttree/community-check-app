@@ -4,7 +4,6 @@ export async function checkTokenExistsInDatabase(req) {
   try {
     const access_token = req.headers.authorization?.replace('Bearer ', '')
     if (!access_token) {
-      // Возвращаем 401 Unauthorized, так как токен отсутствует
       return { success: false, statusCode: 401, errorMessage: 'Unauthorized, no token' }
     }
     const { data, error } = await supabaseService.rpc('find_token', {

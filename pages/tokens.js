@@ -12,28 +12,13 @@ const TokenGeneration = () => {
 
   const handleGenerateToken = async () => {
     try {
-      const response = await fetch('/api/generate-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to generate tokens')
-      }
-
-      const accessTokenNew = await response.json()
-
-      const { error } = await supabase.rpc('add_token', {
-        p_access_token: accessTokenNew,
-      })
+      const { data, error } = await supabase.rpc('add_token')
 
       if (error) {
         throw new Error(`Failed to store token in the database: ${error.message}`)
       }
 
-      setAccessToken(accessTokenNew)
+      setAccessToken(data)
       setIsTokenGenerated(true)
       setErrorText('')
     } catch (error) {
