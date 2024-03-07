@@ -16,7 +16,7 @@ const NewBookPage = () => {
   const handleCreateBook = async () => {
     setErrorMessage('')
     const name = bookName.trim()
-    const tokenLocal = `1eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzA5NjQzMTQ5fQ.KAOXtTIERj3ln-vBO2FXbhx6hSJdhqZJvxMKaX9ihmM`
+    const tokenLocal = `1ff3d074-a3da-40f1-857e-6ef7e0985c0c`
     if (name) {
       try {
         const response = await fetch(`/api/projects/${projectId}/books`, {
