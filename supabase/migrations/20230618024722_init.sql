@@ -217,7 +217,7 @@ create table if not exists public.users (
 alter table public.users
   enable row level security;
 
-create   "users.select.authorized" on public.users
+create policy "users.select.authorized" on public.users
   for select to authenticated using (authorized());
 
 create policy "users.update.admin_only" on public.users
