@@ -54,3 +54,41 @@ BEGIN
     RETURN project_id;
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION public.create_check(
+    p_name text,
+    p_book_id bigint
+)
+RETURNS uuid AS $$
+DECLARE
+    v_check_id uuid;
+BEGIN
+    INSERT INTO public.checks (name, book_id)
+    VALUES (p_name, p_book_id)
+    RETURNING id INTO v_check_id;
+
+    RETURN v_check_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.books ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.checks ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY projects_security_policy
+  ON public.projects
+  USING (user_id = auth.uid());
+
+CREATE POLICY books_security_policy
+  ON public.books
+  USING (project_id IN (SELECT id FROM public.projects WHERE user_id = auth.uid()));
+
+CREATE POLICY checks_security_policy
+  ON public.checks
+  USING (book_id IN (SELECT id FROM public.books WHERE project_id IN (SELECT id FROM public.projects WHERE user_id = auth.uid())));
+
+ALTER TABLE public.projects FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.books FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.checks FORCE ROW LEVEL SECURITY;
