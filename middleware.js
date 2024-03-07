@@ -2,7 +2,7 @@ import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from 'next/server'
 import { checkTokenExistsInDatabase } from './helpers/checkToken'
 
-const COM_CHECK_APP = process.env.COM_CHECK_APP
+const COM_CHECK_APP = true
 
 export async function middleware(req) {
   // We need to create a response and hand it to the supabase client to be able to modify the response headers.
@@ -35,13 +35,11 @@ export const checkComCheckAppMiddleware = async (supabase, req, res, next) => {
   try {
     if (!COM_CHECK_APP) {
       const tokenResult = await checkTokenExistsInDatabase(supabase, req)
-      console.log('API GOOD')
 
       if (!tokenResult.success) {
         return res.status(401).json({ error: 'Unauthorized' })
       }
     }
-    console.log('GOOD')
     next()
   } catch (error) {
     console.error('Error in checkComCheckAppMiddleware:', error)
