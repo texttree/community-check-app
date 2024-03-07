@@ -31,7 +31,7 @@ BEGIN
     SELECT EXISTS(
         SELECT 1
         FROM public.tokens
-        WHERE id = token_id
+        WHERE id = token_id AND user_id = auth.uid()
     ) INTO token_exists;
 
     RETURN token_exists;
