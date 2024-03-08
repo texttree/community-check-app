@@ -15,24 +15,6 @@ create or replace function public.admin_only()
   end;
 $$;
 
-
-create or replace function public.authorized()
-  returns boolean
-  language plpgsql security definer as $$
-  declare
-    access int;
-  begin
-    select
-      count(id) into access
-    from
-      public.users
-    where
-      users.id = auth.uid()  and users.is_blocked is not true;
-    return access > 0;
-  end;
-$$;
-
-
 create or replace function public.admin_or_user(check_id uuid)
   returns boolean
   language plpgsql security definer as $$
@@ -217,8 +199,8 @@ create table if not exists public.users (
 alter table public.users
   enable row level security;
 
-create policy "users.select.authorized" on public.users
-  for select to authenticated using (authorized());
+create policy "users.select.admin_only" on public.users
+  for select to authenticated using (admin_only());
 
 create policy "users.update.admin_only" on public.users
   for update to authenticated using (admin_only());
