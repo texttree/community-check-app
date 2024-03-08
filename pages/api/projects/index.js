@@ -1,4 +1,5 @@
 import serverApi from '@/helpers/serverApi'
+import { checkComCheckAppMiddleware } from '@/middleware'
 
 export default async function handler(req, res) {
   let supabase
@@ -13,39 +14,34 @@ export default async function handler(req, res) {
     method,
   } = req
 
-  switch (method) {
-    case 'GET': // получить список проектов
-      try {
-        const { data, error } = await supabase.from('projects').select('*')
+  try {
+    switch (method) {
+      case 'GET': // получить список проектов
+        const { data, error } = await supabase.rpc('get_user_project_info')
+
         if (error) {
           throw error
         }
         return res.status(200).json(data)
-      } catch (error) {
-        return res.status(404).json({ error })
-      }
 
-    case 'POST': // создать новый проект
-      try {
-        const user_id = (await supabase.auth.getUser()).data.user.id
-        const { data: project, error } = await supabase
-          .from('projects')
-          .insert([
-            {
-              name,
-              user_id,
-            },
-          ])
-          .single()
-          .select('id')
-        if (error) throw error
-        return res.status(200).json(project)
-      } catch (error) {
-        return res.status(404).json({ error })
-      }
+      case 'POST': // создать новый проект
+        await checkComCheckAppMiddleware(supabase, req, res, async () => {
+          const { data: projectId, error } = await supabase.rpc('create_project', {
+            p_name: name,
+          })
 
-    default:
-      res.setHeader('Allow', ['POST', 'GET'])
-      return res.status(405).end(`Method ${method} Not Allowed`)
+          if (error) {
+            throw error
+          }
+          return res.status(200).json(projectId)
+        })
+        break
+
+      default:
+        res.setHeader('Allow', ['POST', 'GET'])
+        return res.status(405).end(`Method ${method} Not Allowed`)
+    }
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' })
   }
 }

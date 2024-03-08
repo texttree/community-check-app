@@ -13,6 +13,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [error, setError] = useState(false)
   const [password, setPassword] = useState('')
+
   const handleLogout = async () => {
     try {
       const { error } = await supabase.auth.signOut()
@@ -29,13 +30,18 @@ export default function Login() {
         email,
         password,
       })
-      if (error) throw error
+
+      if (error) {
+        throw error
+      }
+
       setError(false)
       router.push(router.query?.redirectedFrom ?? '/projects')
     } catch (error) {
       setError(error.message)
     }
   }
+
   return (
     <div>
       {user?.email ? (

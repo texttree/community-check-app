@@ -31,12 +31,10 @@ export default async function handler(req, res) {
       }
     case 'POST': // создать новую проверку
       try {
-        const { data: check, error } = await supabase.from('checks').insert([
-          {
-            name,
-            book_id: parseInt(bookId),
-          },
-        ])
+        const { data: check, error } = await supabase.rpc('create_check', {
+          p_name: name,
+          p_book_id: parseInt(bookId),
+        })
         if (error) throw error
         return res.status(200).json(check)
       } catch (error) {

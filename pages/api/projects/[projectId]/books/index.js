@@ -1,4 +1,5 @@
 import serverApi from '@/helpers/serverApi'
+import { checkComCheckAppMiddleware } from '@/middleware'
 
 export default async function handler(req, res) {
   let supabase
@@ -14,9 +15,9 @@ export default async function handler(req, res) {
     method,
   } = req
 
-  switch (method) {
-    case 'GET': // получить книги
-      try {
+  try {
+    switch (method) {
+      case 'GET': // получить книги
         const { data, error } = await supabase
           .from('books')
           .select()
@@ -26,28 +27,28 @@ export default async function handler(req, res) {
           throw error
         }
         return res.status(200).json(data)
-      } catch (error) {
-        return res.status(404).json({ error })
-      }
-    case 'POST': // создать новую книгу
-      try {
-        const { data: book, error } = await supabase
-          .from('books')
-          .insert([
-            {
-              name,
-              project_id: projectId,
-            },
-          ])
-          .single()
-          .select('id')
-        if (error) throw error
-        return res.status(200).json(book)
-      } catch (error) {
-        return res.status(404).json({ error })
-      }
-    default:
-      res.setHeader('Allow', ['GET', 'POST'])
-      return res.status(405).end(`Method ${method} Not Allowed`)
+
+      case 'POST': // создать новую книгу
+        await checkComCheckAppMiddleware(supabase, req, res, async () => {
+          const { data: book, error } = await supabase
+            .from('books')
+            .insert([
+              {
+                name,
+                project_id: projectId,
+              },
+            ])
+            .single()
+            .select('id')
+          if (error) throw error
+          return res.status(200).json(book)
+        })
+        break
+      default:
+        res.setHeader('Allow', ['GET', 'POST'])
+        return res.status(405).end(`Method ${method} Not Allowed`)
+    }
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' })
   }
 }

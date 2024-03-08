@@ -22,20 +22,19 @@ const BookDetailsPage = () => {
   )
 
   const handleCreateCheck = () => {
-    const name = t('nameCheck')
+    const currentDate = new Date()
+    const formattedDate = currentDate.toISOString() // Используем toISOString для получения строкового представления даты
+
+    const name = `${t('newCheck')} - ${formattedDate}`
+
     axios
       .post(`/api/projects/${projectId}/books/${bookId}/checks`, { name })
       .then((res) => {
         if (res.status === 200) {
-          router.push(`/projects/${projectId}/${bookId}`)
-          // пока это не работает. Нужно узнать ID созданной проверки и перейте на страницу ее редактирования
+          const checkId = res.data
+          router.push(`/projects/${projectId}/${bookId}/${checkId}`)
         }
       })
-      .then(
-        toast.success(t('messageAboutNewCheck'), {
-          duration: 20000,
-        })
-      )
       .catch((error) => {
         console.error(error)
       })

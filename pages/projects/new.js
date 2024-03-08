@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -14,23 +13,35 @@ const NewProjectPage = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
 
-  const createProject = () => {
+  const createProject = async () => {
     setErrorMessage('')
     const name = projectName.trim()
+    const tokenLocal = `1ff3d074-a3da-40f1-857e-6ef7e0985c0c`
+
     if (name) {
-      axios
-        .post('/api/projects', { name })
-        .then((res) => {
-          if (res.status === 200) {
-            router.push('/projects/' + res.data.id)
-          } else {
-            throw res
-          }
+      try {
+        const response = await fetch('/api/projects', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${tokenLocal}`,
+          },
+          body: JSON.stringify({ name }),
         })
-        .catch((error) => {
-          console.error(error)
-          setErrorMessage(error.message)
-        })
+
+        if (response.status === 401) {
+          const errorData = await response.json()
+          console.error('Error fetching data from the service API:', errorData.error)
+        } else if (!response.ok) {
+          throw new Error(`Failed to create project: ${response.statusText}`)
+        } else {
+          const data = await response.json()
+          router.push('/projects/' + data)
+        }
+      } catch (error) {
+        console.error(error)
+        setErrorMessage(error.message)
+      }
     } else {
       setErrorMessage(t('nameEmpty'))
     }
