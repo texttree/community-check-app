@@ -27,10 +27,7 @@ export default async function handler(req, res) {
 
     case 'POST': // создать новый проект
       try {
-        const user_id = (await supabase.auth.getUser()).data.user.id
-
         const projectExists = await supabase.rpc('check_existing_project', {
-          user_id,
           project_name: name,
         })
 
@@ -44,7 +41,7 @@ export default async function handler(req, res) {
 
         const { data: newProject, error: createError } = await supabase.rpc(
           'create_project',
-          { user_id, project_name: name }
+          { project_name: name }
         )
         if (createError) throw createError
 
