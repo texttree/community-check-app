@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import LeftArrow from 'public/left.svg'
@@ -14,23 +13,35 @@ const NewBookPage = () => {
   const router = useRouter()
   const { projectId } = router.query
 
-  const handleCreateBook = () => {
+  const handleCreateBook = async () => {
     setErrorMessage('')
     const name = bookName.trim()
+    const tokenLocal = `1ff3d074-a3da-40f1-857e-6ef7e0985c0c`
     if (name) {
-      axios
-        .post(`/api/projects/${projectId}/books`, { name })
-        .then((res) => {
-          if (res) {
-            router.push(`/projects/${projectId}/${res.data.book_id}`)
-          } else {
-            throw res
-          }
+
+      try {
+        const response = await fetch(`/api/projects/${projectId}/books`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${tokenLocal}`,
+          },
+          body: JSON.stringify({ name }),
         })
-        .catch((error) => {
-          console.error(error)
-          setErrorMessage(error.response.data.error)
-        })
+
+        if (response.status === 401) {
+          const errorData = await response.json()
+          console.error('Error fetching data from the service API:', errorData.error)
+        } else if (!response.ok) {
+          throw new Error(`Failed to create book: ${response.statusText}`)
+        } else {
+          const data = await response.json()
+          router.push(`/projects/${projectId}/${res.data.book_id}`)
+        }
+      } catch (error) {
+        console.error(error)
+        setErrorMessage(error.message)
+      }
     } else {
       setErrorMessage(t('nameEmpty'))
     }

@@ -21,11 +21,14 @@ const CheckId = () => {
   const [materialLink, setMaterialLink] = useState('')
   const [checkName, setCheckName] = useState('')
   const checkPageRef = useRef(null)
+  const [showRef, setShowRef] = useState(false)
 
   const { data: material, error } = useSWR(
     projectId &&
+      materialLink &&
       bookId &&
       checkId &&
+      materialLink &&
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
     fetcher
   )
@@ -68,6 +71,7 @@ const CheckId = () => {
             upsertMaterial(jsonData)
               .then(() => {
                 updateCheck()
+                setShowRef(true)
                 toast.success(t('save'))
               })
               .catch((error) => {
@@ -150,13 +154,18 @@ const CheckId = () => {
             className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
           />
         </div>
-        <div className="flex my-4">
-          <Link href={`/checks/${checkId}`} ref={checkPageRef}>
-            https://community-check-app.netlify.app/checks/{checkId}
-          </Link>
+        {materialLink !== '' && !showRef && (
+          <p className="text-gray-700">{t('saveToShowLink')}</p>
+        )}
+        {materialLink !== '' && showRef && (
+          <div className="flex my-4">
+            <Link href={`/checks/${checkId}`} ref={checkPageRef}>
+              https://community-check-app.netlify.app/checks/{checkId}
+            </Link>
+            <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
+          </div>
+        )}
 
-          <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
-        </div>
         {errorMessage && <p className="text-red-600">{errorMessage}</p>}
 
         <button

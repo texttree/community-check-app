@@ -1,4 +1,5 @@
 import serverApi from '@/helpers/serverApi'
+import { checkComCheckAppMiddleware } from '@/middleware'
 
 export default async function handler(req, res) {
   let supabase
@@ -14,9 +15,9 @@ export default async function handler(req, res) {
     method,
   } = req
 
-  switch (method) {
-    case 'GET': // получить книги
-      try {
+  try {
+    switch (method) {
+      case 'GET': // получить книги
         const { data, error } = await supabase
           .from('books')
           .select()
@@ -26,12 +27,11 @@ export default async function handler(req, res) {
           throw error
         }
         return res.status(200).json(data)
-      } catch (error) {
-        return res.status(404).json({ error })
-      }
-    case 'POST': // создать новую книгу
-      try {
-        const bookExists = await supabase.rpc('check_existing_book', {
+
+      case 'POST': // создать новую книгу
+        await checkComCheckAppMiddleware(supabase, req, res, async () => {
+     
+         const bookExists = await supabase.rpc('check_existing_book', {
           project_id: projectId,
           book_name: name,
         })
@@ -52,11 +52,13 @@ export default async function handler(req, res) {
         if (createError) throw createError
 
         return res.status(200).json(newBook)
-      } catch (error) {
-        return res.status(404).json({ error })
-      }
-    default:
-      res.setHeader('Allow', ['GET', 'POST'])
-      return res.status(405).end(`Method ${method} Not Allowed`)
+        })
+        break
+      default:
+        res.setHeader('Allow', ['GET', 'POST'])
+        return res.status(405).end(`Method ${method} Not Allowed`)
+    }
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' })
   }
 }
