@@ -22,7 +22,7 @@ const NewBookPage = () => {
         .post(`/api/projects/${projectId}/books`, { name })
         .then((res) => {
           if (res) {
-            router.push(`/projects/${projectId}/${res.data.id}`)
+            router.push(`/projects/${projectId}/${res.data.book_id}`)
           } else {
             throw res
           }
