@@ -14,26 +14,6 @@ RETURNS BOOLEAN AS $$
 $$ LANGUAGE plpgsql;
 
 
-
-
-CREATE OR REPLACE FUNCTION create_project(project_name TEXT)
-RETURNS JSONB AS $$
-  DECLARE
-    project_id BIGINT;
-    result JSONB;
-  BEGIN
-    INSERT INTO projects (user_id, name)
-    VALUES (auth.uid(), project_name)
-    RETURNING id INTO project_id;
-
-    result := jsonb_build_object('id', project_id);
-
-    RETURN result;
-  END;
-$$ LANGUAGE plpgsql;
-
-
-
 CREATE OR REPLACE FUNCTION check_existing_book(project_id BIGINT, book_name TEXT)
 RETURNS BOOLEAN AS $$
 DECLARE

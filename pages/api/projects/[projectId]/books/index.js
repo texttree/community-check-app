@@ -14,7 +14,6 @@ export default async function handler(req, res) {
     body: { name },
     method,
   } = req
-
   try {
     switch (method) {
       case 'GET': // получить книги
@@ -30,28 +29,30 @@ export default async function handler(req, res) {
 
       case 'POST': // создать новую книгу
         await checkComCheckAppMiddleware(supabase, req, res, async () => {
-     
-         const bookExists = await supabase.rpc('check_existing_book', {
-          project_id: projectId,
-          book_name: name,
-        })
+          const bookExists = await supabase.rpc('check_existing_book', {
+            project_id: projectId,
+            book_name: name,
+          })
 
-        if (bookExists.error) throw bookExists.error
+          if (bookExists.error) throw bookExists.error
 
-        if (bookExists.data) {
-          return res
-            .status(400)
-            .json({ error: 'A book with the same name already exists for this project.' })
-        }
+          if (bookExists.data) {
+            return res.status(400).json({
+              error: 'A book with the same name already exists for this project.',
+            })
+          }
 
-        const { data: newBook, error: createError } = await supabase.rpc('create_book', {
-          project_id: projectId,
-          book_name: name,
-        })
+          const { data: newBook, error: createError } = await supabase.rpc(
+            'create_book',
+            {
+              project_id: projectId,
+              book_name: name,
+            }
+          )
+          console.log(newBook)
+          if (createError) throw createError
 
-        if (createError) throw createError
-
-        return res.status(200).json(newBook)
+          return res.status(200).json(newBook)
         })
         break
       default:

@@ -17,14 +17,14 @@ $$;
 
 
 CREATE OR REPLACE FUNCTION public.create_project(
-    p_name text
+    project_name text
 )
 RETURNS bigint AS $$
 DECLARE
     project_id bigint;
 BEGIN
     INSERT INTO public.projects (name, user_id)
-    VALUES (p_name, auth.uid())
+    VALUES (project_name, auth.uid())
     RETURNING id INTO project_id;
 
     RETURN project_id;
