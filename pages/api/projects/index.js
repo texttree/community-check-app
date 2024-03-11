@@ -34,7 +34,6 @@ export default async function handler(req, res) {
           project_name: name,
         })
 
-        console.log(projectExists, 38)
         if (projectExists.error) throw projectExists.error
 
         if (projectExists.data) {
