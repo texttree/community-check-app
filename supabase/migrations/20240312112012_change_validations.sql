@@ -60,3 +60,16 @@ BEGIN
     RETURN result;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+
+CREATE OR REPLACE FUNCTION get_project_by_id(project_id bigint)
+RETURNS json
+AS $$
+BEGIN
+  RETURN (
+    SELECT row_to_json(projects) FROM projects WHERE id = project_id
+  );
+END;
+$$ LANGUAGE plpgsql;

@@ -14,39 +14,39 @@ export default async function handler(req, res) {
     method,
   } = req
 
-  switch (method) {
-    case 'GET': // получить проект
-      try {
-        const { data, error } = await supabase
-          .from('projects')
-          .select('*')
-          .eq('id', projectId)
-          .single()
+  try {
+    switch (method) {
+      case 'GET': // получить проект
+        const { data, error } = await supabase.rpc('get_project_by_id', {
+          project_id: projectId,
+        })
+
         if (error) {
           throw error
         }
+
         return res.status(200).json(data)
-      } catch (error) {
-        return res.status(404).json({ error })
-      }
 
-    case 'POST': // обновить проект
-      try {
-        const { data: project, error } = await supabase
-          .from('projects')
-          .update({
-            name,
-          })
-          .eq('id', projectId)
-          .select()
-        if (error) throw error
+      case 'POST': // обновить проект
+        const { data: project, error: updateError } = await supabase.rpc(
+          'update_project_name',
+          {
+            project_id: projectId,
+            new_name: name,
+          }
+        )
+
+        if (updateError) {
+          return res.status(400).json({ error: updateError.message })
+        }
+
         return res.status(200).json(project)
-      } catch (error) {
-        return res.status(404).json({ error })
-      }
 
-    default:
-      res.setHeader('Allow', ['POST', 'GET'])
-      return res.status(405).end(`Method ${method} Not Allowed`)
+      default:
+        res.setHeader('Allow', ['POST', 'GET'])
+        return res.status(405).end(`Method ${method} Not Allowed`)
+    }
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' })
   }
 }
