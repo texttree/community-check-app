@@ -73,3 +73,97 @@ BEGIN
   );
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION update_project_name(project_id bigint, new_name text)
+RETURNS json
+AS $$
+DECLARE
+  project_exists boolean;
+  result_json json;
+BEGIN
+  SELECT EXISTS(
+    SELECT 1 FROM projects WHERE name = new_name AND id != project_id
+  ) INTO project_exists;
+
+  IF NOT project_exists THEN
+    UPDATE projects SET name = new_name WHERE id = project_id;
+    SELECT row_to_json(r) INTO result_json FROM (SELECT * FROM projects WHERE id = project_id) r;
+    RETURN result_json;
+  ELSE
+    RETURN '{"result":null}'::json;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION get_books_by_project(p_project_id bigint)
+RETURNS TABLE (
+    book_id bigint,
+    book_name text,
+    book_deleted_at timestamp with time zone
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        id as book_id,
+        name as book_name,
+        deleted_at
+    FROM
+        public.books
+    WHERE
+        project_id = p_project_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION get_book_by_id(book_id bigint)
+RETURNS TABLE (
+    book_name text,
+    book_project_id bigint,
+    book_deleted_at timestamp with time zone
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        name as book_name,
+        project_id,
+        deleted_at
+    FROM
+        public.books
+    WHERE
+        id = get_book_by_id.book_id;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION update_book_name(book_id bigint, new_name text)
+RETURNS json
+AS $$
+DECLARE
+    project_id_val bigint;
+    book_exists boolean;
+    result_json json;
+BEGIN
+    SELECT project_id INTO project_id_val FROM public.books WHERE id = book_id;
+
+    SELECT EXISTS(
+        SELECT 1
+        FROM public.books
+        WHERE project_id = project_id_val
+        AND name = new_name
+    ) INTO book_exists;
+
+    IF NOT book_exists THEN
+        UPDATE public.books SET name = new_name WHERE id = book_id;
+        SELECT row_to_json(r) INTO result_json FROM (SELECT * FROM public.books WHERE id = book_id) r;
+        RETURN result_json;
+    ELSE
+        RETURN '{"result":null}'::json;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
