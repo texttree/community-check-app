@@ -41,8 +41,6 @@ const ProjectEditPage = () => {
           }
         })
         .catch((error) => {
-          console.error(error)
-
           if (error?.response?.data?.error) {
             setErrorMessage(error.response.data.error)
           } else {
