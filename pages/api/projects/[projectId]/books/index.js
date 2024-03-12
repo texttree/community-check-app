@@ -49,7 +49,6 @@ export default async function handler(req, res) {
               book_name: name,
             }
           )
-          console.log(newBook)
           if (createError) throw createError
 
           return res.status(200).json(newBook)
