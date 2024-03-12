@@ -35,6 +35,11 @@ export default async function handler(req, res) {
             new_name: name,
           }
         )
+
+        if (updateError) {
+          return res.status(401).json({ error: updateError.message })
+        }
+
         if (!project.result) {
           return res
             .status(400)

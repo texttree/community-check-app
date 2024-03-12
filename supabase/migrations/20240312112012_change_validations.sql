@@ -167,3 +167,30 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+
+
+CREATE OR REPLACE FUNCTION get_checks_for_book(book_id_param bigint)
+RETURNS TABLE (
+    check_id uuid,
+    check_name text,
+    check_material_link text,
+    check_start_time timestamp with time zone,
+    check_finish_time timestamp with time zone
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        id AS check_id,
+        name AS check_name,
+        material_link,
+        started_at AS start_time,
+        finished_at AS finish_time
+    FROM
+        public.checks
+    WHERE
+        book_id = book_id_param
+        AND deleted_at IS NULL;
+END;
+$$ LANGUAGE plpgsql;
