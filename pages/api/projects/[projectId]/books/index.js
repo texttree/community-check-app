@@ -16,12 +16,10 @@ export default async function handler(req, res) {
   } = req
   try {
     switch (method) {
-      case 'GET': // получить книги
-        const { data, error } = await supabase
-          .from('books')
-          .select()
-          .eq('project_id', projectId)
-
+      case 'GET': // получить книги в рамках проекта
+        const { data, error } = await supabase.rpc('get_books_by_project', {
+          p_project_id: projectId,
+        })
         if (error) {
           throw error
         }
