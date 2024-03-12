@@ -17,7 +17,7 @@ $$;
 
 
 CREATE OR REPLACE FUNCTION public.create_project(
-    project_name text
+    p_name text
 )
 RETURNS bigint AS $$
 DECLARE

@@ -40,7 +40,7 @@ export default async function handler(req, res) {
 
           const { data: newProject, error: createError } = await supabase.rpc(
             'create_project',
-            { project_name: name }
+            { p_name: name }
           )
           if (createError) throw createError
 
