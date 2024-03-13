@@ -20,7 +20,6 @@ const BookDetailsPage = () => {
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}`,
     fetcher
   )
-  console.log(book, 233)
 
   const handleCreateCheck = () => {
     const currentDate = new Date()
