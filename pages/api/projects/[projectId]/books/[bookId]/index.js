@@ -33,11 +33,11 @@ export default async function handler(req, res) {
           new_name: name,
         })
 
-        if (!book.result) {
-          return res
-            .status(400)
-            .json({ error: `A book with that name already exists in this project` })
+        if (error) {
+          console.log(error)
+          throw error // Если есть ошибка, генерируем исключение
         }
+
         return res.status(200).json(book)
       } catch (error) {
         return res.status(404).json({ error })
