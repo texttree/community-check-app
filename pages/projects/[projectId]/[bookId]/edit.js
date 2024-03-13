@@ -44,7 +44,7 @@ const BookEditPage = () => {
           name,
         })
         if (response.status === 200) {
-          router.push('/projects/' + projectId)
+          router.push('/projects/' + projectId + `/${bookId}`)
         }
       } catch (error) {
         setErrorMessage({ message: t('errorEditNameBook') })
