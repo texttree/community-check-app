@@ -54,7 +54,7 @@ const BookDetailsPage = () => {
           <p className="text-red-600">{t('errorOccurred')}</p>
         ) : book ? (
           <>
-            <h1 className="text-3xl font-bold mb-4">{book.name}</h1>
+            <h1 className="text-3xl font-bold mb-4">{book.book_name}</h1>
             <CheckList projectId={projectId} bookId={bookId} />
           </>
         ) : (

@@ -37,12 +37,15 @@ const ProjectEditPage = () => {
           if (res.status === 200) {
             router.push('/projects/' + projectId)
           } else {
-            throw res
+            throw new Error(`Failed to edit name project: ${res.statusText}`)
           }
         })
         .catch((error) => {
-          console.error(error)
-          setErrorMessage(error.message)
+          if (error?.response?.data?.error) {
+            setErrorMessage(error.response.data.error)
+          } else {
+            setErrorMessage('An error occurred while editing the project.')
+          }
         })
     } else {
       setErrorMessage(t('nameEmpty'))

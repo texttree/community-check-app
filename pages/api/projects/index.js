@@ -26,17 +26,21 @@ export default async function handler(req, res) {
 
       case 'POST': // создать новый проект
         await checkComCheckAppMiddleware(supabase, req, res, async () => {
-          const { data: projectId, error } = await supabase.rpc('create_project', {
-            p_name: name,
-          })
+          const { data: newProject, error: createError } = await supabase.rpc(
+            'create_project',
+            { p_name: name }
+          )
+          if (createError) throw createError
 
-          if (error) {
-            throw error
+          if (newProject === -1) {
+            return res.status(400).json({
+              error: 'A project with the same name already exists for this user.',
+            })
           }
-          return res.status(200).json(projectId)
+          return res.status(200).json(newProject)
         })
-        break
 
+        break
       default:
         res.setHeader('Allow', ['POST', 'GET'])
         return res.status(405).end(`Method ${method} Not Allowed`)

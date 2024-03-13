@@ -29,9 +29,9 @@ const NewProjectPage = () => {
           body: JSON.stringify({ name }),
         })
 
-        if (response.status === 401) {
+        if (response.status === 400) {
           const errorData = await response.json()
-          console.error('Error fetching data from the service API:', errorData.error)
+          throw new Error(`Failed to create project: ${errorData.error}`)
         } else if (!response.ok) {
           throw new Error(`Failed to create project: ${response.statusText}`)
         } else {

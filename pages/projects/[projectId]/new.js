@@ -27,15 +27,15 @@ const NewBookPage = () => {
           },
           body: JSON.stringify({ name }),
         })
-
-        if (response.status === 401) {
+        if (response.status === 400) {
           const errorData = await response.json()
-          console.error('Error fetching data from the service API:', errorData.error)
+          throw new Error(`Failed to create book: ${errorData.error}`)
         } else if (!response.ok) {
-          throw new Error(`Failed to create book: ${response.statusText}`)
+          const errorData = await response.json()
+          throw new Error(`Failed to create book: ${errorData.error}`)
         } else {
           const data = await response.json()
-          router.push(`/projects/${projectId}/${data.id}`)
+          router.push(`/projects/${projectId}/${data.book_id}`)
         }
       } catch (error) {
         console.error(error)

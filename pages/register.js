@@ -16,7 +16,6 @@ export default function Login() {
       const {
         data: { data, error },
       } = await axios.post('/api/register', { email, password })
-      console.log({ a: 1, data, error })
       if (error) throw error
       setError(false)
       router.push('/projects')

@@ -30,13 +30,13 @@ const BookList = ({ projectId }) => {
             </thead>
             <tbody>
               {books.map((book) => (
-                <tr key={book.id}>
+                <tr key={book.book_id}>
                   <td className="border p-2 text-center">
                     <Link
-                      href={`/projects/${projectId}/${book.id}`}
+                      href={`/projects/${projectId}/${book.book_id}`}
                       className="text-blue-600 hover:underline"
                     >
-                      {book.name}
+                      {book.book_name}
                     </Link>
                   </td>
                   <td className="border p-2 text-center">{book.finished_at}</td>
