@@ -34,8 +34,7 @@ export default async function handler(req, res) {
         })
 
         if (error) {
-          console.log(error)
-          throw error // Если есть ошибка, генерируем исключение
+          throw error
         }
 
         return res.status(200).json(book)

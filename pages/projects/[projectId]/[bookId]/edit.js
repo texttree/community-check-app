@@ -47,14 +47,10 @@ const BookEditPage = () => {
           router.push('/projects/' + projectId)
         }
       } catch (error) {
-        if (error?.response?.data?.error) {
-          setErrorMessage(error.response.data.error) // Установка сообщения об ошибке
-        } else {
-          setErrorMessage({ message: 'An error occurred while editing the book.' }) // Общее сообщение об ошибке
-        }
+        setErrorMessage({ message: t('errorEditNameBook') })
       }
     } else {
-      setErrorMessage({ message: t('nameEmpty') }) // Сообщение об ошибке из перевода
+      setErrorMessage({ message: t('nameEmpty') })
     }
   }
 
