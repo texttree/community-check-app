@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
+
 import { useRouter } from 'next/router'
+
 import useSWR from 'swr'
 import axios from 'axios'
+
 import toast, { Toaster } from 'react-hot-toast'
+
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { fetcher } from '@/helpers/fetcher'
-
 import { parseChapter } from '@/helpers/usfmHelper'
 
 const CheckDetail = () => {

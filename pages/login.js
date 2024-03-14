@@ -1,9 +1,12 @@
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import { useState } from 'react'
+
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 
 export default function Login() {
   const { t } = useTranslation()

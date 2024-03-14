@@ -1,16 +1,16 @@
-import useSWR from 'swr'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { fetcher } from '@/helpers/fetcher'
-import axios from 'axios'
+import { Toaster } from 'react-hot-toast'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import CheckList from '@/components/CheckList'
-import { Toaster } from 'react-hot-toast'
+import axios from 'axios'
+import useSWR from 'swr'
 
-import Link from 'next/link'
+import CheckList from '@/components/CheckList'
+import { fetcher } from '@/helpers/fetcher'
 
 import LeftArrow from 'public/left.svg'
 

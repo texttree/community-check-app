@@ -1,10 +1,10 @@
 import { useState } from 'react'
+
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
-import Link from 'next/link'
 
 import LeftArrow from 'public/left.svg'
 
