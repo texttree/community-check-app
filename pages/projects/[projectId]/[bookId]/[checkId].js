@@ -13,10 +13,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import usfm from 'usfm-js'
 
+import { fetcher } from '@/helpers/fetcher'
+
 import LeftArrow from 'public/left.svg'
 import Copy from 'public/copy.svg'
-
-import { fetcher } from '@/helpers/fetcher'
 
 const CheckId = () => {
   const { t } = useTranslation()
