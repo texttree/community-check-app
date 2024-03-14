@@ -19,15 +19,16 @@ const BookEditPage = () => {
     query: { projectId, bookId },
   } = useRouter()
 
-  const { data: project, error: projectError } = useSWR(
-    projectId && '/api/projects/' + projectId,
-    fetcher
-  )
-
   const { data: book, error: bookError } = useSWR(
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}`,
     fetcher
   )
+
+  useEffect(() => {
+    if (bookError) {
+      console.error(bookError)
+    }
+  }, [bookError])
 
   useEffect(() => {
     if (book?.length > 0 && book[0]?.book_name) {
