@@ -1,11 +1,15 @@
-import Link from 'next/link'
+import { useEffect, useState } from 'react'
+
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
+
 import { fetcher } from '@/helpers/fetcher'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import Link from 'next/link'
 
 import LeftArrow from 'public/left.svg'
 
@@ -31,8 +35,8 @@ const BookEditPage = () => {
   }, [bookError])
 
   useEffect(() => {
-    if (book?.length > 0 && book[0]?.book_name) {
-      setBookName(book[0].book_name)
+    if (book?.book_name) {
+      setBookName(book.book_name)
     }
   }, [book])
 

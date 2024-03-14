@@ -21,7 +21,7 @@ export default async function handler(req, res) {
         if (error) {
           throw error
         }
-        return res.status(200).json(data)
+        return res.status(200).json(data[0])
       } catch (error) {
         return res.status(404).json({ error })
       }

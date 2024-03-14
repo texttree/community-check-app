@@ -1,12 +1,17 @@
-import Link from 'next/link'
 import useSWR from 'swr'
 import { useRouter } from 'next/router'
+
 import { fetcher } from '@/helpers/fetcher'
-import { useTranslation } from 'next-i18next'
 import axios from 'axios'
+
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import toast, { Toaster } from 'react-hot-toast'
+
 import CheckList from '@/components/CheckList'
+import { Toaster } from 'react-hot-toast'
+
+import Link from 'next/link'
+
 import LeftArrow from 'public/left.svg'
 
 const BookDetailsPage = () => {
@@ -54,7 +59,7 @@ const BookDetailsPage = () => {
           <p className="text-red-600">{t('errorOccurred')}</p>
         ) : book ? (
           <>
-            <h1 className="text-3xl font-bold mb-4">{book[0]?.book_name}</h1>
+            <h1 className="text-3xl font-bold mb-4">{book?.book_name}</h1>
             <Link
               href={`/projects/${projectId}/${bookId}/edit`}
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block mb-4"
