@@ -1,12 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
+
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import useSWR from 'swr'
+
+import Link from 'next/link'
+
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
+
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import usfm from 'usfm-js'
+
 import LeftArrow from 'public/left.svg'
 import Copy from 'public/copy.svg'
 

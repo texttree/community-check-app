@@ -21,7 +21,7 @@ export default async function handler(req, res) {
         if (error) {
           throw error
         }
-        return res.status(200).json(data)
+        return res.status(200).json(data[0])
       } catch (error) {
         return res.status(404).json({ error })
       }
@@ -33,11 +33,10 @@ export default async function handler(req, res) {
           new_name: name,
         })
 
-        if (!book.result) {
-          return res
-            .status(400)
-            .json({ error: `A book with that name already exists in this project` })
+        if (error) {
+          throw error
         }
+
         return res.status(200).json(book)
       } catch (error) {
         return res.status(404).json({ error })
