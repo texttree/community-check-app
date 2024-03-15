@@ -32,9 +32,7 @@ export default async function handler(req, res) {
           )
 
           if (createError) {
-            return res.status(400).json({
-              error: 'A project with the same name already exists for this user.',
-            })
+            return res.status(400).json()
           }
           return res.status(200).json(newProject)
         })

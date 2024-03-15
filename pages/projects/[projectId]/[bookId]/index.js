@@ -28,7 +28,7 @@ const BookDetailsPage = () => {
 
   const handleCreateCheck = () => {
     const currentDate = new Date()
-    const formattedDate = currentDate.toISOString() // Используем toISOString для получения строкового представления даты
+    const formattedDate = currentDate.toISOString()
 
     const name = `${t('newCheck')} - ${formattedDate}`
 

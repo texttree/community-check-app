@@ -32,7 +32,7 @@ const NewProjectPage = () => {
 
         if (!response.ok) {
           const errorMessage =
-            response.status === 400 ? t('errorEditNameProject') : response.statusText
+            response.status === 400 ? t('errorCreateProject') : response.statusText
           throw new Error(`${errorMessage}`)
         }
 
