@@ -1,22 +1,22 @@
 import { useState, useEffect, useRef } from 'react'
 
-import { useRouter } from 'next/router'
-import useSWR from 'swr'
-
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
-import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
+
+import useSWR from 'swr'
+import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import usfm from 'usfm-js'
 
+import { fetcher } from '@/helpers/fetcher'
+
 import LeftArrow from 'public/left.svg'
 import Copy from 'public/copy.svg'
-
-import { fetcher } from '@/helpers/fetcher'
 
 const CheckId = () => {
   const { t } = useTranslation()

@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 
+import Link from 'next/link'
 import { useRouter } from 'next/router'
-import useSWR from 'swr'
-
-import { fetcher } from '@/helpers/fetcher'
-import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import Link from 'next/link'
+import useSWR from 'swr'
+import axios from 'axios'
+
+import { fetcher } from '@/helpers/fetcher'
 
 import LeftArrow from 'public/left.svg'
 

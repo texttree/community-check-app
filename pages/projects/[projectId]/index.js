@@ -1,11 +1,13 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import useSWR from 'swr'
-import { fetcher } from '@/helpers/fetcher'
+
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import useSWR from 'swr'
+
 import BookList from '@/components/BookList'
+import { fetcher } from '@/helpers/fetcher'
 
 import LeftArrow from 'public/left.svg'
 

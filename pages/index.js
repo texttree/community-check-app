@@ -1,7 +1,9 @@
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
-import { useUser } from '@supabase/auth-helpers-react'
+
 import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import { useUser } from '@supabase/auth-helpers-react'
 
 const Index = () => {
   const { t } = useTranslation()
