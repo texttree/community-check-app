@@ -30,15 +30,14 @@ const NewProjectPage = () => {
           body: JSON.stringify({ name }),
         })
 
-        if (response.status === 400) {
-          const errorData = await response.json()
-          throw new Error(`Failed to create project: ${errorData.error}`)
-        } else if (!response.ok) {
-          throw new Error(`Failed to create project: ${response.statusText}`)
-        } else {
-          const data = await response.json()
-          router.push('/projects/' + data)
+        if (!response.ok) {
+          const errorMessage =
+            response.status === 400 ? t('errorEditNameProject') : response.statusText
+          throw new Error(`${t(errorMessage)}`)
         }
+
+        const data = await response.json()
+        router.push('/projects/' + data)
       } catch (error) {
         console.error(error)
         setErrorMessage(error.message)
@@ -86,6 +85,7 @@ const NewProjectPage = () => {
     </div>
   )
 }
+
 export async function getServerSideProps({ locale }) {
   return {
     props: {

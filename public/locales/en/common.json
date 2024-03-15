@@ -23,6 +23,7 @@
   "enterCorrectLink": "Enter the correct resource link",
   "errorDownloadNotes": "Error downloading notes:",
   "errorEditNameBook": "Error changing the title of the book: there is already a book with that name",
+  "errorEditNameProject": "Error changing the title of the project: there is already a project with that name",
   "errorOccurred": "An error occurred",
   "expirationDate": "Expiration date:",
   "generateToken": "Generate token",
