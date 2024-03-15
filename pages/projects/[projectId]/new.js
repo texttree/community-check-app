@@ -29,16 +29,13 @@ const NewBookPage = () => {
           },
           body: JSON.stringify({ name }),
         })
-        if (response.status === 400) {
-          const errorData = await response.json()
-          throw new Error(`Failed to create book: ${errorData.error}`)
-        } else if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(`Failed to create book: ${errorData.error}`)
-        } else {
-          const data = await response.json()
-          router.push(`/projects/${projectId}/${data.book_id}`)
+        if (!response.ok) {
+          const errorMessage =
+            response.status === 400 ? t('errorCreateBook') : response.statusText
+          throw new Error(`${errorMessage}`)
         }
+        const data = await response.json()
+        router.push(`/projects/${projectId}/${data.book_id}`)
       } catch (error) {
         console.error(error)
         setErrorMessage(error.message)

@@ -2,6 +2,9 @@ DROP FUNCTION IF EXISTS  public.create_project;
 
 DROP FUNCTION IF EXISTS  public.update_project_name;
 
+DROP FUNCTION IF EXISTS  public.create_book;
+
+
 CREATE OR REPLACE FUNCTION public.create_project(
     p_name text
 )
@@ -51,3 +54,31 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+
+CREATE OR REPLACE FUNCTION create_book(p_project_id BIGINT, book_name TEXT)
+RETURNS JSONB AS $$
+DECLARE
+    book_id BIGINT;
+    book_exists BOOLEAN;
+    result JSONB;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.books AS b
+        WHERE b.project_id = p_project_id AND b.name = book_name AND b.deleted_at IS NULL
+    ) INTO book_exists;
+
+    IF book_exists THEN
+        RAISE EXCEPTION 'A book with name % already exists for this project', book_name;
+    ELSE
+        INSERT INTO public.books (name, project_id)
+        VALUES (book_name, p_project_id)
+        RETURNING id INTO book_id;
+
+        result := jsonb_build_object('book_id', book_id);
+
+        RETURN result;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
