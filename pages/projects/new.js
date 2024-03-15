@@ -33,13 +33,12 @@ const NewProjectPage = () => {
         if (!response.ok) {
           const errorMessage =
             response.status === 400 ? t('errorEditNameProject') : response.statusText
-          throw new Error(`${t(errorMessage)}`)
+          throw new Error(`${errorMessage}`)
         }
 
         const data = await response.json()
         router.push('/projects/' + data)
       } catch (error) {
-        console.error(error)
         setErrorMessage(error.message)
       }
     } else {
