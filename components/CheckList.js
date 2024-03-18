@@ -19,7 +19,7 @@ const CheckList = ({ projectId, bookId }) => {
 
         const link = document.createElement('a')
         link.href = window.URL.createObjectURL(blob)
-        link.download = `${check.name}.tsv`
+        link.download = `${check.check_name}.tsv`
 
         document.body.appendChild(link)
         link.click()

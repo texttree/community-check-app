@@ -7,15 +7,17 @@ export default async function handler(req, res) {
     body: { note, chapter, verse, materialId },
     method,
   } = req
+  console.log(note, checkId, chapter, verse, materialId, 10)
+
+  let supabase
+  try {
+    supabase = await serverApi(req, res)
+  } catch (error) {
+    return res.status(401).json({ error })
+  }
 
   switch (method) {
     case 'GET': // получить заметки
-      let supabase
-      try {
-        supabase = await serverApi(req, res)
-      } catch (error) {
-        return res.status(401).json({ error })
-      }
       try {
         const { data: material, err } = await supabase
           .from('materials')
@@ -36,10 +38,10 @@ export default async function handler(req, res) {
       }
     case 'POST': // создать новую заметку
       try {
-        const { data, error } = await supabaseService.rpc('insert_note', {
+        const { data, error } = await supabase.rpc('insert_note', {
           note,
           inspector_id: null,
-          check_id: checkId,
+          p_check_id: checkId,
           material_id: materialId,
           chapter,
           verse,
