@@ -13,7 +13,7 @@ const CheckList = ({ projectId, bookId }) => {
     fetcher
   )
   const handleDownloadNotes = (check) => {
-    downloadNotes(check)
+    downloadNotes(check, t)
       .then((notes) => {
         const blob = new Blob([notes])
 

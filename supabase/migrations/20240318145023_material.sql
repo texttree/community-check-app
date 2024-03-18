@@ -41,3 +41,31 @@ BEGIN
     RETURN true;
 END;
 $function$;
+
+
+
+CREATE OR REPLACE FUNCTION get_notes_by_check_id(p_check_id uuid)
+RETURNS JSON
+AS $$
+DECLARE
+    p_material_id bigint;
+    notes_data JSON;
+BEGIN
+    -- Получаем материал по check_id
+    SELECT id INTO p_material_id
+    FROM materials
+    WHERE check_id = p_check_id;
+
+    -- Получаем заметки по material_id
+    SELECT json_agg(notes)
+    INTO notes_data
+    FROM notes
+    WHERE material_id = p_material_id;
+
+    RETURN notes_data;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
