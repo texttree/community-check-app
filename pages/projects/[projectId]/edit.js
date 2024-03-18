@@ -40,22 +40,15 @@ const ProjectEditPage = () => {
         .then((res) => {
           if (res.status === 200) {
             router.push('/projects/' + projectId)
-          } else {
-            throw new Error(`Failed to edit name project: ${res.statusText}`)
           }
         })
-        .catch((error) => {
-          if (error?.response?.data?.error) {
-            setErrorMessage(error.response.data.error)
-          } else {
-            setErrorMessage('An error occurred while editing the project.')
-          }
+        .catch(() => {
+          setErrorMessage(t('errorEditNameProject'))
         })
     } else {
       setErrorMessage(t('nameEmpty'))
     }
   }
-
   return (
     <div className="bg-gray-200 min-h-screen py-8">
       <div className="max-w-6xl mx-auto p-4">

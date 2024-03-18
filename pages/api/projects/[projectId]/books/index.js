@@ -35,13 +35,7 @@ export default async function handler(req, res) {
             }
           )
           if (createError) {
-            throw createError
-          }
-
-          if (newBook.book_id === -1) {
-            return res.status(400).json({
-              error: 'A book with the same name already exists for this project.',
-            })
+            return res.status(400).json()
           }
 
           return res.status(200).json(newBook)
