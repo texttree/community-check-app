@@ -26,6 +26,7 @@ const CheckId = () => {
   const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 16))
   const [materialLink, setMaterialLink] = useState('')
   const [checkName, setCheckName] = useState('')
+  const [inspectorName, setInspectorName] = useState('')
   const checkPageRef = useRef(null)
   const [showRef, setShowRef] = useState(false)
 
@@ -42,7 +43,12 @@ const CheckId = () => {
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
     fetcher
   )
-
+  const { data: inspectors, error: errore } = useSWR(
+    projectId &&
+      bookId &&
+      `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
+    fetcher
+  )
   const copyToClipboard = () => {
     const textToCopy = checkPageRef.current.innerText
 
@@ -121,6 +127,20 @@ const CheckId = () => {
         return res.data.id
       })
   }
+  const createPersonalLink = () => {
+    if (inspectorName) {
+      return axios
+        .post(`/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`, {
+          inspectorName,
+        })
+        .then(() => {
+          alert(inspectorName)
+          setErrorMessage('')
+        })
+    } else {
+      setErrorMessage(t('enterReviewerName'))
+    }
+  }
 
   return (
     <div className="bg-gray-200 py-8">
@@ -171,8 +191,43 @@ const CheckId = () => {
             <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
           </div>
         )}
+        <div className="my-2">
+          <button
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2  my-2 rounded-md"
+            onClick={createPersonalLink}
+          >
+            Add a personal link
+          </button>
+          <input
+            type="text"
+            value={inspectorName}
+            onChange={(e) => setInspectorName(e.target.value)}
+            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
+          />
+        </div>
 
-        {errorMessage && <p className="text-red-600">{errorMessage}</p>}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {errorMessage ? (
+            <p className="text-red-600">{errorMessage}</p>
+          ) : inspectors ? (
+            <div className="flex flex-col">
+              {inspectors.map((inspector) => (
+                <div key={inspector.id} className="border p-4 mb-4">
+                  <p>Name: {inspector.name}</p>
+
+                  <Link href={`/checks/${checkId}/${inspector.id}`} ref={checkPageRef}>
+                    https://community-check-app.netlify.app/checks/{checkId}/
+                    {inspector.id}
+                  </Link>
+
+                  <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>{t('loading')}...</p>
+          )}
+        </div>
 
         <button
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"

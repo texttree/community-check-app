@@ -22,6 +22,7 @@
   "editProject": "Edit project",
   "email": "Email",
   "enterCorrectLink": "Enter the correct resource link",
+  "enterReviewerName": "Enter the reviewer name",
   "errorCreateBook": "Error creating the title of the book: there is already a book with that name",
   "errorCreateProject": "Error creating the book: there is already a book with that name",
   "errorDownloadNotes": "Error downloading notes:",
