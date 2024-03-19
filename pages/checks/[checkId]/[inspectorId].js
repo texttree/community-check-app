@@ -17,7 +17,7 @@ const CheckDetail = () => {
   const [chapter, setChapter] = useState([])
   const { data: material, error } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
   const {
-    data: allNotes,
+    data: inspectorNotes,
     error: err,
     mutate,
   } = useSWR(checkId && `/api/checks/${checkId}/${inspectorId}`, fetcher)
@@ -27,7 +27,6 @@ const CheckDetail = () => {
   const [arrayLength, setArrayLength] = useState('')
   const [note, setNote] = useState('')
   useEffect(() => {
-    const inspectorNotes = allNotes?.filter((note) => note.inspector_id == inspectorId)
     if (material?.content) {
       const chapters = material.content.chapters
       const numberChapters = Object.keys(chapters)
@@ -39,7 +38,7 @@ const CheckDetail = () => {
       )
       setNotes(notesChapter)
     }
-  }, [material, currentChapterIndex, allNotes, inspectorId])
+  }, [material, currentChapterIndex, inspectorId, inspectorNotes])
   const editVerse = (index) => {
     setEditableVerseIndex(index)
   }
