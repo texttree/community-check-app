@@ -134,7 +134,7 @@ const CheckId = () => {
           inspectorName,
         })
         .then(() => {
-          alert(inspectorName)
+          toast.success(t('inspectorCreated'))
           setErrorMessage('')
         })
     } else {
