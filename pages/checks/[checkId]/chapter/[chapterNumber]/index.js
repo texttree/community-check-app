@@ -16,12 +16,12 @@ const CheckDetail = () => {
   const [chapter, setChapter] = useState([])
   const [editableVerseIndex, setEditableVerseIndex] = useState(null)
   const [currentChapterIndex, setCurrentChapterIndex] = useState(() => {
-    // Используем значение из URL, если оно есть, иначе начинаем с первой главы
     return parseInt(chapterNumber) || 1
   })
   const [notes, setNotes] = useState([])
   const [note, setNote] = useState('')
   const [error, setError] = useState(null)
+  const [arrayLength, setArrayLength] = useState(0)
 
   const { data: material, mutate } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
 
@@ -31,6 +31,7 @@ const CheckDetail = () => {
       const _chapter = parseChapter(chapters[currentChapterIndex])
       setChapter(_chapter)
       setNotes(new Array(_chapter.length).fill(''))
+      setArrayLength(Object.keys(chapters).length)
     }
   }, [material, currentChapterIndex])
 
@@ -77,6 +78,12 @@ const CheckDetail = () => {
       })
   }
 
+  const handleNextChapter = () => {
+    if (currentChapterIndex < arrayLength) {
+      navigateToChapter(currentChapterIndex + 1)
+    }
+  }
+
   return (
     <div className="bg-gray-200">
       <div className="max-w-6xl mx-auto p-4">
@@ -94,9 +101,9 @@ const CheckDetail = () => {
               </button>
               <p className="text-2xl font-bold">{currentChapterIndex}</p>
               <button
-                onClick={() => navigateToChapter(currentChapterIndex + 1)}
+                onClick={handleNextChapter}
                 className="bg-blue-500 text-white py-2 px-4 rounded"
-                disabled={currentChapterIndex === chapter.length}
+                disabled={currentChapterIndex === arrayLength}
               >
                 {t('nextChapter')}
               </button>
