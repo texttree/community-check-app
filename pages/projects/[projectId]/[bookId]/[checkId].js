@@ -28,6 +28,7 @@ const CheckId = () => {
   const [checkName, setCheckName] = useState('')
   const checkPageRef = useRef(null)
   const [showRef, setShowRef] = useState(false)
+  const chapterNumber = 1
 
   const { data: material, error } = useSWR(
     projectId &&
@@ -165,8 +166,9 @@ const CheckId = () => {
         )}
         {materialLink !== '' && showRef && (
           <div className="flex my-4">
-            <Link href={`/checks/${checkId}`} ref={checkPageRef}>
-              https://community-check-app.netlify.app/checks/{checkId}
+            <Link href={`/checks/${checkId}/chapter/${chapterNumber}`} ref={checkPageRef}>
+              https://community-check-app.netlify.app/checks/{checkId}/chapter/
+              {chapterNumber}
             </Link>
             <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
           </div>
