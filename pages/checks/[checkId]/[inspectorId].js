@@ -15,12 +15,12 @@ const CheckDetail = () => {
   const router = useRouter()
   const { checkId, inspectorId } = router.query
   const [chapter, setChapter] = useState([])
-  const { data: material, error } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
-  const {
-    data: inspectorNotes,
-    error: err,
-    mutate,
-  } = useSWR(checkId && `/api/checks/${checkId}/${inspectorId}`, fetcher)
+  const { data: material } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
+  const { data: inspectorNotes, mutate } = useSWR(
+    checkId && `/api/checks/${checkId}/${inspectorId}`,
+    fetcher
+  )
+  console.log(inspectorNotes)
   const [editableVerseIndex, setEditableVerseIndex] = useState(null)
   const [currentChapterIndex, setCurrentChapterIndex] = useState(1)
   const [notes, setNotes] = useState(new Array(chapter.length).fill(''))
@@ -33,10 +33,15 @@ const CheckDetail = () => {
       const _chapter = parseChapter(chapters[currentChapterIndex])
       setChapter(_chapter)
       setArrayLength(numberChapters.length)
-      const notesChapter = inspectorNotes?.filter(
-        (note) => note.chapter == currentChapterIndex.toString()
-      )
-      setNotes(notesChapter)
+      const filteredNotes = {}
+      inspectorNotes?.forEach((note) => {
+        if (note.chapter === currentChapterIndex.toString()) {
+          filteredNotes[note.verse] = note
+        }
+      })
+      const notesArray = Object.values(filteredNotes)
+
+      setNotes(notesArray)
     }
   }, [material, currentChapterIndex, inspectorId, inspectorNotes])
   const editVerse = (index) => {
@@ -57,6 +62,10 @@ const CheckDetail = () => {
     const chapter = currentChapterIndex
     const verse = editableVerseIndex + 1
     const materialId = material.id
+    if (!chapter || !verse || !materialId) {
+      console.error(t('invalidInformationNote'))
+      return
+    }
     axios
       .post(`/api/checks/${checkId}/notes`, {
         materialId,

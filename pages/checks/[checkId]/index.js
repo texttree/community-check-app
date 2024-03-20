@@ -18,7 +18,7 @@ const CheckDetail = () => {
   const router = useRouter()
   const { checkId } = router.query
   const [chapter, setChapter] = useState([])
-  const { data: material, error } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
+  const { data: material } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
   const [editableVerseIndex, setEditableVerseIndex] = useState(null)
   const [currentChapterIndex, setCurrentChapterIndex] = useState(1)
   const [notes, setNotes] = useState(new Array(chapter.length).fill(''))

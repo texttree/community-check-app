@@ -15,21 +15,15 @@ export default async function handler(req, res) {
         return res.status(401).json({ error })
       }
       try {
-        const { data: material, err } = await supabase
-          .from('materials')
-          .select()
-          .eq('check_id', checkId)
-          .single()
         const { data, error } = await supabase
-          .from('notes')
-          .select()
-          .eq('material_id', material.id)
-          .eq('inspector_id', inspectorId)
-
+          .from('materials')
+          .select(`notes(inspector_id, note, chapter, verse, created_at)`)
+          .eq('check_id', checkId)
+          .eq(`notes.inspector_id`, inspectorId)
         if (error) {
           throw error
         }
-        return res.status(200).json(data)
+        return res.status(200).json(data[0].notes)
       } catch (error) {
         return res.status(404).json({ error })
       }

@@ -30,7 +30,7 @@ const CheckId = () => {
   const checkPageRef = useRef(null)
   const [showRef, setShowRef] = useState(false)
 
-  const { data: material, error } = useSWR(
+  const { data: material } = useSWR(
     projectId &&
       materialLink &&
       bookId &&
@@ -39,11 +39,11 @@ const CheckId = () => {
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
     fetcher
   )
-  const { data: check, error: err } = useSWR(
+  const { data: check } = useSWR(
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
     fetcher
   )
-  const { data: inspectors, error: errore } = useSWR(
+  const { data: inspectors, mutate } = useSWR(
     projectId &&
       bookId &&
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
@@ -127,18 +127,24 @@ const CheckId = () => {
         return res.data.id
       })
   }
-  const createPersonalLink = () => {
-    if (inspectorName) {
-      return axios
-        .post(`/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`, {
-          inspectorName,
-        })
-        .then(() => {
-          toast.success(t('inspectorCreated'))
-          setErrorMessage('')
-        })
-    } else {
-      setErrorMessage(t('enterReviewerName'))
+  const createPersonalLink = async () => {
+    try {
+      if (inspectorName) {
+        await axios.post(
+          `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
+          {
+            inspectorName,
+          }
+        )
+
+        mutate()
+        toast.success(t('inspectorCreated'))
+        setErrorMessage('')
+      } else {
+        setErrorMessage(t('enterInspectorName'))
+      }
+    } catch (error) {
+      setErrorMessage('Произошла ошибка:', error)
     }
   }
 
