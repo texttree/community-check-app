@@ -17,15 +17,28 @@ export default async function handler(req, res) {
         return res.status(401).json({ error })
       }
       try {
+        if (!checkId) {
+          return res.status(400).json({ error: 'Missing checkId parameter' })
+        }
+
         const { data: material, err } = await supabase
           .from('materials')
           .select()
           .eq('check_id', checkId)
           .single()
+
+        if (error) {
+          throw error
+        }
+
+        if (!material) {
+          return res.status(404).json({ error: 'Material not found' })
+        }
+
         const { data, error } = await supabase
           .from('notes')
           .select()
-          .eq(' material_id', material.id)
+          .eq('material_id', material.id)
 
         if (error) {
           throw error
@@ -36,6 +49,9 @@ export default async function handler(req, res) {
       }
     case 'POST': // создать новую заметку
       try {
+        if (!note || !materialId || !chapter || !verse) {
+          return res.status(400).json({ error: 'Missing required parameters' })
+        }
         const { data, error } = await supabaseService.rpc('insert_note', {
           note,
           inspector_id: inspectorId ? inspectorId : null,

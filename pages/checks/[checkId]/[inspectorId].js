@@ -20,7 +20,6 @@ const CheckDetail = () => {
     checkId && `/api/checks/${checkId}/${inspectorId}`,
     fetcher
   )
-  console.log(inspectorNotes)
   const [editableVerseIndex, setEditableVerseIndex] = useState(null)
   const [currentChapterIndex, setCurrentChapterIndex] = useState(1)
   const [notes, setNotes] = useState(new Array(chapter.length).fill(''))
@@ -83,6 +82,7 @@ const CheckDetail = () => {
         }
       })
       .catch((error) => {
+        toast.success(error)
         console.error(error)
       })
   }

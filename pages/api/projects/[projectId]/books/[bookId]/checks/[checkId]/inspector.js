@@ -17,6 +17,9 @@ export default async function handler(req, res) {
   switch (method) {
     case 'GET': // получить Инспекторов
       try {
+        if (!checkId) {
+          return res.status(400).json({ error: 'Missing checkId parameter' })
+        }
         const { data, error } = await supabase
           .from('inspectors')
           .select('*')
@@ -30,6 +33,12 @@ export default async function handler(req, res) {
       }
     case 'POST': // создать нового проверяющего
       try {
+        if (!inspectorName) {
+          return res.status(400).json({ error: 'Missing inspectorName parameter' })
+        }
+        if (!checkId) {
+          return res.status(400).json({ error: 'Missing checkId parameter' })
+        }
         const { data, error } = await supabase
           .from('inspectors')
           .insert([
