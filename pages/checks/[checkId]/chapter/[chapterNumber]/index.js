@@ -18,10 +18,9 @@ const CheckDetail = () => {
   const [currentChapterIndex, setCurrentChapterIndex] = useState(() => {
     return parseInt(chapterNumber) || 1
   })
-  const [notes, setNotes] = useState([])
   const [note, setNote] = useState('')
   const [error, setError] = useState(null)
-  const [arrayLength, setArrayLength] = useState(0)
+  const [chapterLength, setChapterLength] = useState(0)
 
   const { data: material, mutate } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
 
@@ -30,8 +29,7 @@ const CheckDetail = () => {
       const chapters = material.content.chapters
       const _chapter = parseChapter(chapters[currentChapterIndex])
       setChapter(_chapter)
-      setNotes(new Array(_chapter.length).fill(''))
-      setArrayLength(Object.keys(chapters).length)
+      setChapterLength(Object.keys(chapters).length)
     }
   }, [material, currentChapterIndex])
 
@@ -79,7 +77,7 @@ const CheckDetail = () => {
   }
 
   const handleNextChapter = () => {
-    if (currentChapterIndex < arrayLength) {
+    if (currentChapterIndex < chapterLength) {
       navigateToChapter(currentChapterIndex + 1)
     }
   }
@@ -103,7 +101,7 @@ const CheckDetail = () => {
               <button
                 onClick={handleNextChapter}
                 className="bg-blue-500 text-white py-2 px-4 rounded"
-                disabled={currentChapterIndex === arrayLength}
+                disabled={currentChapterIndex === chapterLength}
               >
                 {t('nextChapter')}
               </button>
@@ -115,11 +113,7 @@ const CheckDetail = () => {
                 {editableVerseIndex === index ? (
                   <div className="flex items-center">
                     <textarea
-                      value={notes[index]}
                       onChange={(e) => {
-                        const newNotes = [...notes]
-                        newNotes[index] = e.target.value
-                        setNotes(newNotes)
                         setNote(e.target.value)
                       }}
                       className="w-full border rounded p-1"
