@@ -123,6 +123,11 @@ const CheckId = () => {
       })
   }
 
+  const currentDomain =
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : 'https://community-check-app.netlify.app'
+
   return (
     <div className="bg-gray-200 py-8">
       <div className="max-w-6xl mx-auto p-4">
@@ -167,7 +172,7 @@ const CheckId = () => {
         {materialLink !== '' && showRef && (
           <div className="flex my-4">
             <Link href={`/checks/${checkId}/chapter/${chapterNumber}`} ref={checkPageRef}>
-              https://community-check-app.netlify.app/checks/{checkId}/chapter/
+              {currentDomain}/checks/{checkId}/chapter/
               {chapterNumber}
             </Link>
             <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
