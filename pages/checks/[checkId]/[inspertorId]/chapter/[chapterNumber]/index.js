@@ -35,9 +35,7 @@ const CheckDetail = () => {
     }
   }, [material, currentChapterIndex])
 
-  useEffect(() => {
-    setCurrentChapterIndex((prevIndex) => parseInt(chapterNumber) || prevIndex)
-  }, [chapterNumber])
+  setCurrentChapterIndex((prevIndex) => parseInt(chapterNumber) || prevIndex)
 
   useEffect(() => {
     if (checkId) {
