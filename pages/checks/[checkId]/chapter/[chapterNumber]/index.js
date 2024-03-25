@@ -51,7 +51,7 @@ const CheckDetail = () => {
     router.push(`/checks/${checkId}/chapter/${index}`)
   }
 
-  const uploadNotes = () => {
+  const addNotes = () => {
     const chapterNum = currentChapterIndex
     const verse = editableVerseIndex + 1
     const materialId = material.id
@@ -119,7 +119,7 @@ const CheckDetail = () => {
                       className="w-full border rounded p-1"
                     />
                     <button
-                      onClick={uploadNotes}
+                      onClick={addNotes}
                       className="bg-blue-500 text-white py-1 px-2 rounded ml-2"
                     >
                       {t('save')}
