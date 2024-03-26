@@ -1,24 +1,25 @@
 import { useEffect, useState } from 'react'
-
 import { useRouter } from 'next/router'
-
 import useSWR from 'swr'
 import axios from 'axios'
-
 import toast, { Toaster } from 'react-hot-toast'
-
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { fetcher } from '@/helpers/fetcher'
+
 import { parseChapter } from '@/helpers/usfmHelper'
 
 const CheckDetail = () => {
   const { t } = useTranslation()
   const router = useRouter()
-  const { checkId } = router.query
+  const { checkId, inspectorId } = router.query
   const [chapter, setChapter] = useState([])
   const { data: material } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
+  const { data: inspectorNotes, mutate } = useSWR(
+    checkId && `/api/checks/${checkId}/${inspectorId}`,
+    fetcher
+  )
   const [editableVerseIndex, setEditableVerseIndex] = useState(null)
   const [currentChapterIndex, setCurrentChapterIndex] = useState(1)
   const [notes, setNotes] = useState(new Array(chapter.length).fill(''))
@@ -31,8 +32,17 @@ const CheckDetail = () => {
       const _chapter = parseChapter(chapters[currentChapterIndex])
       setChapter(_chapter)
       setArrayLength(numberChapters.length)
+      const filteredNotes = {}
+      inspectorNotes?.forEach((note) => {
+        if (note.chapter === currentChapterIndex.toString()) {
+          filteredNotes[note.verse] = note
+        }
+      })
+      const notesArray = Object.values(filteredNotes)
+
+      setNotes(notesArray)
     }
-  }, [material, currentChapterIndex])
+  }, [material, currentChapterIndex, inspectorId, inspectorNotes])
   const editVerse = (index) => {
     setEditableVerseIndex(index)
   }
@@ -51,21 +61,28 @@ const CheckDetail = () => {
     const chapter = currentChapterIndex
     const verse = editableVerseIndex + 1
     const materialId = material.id
+    if (!chapter || !verse || !materialId) {
+      console.error(t('invalidInformationNote'))
+      return
+    }
     axios
       .post(`/api/checks/${checkId}/notes`, {
         materialId,
         note,
         chapter,
         verse,
+        inspectorId,
       })
       .then((res) => {
         if (res.status === 200) {
+          mutate()
           toast.success(t('noteSaved'))
         } else {
           throw res
         }
       })
       .catch((error) => {
+        toast.success(error)
         console.error(error)
       })
   }
@@ -97,10 +114,20 @@ const CheckDetail = () => {
                 {editableVerseIndex === index ? (
                   <div className="flex items-center">
                     <textarea
-                      value={notes[index]}
+                      value={
+                        editableVerseIndex !== null
+                          ? notes.find(
+                              (note) =>
+                                note?.verse === (editableVerseIndex + 1).toString()
+                            )?.note || ''
+                          : ''
+                      }
                       onChange={(e) => {
                         const newNotes = [...notes]
-                        newNotes[index] = e.target.value
+                        newNotes[editableVerseIndex] = {
+                          verse: (editableVerseIndex + 1).toString(),
+                          note: e.target.value,
+                        }
                         setNotes(newNotes)
                         setNote(e.target.value)
                       }}
