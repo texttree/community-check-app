@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
         const { data, error } = await supabase
           .from('materials')
-          .select(`notes(inspector_id, note, chapter, verse, created_at)`)
+          .select(`notes(inspector_id, note, chapter, verse, created_at, id)`)
           .eq('check_id', checkId)
           .eq(`notes.inspector_id`, inspectorId)
         if (error) {

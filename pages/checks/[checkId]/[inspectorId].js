@@ -22,7 +22,7 @@ const CheckDetail = () => {
   )
   const [editableVerseIndex, setEditableVerseIndex] = useState(null)
   const [currentChapterIndex, setCurrentChapterIndex] = useState(1)
-  const [notes, setNotes] = useState(new Array(chapter.length).fill(''))
+  const [notes, setNotes] = useState([])
   const [arrayLength, setArrayLength] = useState('')
   const [note, setNote] = useState('')
   useEffect(() => {
@@ -32,17 +32,13 @@ const CheckDetail = () => {
       const _chapter = parseChapter(chapters[currentChapterIndex])
       setChapter(_chapter)
       setArrayLength(numberChapters.length)
-      const filteredNotes = {}
-      inspectorNotes?.forEach((note) => {
-        if (note.chapter === currentChapterIndex.toString()) {
-          filteredNotes[note.verse] = note
-        }
-      })
-      const notesArray = Object.values(filteredNotes)
-
-      setNotes(notesArray)
+      const notesChapter = inspectorNotes?.filter(
+        (note) => note.chapter === currentChapterIndex.toString()
+      )
+      setNotes(notesChapter || [])
     }
   }, [material, currentChapterIndex, inspectorId, inspectorNotes])
+  console.log(notes)
   const editVerse = (index) => {
     setEditableVerseIndex(index)
   }
@@ -58,10 +54,9 @@ const CheckDetail = () => {
   }
 
   const uploadNotes = () => {
-    const chapter = currentChapterIndex
     const verse = editableVerseIndex + 1
     const materialId = material.id
-    if (!chapter || !verse || !materialId) {
+    if (!materialId || !verse || !note) {
       console.error(t('invalidInformationNote'))
       return
     }
@@ -69,7 +64,7 @@ const CheckDetail = () => {
       .post(`/api/checks/${checkId}/notes`, {
         materialId,
         note,
-        chapter,
+        chapter: currentChapterIndex,
         verse,
         inspectorId,
       })
@@ -77,13 +72,35 @@ const CheckDetail = () => {
         if (res.status === 200) {
           mutate()
           toast.success(t('noteSaved'))
+          setNote('')
         } else {
           throw res
         }
       })
       .catch((error) => {
-        toast.success(error)
+        toast.error(error.message)
         console.error(error)
+      })
+  }
+  const deleteNote = (n) => {
+    console.log(n.id)
+    const updatedNotes = notes.filter((note) => note.id !== n.id)
+    setNotes(updatedNotes)
+    const noteId = n.id
+    axios
+      .delete(`/api/checks/${checkId}/notes/${noteId}`)
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success(t('noteDeleted'))
+        } else {
+          throw res
+        }
+      })
+      .catch((error) => {
+        toast.error(error.message || t('errorOccurred'))
+        console.error(error)
+
+        setNotes(notes)
       })
   }
   return (
@@ -114,23 +131,8 @@ const CheckDetail = () => {
                 {editableVerseIndex === index ? (
                   <div className="flex items-center">
                     <textarea
-                      value={
-                        editableVerseIndex !== null
-                          ? notes.find(
-                              (note) =>
-                                note?.verse === (editableVerseIndex + 1).toString()
-                            )?.note || ''
-                          : ''
-                      }
-                      onChange={(e) => {
-                        const newNotes = [...notes]
-                        newNotes[editableVerseIndex] = {
-                          verse: (editableVerseIndex + 1).toString(),
-                          note: e.target.value,
-                        }
-                        setNotes(newNotes)
-                        setNote(e.target.value)
-                      }}
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
                       className="w-full border rounded p-1"
                     />
                     <button
@@ -141,10 +143,20 @@ const CheckDetail = () => {
                     </button>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    {notes
+                      .filter((n) => n.verse === (index + 1).toString())
+                      .map((n, i) => (
+                        <div key={i} className="flex items-center justify-between">
+                          <p className="text-gray-700">{n.note}</p>
+                          <button onClick={() => deleteNote(n)} className="text-red-500">
+                            {t('delete')}
+                          </button>
+                        </div>
+                      ))}
                     <button
                       onClick={() => editVerse(index)}
-                      className="bg-blue-500 text-white py-1 px-2 rounded  ml-2"
+                      className="bg-blue-500 text-white py-1 px-2 rounded mt-2"
                     >
                       {t('note')}
                     </button>
