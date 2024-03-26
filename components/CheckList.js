@@ -13,13 +13,13 @@ const CheckList = ({ projectId, bookId }) => {
     fetcher
   )
   const handleDownloadNotes = (check) => {
-    downloadNotes(check)
+    downloadNotes(check, t)
       .then((notes) => {
         const blob = new Blob([notes])
 
         const link = document.createElement('a')
         link.href = window.URL.createObjectURL(blob)
-        link.download = `${check.name}.tsv`
+        link.download = `${check.check_name}.tsv`
 
         document.body.appendChild(link)
         link.click()
