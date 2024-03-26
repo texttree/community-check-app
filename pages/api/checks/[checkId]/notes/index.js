@@ -34,7 +34,7 @@ export default async function handler(req, res) {
         if (!note || !materialId || !chapter || !verse) {
           return res.status(400).json({ error: 'Missing required parameters' })
         }
-        
+
         const { data, error } = await supabaseService.rpc('insert_note', {
           note,
           inspector_id: inspectorId ? inspectorId : null,
