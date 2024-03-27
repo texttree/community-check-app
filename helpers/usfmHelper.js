@@ -55,6 +55,8 @@ const getVerseText = (verseObjects, showUnsupported = false) => {
 }
 
 const getObject = (verseObject, showUnsupported) => {
+  if (!verseObject) return
+
   const { type } = verseObject
   switch (type) {
     case 'quote':

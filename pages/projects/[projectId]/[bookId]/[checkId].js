@@ -73,13 +73,54 @@ const CheckId = () => {
     }
   }, [checkId, check, material])
 
+  const parsingWordText = (jsonData) => {
+    if (!jsonData || !jsonData.chapters || typeof jsonData.chapters !== 'object') {
+      return
+    }
+
+    const result = { headers: jsonData.headers, chapters: {} }
+
+    for (const [chapterNumber, chapter] of Object.entries(jsonData.chapters)) {
+      if (typeof chapter !== 'object') continue
+
+      const chapterResult = {}
+
+      for (const [verseNumber, verse] of Object.entries(chapter)) {
+        if (!verse || typeof verse !== 'object') continue
+
+        const verseObjects = (verse.verseObjects || []).map((verseObject) => {
+          if (!verseObject || typeof verseObject !== 'object') return
+
+          if (verseObject.text) {
+            return { type: verseObject.type, text: verseObject.text }
+          } else if (
+            verseObject.type === 'milestone' &&
+            verseObject.children &&
+            Array.isArray(verseObject.children)
+          ) {
+            const childrenTexts = verseObject.children.map((child) => ({
+              text: child && typeof child === 'object' && child.text ? child.text : '',
+            }))
+            return { type: 'milestone', tag: 'zaln', children: childrenTexts }
+          }
+        })
+
+        chapterResult[verseNumber] = { verseObjects: verseObjects.filter(Boolean) }
+      }
+
+      result.chapters[chapterNumber] = chapterResult
+    }
+
+    return result
+  }
+
   const updateResourse = async () => {
     setErrorMessage('')
     if (checkName && materialLink) {
       await axios
         .get(materialLink)
         .then((res) => {
-          const jsonData = usfm.toJSON(res.data)
+          const jsonData = parsingWordText(usfm.toJSON(res.data))
           if (Object.keys(jsonData?.chapters).length > 0) {
             upsertMaterial(jsonData)
               .then(() => {
