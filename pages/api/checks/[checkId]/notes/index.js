@@ -8,42 +8,24 @@ export default async function handler(req, res) {
     method,
   } = req
 
+  let supabase
+  try {
+    supabase = await serverApi(req, res)
+  } catch (error) {
+    return res.status(401).json({ error })
+  }
+
   switch (method) {
     case 'GET': // получить заметки
-      let supabase
       try {
-        supabase = await serverApi(req, res)
-      } catch (error) {
-        return res.status(401).json({ error })
-      }
-      try {
-        if (!checkId) {
-          return res.status(400).json({ error: 'Missing checkId parameter' })
-        }
-
-        const { data: material, err } = await supabase
-          .from('materials')
-          .select()
-          .eq('check_id', checkId)
-          .single()
+        const { data: material, error } = await supabase.rpc('get_notes_by_check_id', {
+          p_check_id: checkId,
+        })
 
         if (error) {
           throw error
         }
-
-        if (!material) {
-          return res.status(404).json({ error: 'Material not found' })
-        }
-
-        const { data, error } = await supabase
-          .from('notes')
-          .select()
-          .eq('material_id', material.id)
-
-        if (error) {
-          throw error
-        }
-        return res.status(200).json(data)
+        return res.status(200).json(material)
       } catch (error) {
         return res.status(404).json({ error })
       }
@@ -52,10 +34,11 @@ export default async function handler(req, res) {
         if (!note || !materialId || !chapter || !verse) {
           return res.status(400).json({ error: 'Missing required parameters' })
         }
+
         const { data, error } = await supabaseService.rpc('insert_note', {
           note,
           inspector_id: inspectorId ? inspectorId : null,
-          check_id: checkId,
+          p_check_id: checkId,
           material_id: materialId,
           chapter,
           verse,
