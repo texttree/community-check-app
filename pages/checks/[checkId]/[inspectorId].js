@@ -88,7 +88,7 @@ const CheckDetail = () => {
     setNotes(updatedNotes)
     const noteId = n.id
     axios
-      .delete(`/api/checks/${checkId}/notes/${noteId}`)
+      .delete(`/api/checks/${checkId}/notes/${inspectorId}/${noteId}`)
       .then((res) => {
         if (res.status === 200) {
           toast.success(t('noteDeleted'))

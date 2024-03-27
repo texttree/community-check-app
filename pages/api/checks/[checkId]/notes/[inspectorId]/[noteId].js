@@ -1,16 +1,17 @@
-import serverApi from '@/helpers/serverApi'
 import { supabaseService } from '@/helpers/supabaseService'
 
 export default async function handler(req, res) {
   const {
-    query: { noteId },
+    query: { noteId, inspectorId, checkId },
     method,
   } = req
   switch (method) {
     case 'DELETE': // Удалить заметку инспектора
       try {
-        console.log(noteId)
-        const { error } = await supabaseService.rpc('delete_note', { note_id: noteId })
+        console.log(noteId, inspectorId, checkId)
+        const { error } = await supabaseService.rpc('delete_note', {
+          note_id: noteId,
+        })
         if (error) {
           throw error
         }
