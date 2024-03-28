@@ -11,6 +11,11 @@ const BookList = ({ projectId }) => {
     fetcher
   )
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
+    return new Date(dateString).toLocaleDateString(undefined, options)
+  }
+
   return (
     <>
       <h1 className="text-2xl font-semibold">{t('projectBooks')}</h1>
@@ -39,7 +44,9 @@ const BookList = ({ projectId }) => {
                       {book.book_name}
                     </Link>
                   </td>
-                  <td className="border p-2 text-center">{book.finished_at}</td>
+                  <td className="border p-2 text-center">
+                    {formatDate(book.book_created_at)}
+                  </td>
                   <td className="border p-2 text-center">{book.finished_at}</td>
                   <td className="border p-2 text-center">{book.checks}</td>
                   <td className="border p-2 text-center">{book.checks}</td>
