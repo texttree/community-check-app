@@ -41,6 +41,7 @@ const CheckList = ({ projectId, bookId }) => {
             <thead>
               <tr>
                 <th className="border p-2 text-center">{t('titleInTable')}</th>
+                <th className="border p-2 text-center">{t('checkStartDate')}</th>
                 <th className="border p-2 text-center">{t('checkEndDate')}</th>
                 <th className="border p-2 text-center">{t('downloadNotes')}</th>
                 <th className="border p-2 text-center">{t('activity')}</th>
@@ -57,6 +58,7 @@ const CheckList = ({ projectId, bookId }) => {
                       {check.check_name}
                     </Link>
                   </td>
+                  <td className="border p-2 text-center">{check.check_started_time}</td>
                   <td className="border p-2 text-center">{check.check_finish_time}</td>
                   <td className="border p-2 text-center">
                     {
