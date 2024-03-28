@@ -228,7 +228,10 @@ const CheckId = () => {
                 <div key={inspector.id} className="border p-4 mb-4">
                   <p>Name: {inspector.name}</p>
 
-                  <Link href={`/checks/${checkId}/${inspector.id}`} ref={checkPageRef}>
+                  <Link
+                    href={`/checks/${checkId}/${inspector.id}/chapter/${chapterNumber}`}
+                    ref={checkPageRef}
+                  >
                     https://community-check-app.netlify.app/checks/{checkId}/
                     {inspector.id}
                   </Link>

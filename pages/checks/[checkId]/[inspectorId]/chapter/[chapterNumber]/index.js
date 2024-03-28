@@ -38,7 +38,6 @@ const CheckDetail = () => {
       setNotes(notesChapter || [])
     }
   }, [material, currentChapterIndex, inspectorId, inspectorNotes])
-  console.log(notes)
   const editVerse = (index) => {
     setEditableVerseIndex(index)
   }
@@ -83,7 +82,6 @@ const CheckDetail = () => {
       })
   }
   const deleteNote = (n) => {
-    console.log(n.id)
     const updatedNotes = notes.filter((note) => note.id !== n.id)
     setNotes(updatedNotes)
     const noteId = n.id

@@ -8,9 +8,9 @@ export default async function handler(req, res) {
   switch (method) {
     case 'DELETE': // Удалить заметку инспектора
       try {
-        console.log(noteId, inspectorId, checkId)
         const { error } = await supabaseService.rpc('delete_note', {
           note_id: noteId,
+          inspector_id: inspectorId,
         })
         if (error) {
           throw error
