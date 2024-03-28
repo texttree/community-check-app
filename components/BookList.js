@@ -48,7 +48,9 @@ const BookList = ({ projectId }) => {
                   <td className="border p-2 text-center">
                     {formatDate(book.book_created_at)}
                   </td>
-                  <td className="border p-2 text-center">{book.finished_at}</td>
+                  <td className="border p-2 text-center">
+                    <BookChecksLast projectId={projectId} bookId={book.book_id} />
+                  </td>
                   <td className="border p-2 text-center">
                     <BookChecks projectId={projectId} bookId={book.book_id} />
                   </td>
@@ -74,6 +76,34 @@ const BookChecks = ({ projectId, bookId }) => {
     <span>Loading...</span>
   ) : (
     <span>{checks.length}</span>
+  )
+}
+
+const BookChecksLast = ({ projectId, bookId }) => {
+  const { data: checks, error } = useSWR(
+    projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
+    fetcher
+  )
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
+    return new Date(dateString).toLocaleDateString(undefined, options)
+  }
+
+  const getLatestCheckDate = (checks) => {
+    if (checks && checks.length > 0) {
+      const dates = checks.map((check) => new Date(check.check_started_time))
+      const latestDate = new Date(Math.max(...dates))
+      return formatDate(latestDate)
+    }
+    return '-'
+  }
+
+  return error ? (
+    <span className="text-red-600">Error</span>
+  ) : !checks ? (
+    <span>Loading...</span>
+  ) : (
+    <span>{getLatestCheckDate(checks)}</span>
   )
 }
 
