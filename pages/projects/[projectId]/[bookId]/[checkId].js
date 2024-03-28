@@ -23,6 +23,7 @@ const CheckId = () => {
   const router = useRouter()
   const { projectId, bookId, checkId } = router.query
   const [errorMessage, setErrorMessage] = useState('')
+  const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 16))
   const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 16))
   const [materialLink, setMaterialLink] = useState('')
   const [checkName, setCheckName] = useState('')
@@ -33,7 +34,6 @@ const CheckId = () => {
 
   const { data: material } = useSWR(
     projectId &&
-      materialLink &&
       bookId &&
       checkId &&
       materialLink &&
@@ -64,9 +64,14 @@ const CheckId = () => {
   }
   useEffect(() => {
     if (check) {
+      const formattedStartedDate = new Date(check.started_at).toISOString().slice(0, 16)
       const formattedFinishedDate = new Date(check.finished_at).toISOString().slice(0, 16)
+
       setMaterialLink(check.material_link || '')
       setCheckName(check.name)
+      if (check.started_at) {
+        setEndDate(formattedStartedDate)
+      }
       if (check.finished_at) {
         setEndDate(formattedFinishedDate)
       }
@@ -108,6 +113,7 @@ const CheckId = () => {
     return await axios.post(
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
       {
+        started_at: startDate,
         finished_at: endDate,
         name: checkName,
         material_link: materialLink,
@@ -182,6 +188,13 @@ const CheckId = () => {
             value={materialLink}
             onChange={(e) => setMaterialLink(e.target.value)}
             placeholder={t('linkResource')}
+            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
+          />
+          <label className="block font-medium text-gray-700">{t('startingDate')}</label>
+          <input
+            type="datetime-local"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
             className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
           />
           <label className="block font-medium text-gray-700">{t('expirationDate')}</label>
