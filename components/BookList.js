@@ -30,7 +30,6 @@ const BookList = ({ projectId }) => {
                 <th className="border p-2 text-center">{t('dateCreation')}</th>
                 <th className="border p-2 text-center">{t('dateLastCheck')}</th>
                 <th className="border p-2 text-center">{t('numberChecks')}</th>
-                <th className="border p-2 text-center">{t('activeChecks')}</th>
               </tr>
             </thead>
             <tbody>
@@ -48,7 +47,6 @@ const BookList = ({ projectId }) => {
                     {formatDate(book.book_created_at)}
                   </td>
                   <td className="border p-2 text-center">{book.finished_at}</td>
-                  <td className="border p-2 text-center">{book.checks}</td>
                   <td className="border p-2 text-center">{book.checks}</td>
                 </tr>
               ))}
