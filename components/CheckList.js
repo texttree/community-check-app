@@ -30,6 +30,10 @@ const CheckList = ({ projectId, bookId }) => {
         toast.error(message)
       })
   }
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
+    return new Date(dateString).toLocaleDateString(undefined, options)
+  }
   return (
     <>
       <h2 className="text-2xl font-semibold mb-2">{t('bookChecks')}</h2>
@@ -58,8 +62,12 @@ const CheckList = ({ projectId, bookId }) => {
                       {check.check_name}
                     </Link>
                   </td>
-                  <td className="border p-2 text-center">{check.check_started_time}</td>
-                  <td className="border p-2 text-center">{check.check_finished_time}</td>
+                  <td className="border p-2 text-center">
+                    {formatDate(check.check_started_time)}
+                  </td>
+                  <td className="border p-2 text-center">
+                    {formatDate(check.check_finished_time)}
+                  </td>
                   <td className="border p-2 text-center">
                     {
                       <button onClick={() => handleDownloadNotes(check)}>
