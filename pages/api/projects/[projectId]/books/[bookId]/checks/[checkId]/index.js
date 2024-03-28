@@ -37,6 +37,7 @@ export default async function handler(req, res) {
             {
               name,
               material_link,
+              started_at,
               finished_at,
             },
           ])
