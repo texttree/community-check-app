@@ -59,7 +59,7 @@ const CheckList = ({ projectId, bookId }) => {
                     </Link>
                   </td>
                   <td className="border p-2 text-center">{check.check_started_time}</td>
-                  <td className="border p-2 text-center">{check.check_finish_time}</td>
+                  <td className="border p-2 text-center">{check.check_finished_time}</td>
                   <td className="border p-2 text-center">
                     {
                       <button onClick={() => handleDownloadNotes(check)}>
