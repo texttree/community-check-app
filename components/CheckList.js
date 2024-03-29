@@ -1,17 +1,65 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
+
+import { useState, useEffect } from 'react'
+
 import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
 import downloadNotes from '@/helpers/downloadNotes'
 import Download from 'public/download.svg'
 import toast from 'react-hot-toast'
+import axios from 'axios'
+
 const CheckList = ({ projectId, bookId }) => {
   const { t } = useTranslation()
+  const [notesCounts, setNotesCounts] = useState({})
 
   const { data: checks, error } = useSWR(
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
     fetcher
   )
+
+  useEffect(() => {
+    const counterNotes = async (check) => {
+      try {
+        const responseMaterials = await axios.get(`/api/checks/${check.check_id}/notes`)
+        const notes = responseMaterials.data
+
+        if (notes.error) {
+          throw notes.error
+        }
+
+        return notes.length
+      } catch (error) {
+        console.error('Error counting notes:', error)
+        throw error
+      }
+    }
+
+    const fetchNotesCounts = async () => {
+      const counts = {}
+      for (const check of checks) {
+        try {
+          const count = await counterNotes(check)
+          counts[check.check_id] = count
+        } catch (error) {
+          console.error(
+            'Error fetching notes count for check',
+            check.check_id,
+            ':',
+            error
+          )
+          counts[check.check_id] = 'error'
+        }
+      }
+      setNotesCounts(counts)
+    }
+
+    if (checks) {
+      fetchNotesCounts()
+    }
+  }, [checks])
+
   const handleDownloadNotes = (check) => {
     downloadNotes(check, t)
       .then((notes) => {
@@ -75,7 +123,13 @@ const CheckList = ({ projectId, bookId }) => {
                       </button>
                     }
                   </td>
-                  <td className="border p-2 text-center">{check.check_id}</td>
+                  <td className="border p-2 text-center">
+                    {notesCounts[check.check_id] === 'error' ? (
+                      <span>0</span>
+                    ) : (
+                      notesCounts[check.check_id]
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
