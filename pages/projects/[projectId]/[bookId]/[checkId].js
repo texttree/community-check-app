@@ -150,7 +150,7 @@ const CheckId = () => {
         setErrorMessage(t('enterInspectorName'))
       }
     } catch (error) {
-      setErrorMessage('Произошла ошибка:', error)
+      setErrorMessage('Error:', error)
     }
   }
 
@@ -187,7 +187,7 @@ const CheckId = () => {
             value={materialLink}
             onChange={(e) => setMaterialLink(e.target.value)}
             placeholder={t('linkResource')}
-            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
+            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full"
           />
           <label className="block font-medium text-gray-700">{t('startingDate')}</label>
           <input
@@ -213,36 +213,41 @@ const CheckId = () => {
             <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
           </div>
         )}
+        <button
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
+          onClick={updateResourse}
+        >
+          {t('save')}
+        </button>
+        <br />
+        <br />
         <div className="my-2">
-          <button
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2  my-2 rounded-md"
-            onClick={createPersonalLink}
-          >
-            Add a personal link
-          </button>
+          <label className="block font-medium text-gray-700">{t('nameInspector')}</label>
           <input
             type="text"
             value={inspectorName}
             onChange={(e) => setInspectorName(e.target.value)}
             className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
           />
+          <button
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2  my-2 rounded-md"
+            onClick={createPersonalLink}
+          >
+            {t('addPersonalLink')}
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div>
           {errorMessage ? (
             <p className="text-red-600">{errorMessage}</p>
           ) : inspectors ? (
-            <div className="flex flex-col">
+            <div>
               {inspectors.map((inspector) => (
-                <div key={inspector.id} className="border p-4 mb-4">
-                  <p>Name: {inspector.name}</p>
-
+                <div key={inspector.id} className="flex items-center">
                   <Link href={`/checks/${checkId}/${inspector.id}`} ref={checkPageRef}>
-                    https://community-check-app.netlify.app/checks/{checkId}/
-                    {inspector.id}
+                    {currentDomain}/{checkId}/{inspector.id}
                   </Link>
-
-                  <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
+                  <Copy className="h-5 w-5 " onClick={copyToClipboard}></Copy>
                 </div>
               ))}
             </div>
@@ -250,13 +255,6 @@ const CheckId = () => {
             <p>{t('loading')}...</p>
           )}
         </div>
-
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
-          onClick={updateResourse}
-        >
-          {t('save')}
-        </button>
       </div>
       <Toaster />
     </div>
