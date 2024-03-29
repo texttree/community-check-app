@@ -3,6 +3,39 @@ import { useTranslation } from 'next-i18next'
 import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
 
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
+  return new Date(dateString).toLocaleDateString(undefined, options)
+}
+
+const ErrorMessage = ({ message }) => <span className="text-red-600">{message}</span>
+
+const LoadingMessage = () => <span>Loading...</span>
+
+const BookChecksInfo = ({ projectId, bookId, showLastCheck }) => {
+  const { data: checks, error } = useSWR(
+    projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
+    fetcher
+  )
+
+  const getLatestCheckDate = (checks) => {
+    if (checks && checks.length > 0) {
+      const dates = checks.map((check) => new Date(check.check_started_time))
+      const latestDate = new Date(Math.max(...dates))
+      return formatDate(latestDate)
+    }
+    return '-'
+  }
+
+  if (error) {
+    return <ErrorMessage message="Error" />
+  } else if (!checks) {
+    return <LoadingMessage />
+  } else {
+    return <span>{showLastCheck ? getLatestCheckDate(checks) : checks.length}</span>
+  }
+}
+
 const BookList = ({ projectId }) => {
   const { t } = useTranslation()
 
@@ -11,18 +44,13 @@ const BookList = ({ projectId }) => {
     fetcher
   )
 
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
-    return new Date(dateString).toLocaleDateString(undefined, options)
-  }
-
   return (
     <>
       <h1 className="text-2xl font-semibold">{t('projectBooks')}</h1>
       {booksError ? (
-        <p className="text-red-600">{t('errorOccurred')}</p>
+        <ErrorMessage message={t('errorOccurred')} />
       ) : !books ? (
-        <p>{t('loading')}</p>
+        <LoadingMessage />
       ) : (
         <div className="bg-white p-4 rounded-lg shadow-md mt-2">
           <table className="w-full border-collapse">
@@ -49,10 +77,18 @@ const BookList = ({ projectId }) => {
                     {formatDate(book.book_created_at)}
                   </td>
                   <td className="border p-2 text-center">
-                    <BookChecksLast projectId={projectId} bookId={book.book_id} />
+                    <BookChecksInfo
+                      projectId={projectId}
+                      bookId={book.book_id}
+                      showLastCheck={true}
+                    />
                   </td>
                   <td className="border p-2 text-center">
-                    <BookChecks projectId={projectId} bookId={book.book_id} />
+                    <BookChecksInfo
+                      projectId={projectId}
+                      bookId={book.book_id}
+                      showLastCheck={false}
+                    />
                   </td>
                 </tr>
               ))}
@@ -61,49 +97,6 @@ const BookList = ({ projectId }) => {
         </div>
       )}
     </>
-  )
-}
-
-const BookChecks = ({ projectId, bookId }) => {
-  const { data: checks, error } = useSWR(
-    projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
-    fetcher
-  )
-
-  return error ? (
-    <span className="text-red-600">Error</span>
-  ) : !checks ? (
-    <span>Loading...</span>
-  ) : (
-    <span>{checks.length}</span>
-  )
-}
-
-const BookChecksLast = ({ projectId, bookId }) => {
-  const { data: checks, error } = useSWR(
-    projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
-    fetcher
-  )
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
-    return new Date(dateString).toLocaleDateString(undefined, options)
-  }
-
-  const getLatestCheckDate = (checks) => {
-    if (checks && checks.length > 0) {
-      const dates = checks.map((check) => new Date(check.check_started_time))
-      const latestDate = new Date(Math.max(...dates))
-      return formatDate(latestDate)
-    }
-    return '-'
-  }
-
-  return error ? (
-    <span className="text-red-600">Error</span>
-  ) : !checks ? (
-    <span>Loading...</span>
-  ) : (
-    <span>{getLatestCheckDate(checks)}</span>
   )
 }
 
