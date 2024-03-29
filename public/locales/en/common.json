@@ -42,6 +42,7 @@
   "messageAboutNewCheck": "Your check was created with a default name. Refresh the page",
   "name": "Name:",
   "nameEmpty": "Title cannot be empty",
+  "nameInspector": "Name inspector",
   "newCheck": "New сheck",
   "nextChapter": "Next сhapter",
   "no_notes_found": "No notes found",
