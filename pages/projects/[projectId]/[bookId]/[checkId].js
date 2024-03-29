@@ -29,7 +29,6 @@ const CheckId = () => {
   const [checkName, setCheckName] = useState('')
   const [inspectorName, setInspectorName] = useState('')
   const checkPageRef = useRef(null)
-  const [showRef, setShowRef] = useState(false)
   const chapterNumber = 1
 
   const { data: material } = useSWR(
@@ -205,10 +204,7 @@ const CheckId = () => {
             className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
           />
         </div>
-        {materialLink !== '' && !showRef && (
-          <p className="text-gray-700">{t('saveToShowLink')}</p>
-        )}
-        {materialLink !== '' && showRef && (
+        {checkName !== '' && (
           <div className="flex my-4">
             <Link href={`/checks/${checkId}/chapter/${chapterNumber}`} ref={checkPageRef}>
               {currentDomain}/checks/{checkId}/chapter/
