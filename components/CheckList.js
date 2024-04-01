@@ -114,11 +114,20 @@ const CheckList = ({ projectId, bookId }) => {
                   </td>
                   <td className="border p-2 text-center">
                     {
-                      <button onClick={() => handleDownloadNotes(check)}>
+                      <button
+                        onClick={() => handleDownloadNotes(check)}
+                        disabled={notesCounts[check.check_id] === 'error'}
+                        className={
+                          notesCounts[check.check_id] === 'error'
+                            ? 'opacity-50 cursor-not-allowed'
+                            : ''
+                        }
+                      >
                         <Download className="h-5 w-5 mr-1" />
                       </button>
                     }
                   </td>
+
                   <td className="border p-2 text-center">
                     {notesCounts[check.check_id] === 'error' ? (
                       <span>0</span>
