@@ -264,10 +264,11 @@ const CheckId = () => {
                       <td className=" bg-white border border-gray-300 px-4 py-2">
                         <div className="flex items-center">
                           <Link
-                            href={`/checks/${checkId}/${inspector.id}`}
+                            href={`/checks/${checkId}/${inspector.id}/chapter/${chapterNumber}`}
                             ref={checkPageRef}
                           >
-                            {currentDomain}/{checkId}/{inspector.id}
+                            {currentDomain}/{checkId}/{inspector.id}/chapter/
+                            {chapterNumber}
                           </Link>
                           <Copy
                             className="h-5 w-5 ml-1 cursor-pointer"

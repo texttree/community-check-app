@@ -11,7 +11,7 @@ import { parseChapter } from '@/helpers/usfmHelper'
 const CheckDetail = () => {
   const { t } = useTranslation()
   const router = useRouter()
-  const { checkId, chapterNumber } = router.query
+  const { checkId, inspectorId, chapterNumber } = router.query
 
   const [chapter, setChapter] = useState([])
   const [editableVerseIndex, setEditableVerseIndex] = useState(null)
@@ -35,7 +35,9 @@ const CheckDetail = () => {
     }
   }, [material, currentChapterIndex])
 
-  setCurrentChapterIndex((prevIndex) => parseInt(chapterNumber) || prevIndex)
+  useEffect(() => {
+    setCurrentChapterIndex((prevIndex) => parseInt(chapterNumber) || prevIndex)
+  }, [chapterNumber])
 
   useEffect(() => {
     if (checkId) {
@@ -48,7 +50,7 @@ const CheckDetail = () => {
   }
 
   const navigateToChapter = (index) => {
-    router.push(`/checks/${checkId}/chapter/${index}`)
+    router.push(`/checks/${checkId}/${inspectorId}/chapter/${index}`)
   }
 
   const uploadNotes = () => {
