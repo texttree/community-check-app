@@ -80,35 +80,41 @@ const CheckId = () => {
 
     const result = { headers: jsonData.headers, chapters: {} }
 
-    for (const [chapterNumber, chapter] of Object.entries(jsonData.chapters)) {
-      if (typeof chapter !== 'object') continue
+    const processVerseObject = (verseObject) => {
+      if (!verseObject || typeof verseObject !== 'object') return
 
+      if (verseObject.text) {
+        return { type: verseObject.type, text: verseObject.text }
+      } else if (
+        verseObject.type === 'milestone' &&
+        verseObject.children &&
+        Array.isArray(verseObject.children)
+      ) {
+        const childrenTexts = verseObject.children.map((child) =>
+          processVerseObject(child)
+        )
+        return { type: 'milestone', tag: 'zaln', children: childrenTexts.filter(Boolean) }
+      }
+    }
+
+    const processVerse = (verse) => {
+      const verseObjects = (verse.verseObjects || []).map(processVerseObject)
+      return { verseObjects: verseObjects.filter(Boolean) }
+    }
+
+    const processChapter = (chapter) => {
       const chapterResult = {}
 
       for (const [verseNumber, verse] of Object.entries(chapter)) {
-        if (!verse || typeof verse !== 'object') continue
-
-        const verseObjects = (verse.verseObjects || []).map((verseObject) => {
-          if (!verseObject || typeof verseObject !== 'object') return
-
-          if (verseObject.text) {
-            return { type: verseObject.type, text: verseObject.text }
-          } else if (
-            verseObject.type === 'milestone' &&
-            verseObject.children &&
-            Array.isArray(verseObject.children)
-          ) {
-            const childrenTexts = verseObject.children.map((child) => ({
-              text: child && typeof child === 'object' && child.text ? child.text : '',
-            }))
-            return { type: 'milestone', tag: 'zaln', children: childrenTexts }
-          }
-        })
-
-        chapterResult[verseNumber] = { verseObjects: verseObjects.filter(Boolean) }
+        chapterResult[verseNumber] = processVerse(verse)
       }
 
-      result.chapters[chapterNumber] = chapterResult
+      return chapterResult
+    }
+
+    for (const [chapterNumber, chapter] of Object.entries(jsonData.chapters)) {
+      if (typeof chapter !== 'object') continue
+      result.chapters[chapterNumber] = processChapter(chapter)
     }
 
     return result
