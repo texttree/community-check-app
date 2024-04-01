@@ -25,13 +25,8 @@ const CheckList = ({ projectId, bookId }) => {
         const responseMaterials = await axios.get(`/api/checks/${check.check_id}/notes`)
         const notes = responseMaterials.data
 
-        if (notes.error) {
-          throw notes.error
-        }
-
         return notes.length
       } catch (error) {
-        console.error('Error counting notes:', error)
         throw error
       }
     }
@@ -43,12 +38,6 @@ const CheckList = ({ projectId, bookId }) => {
           const count = await counterNotes(check)
           counts[check.check_id] = count
         } catch (error) {
-          console.error(
-            'Error fetching notes count for check',
-            check.check_id,
-            ':',
-            error
-          )
           counts[check.check_id] = 'error'
         }
       }
@@ -78,10 +67,17 @@ const CheckList = ({ projectId, bookId }) => {
         toast.error(message)
       })
   }
+
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
-    return new Date(dateString).toLocaleDateString(undefined, options)
+    return dateString
+      ? new Date(dateString).toLocaleDateString(undefined, {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        })
+      : ''
   }
+
   return (
     <>
       <h2 className="text-2xl font-semibold mb-2">{t('bookChecks')}</h2>
