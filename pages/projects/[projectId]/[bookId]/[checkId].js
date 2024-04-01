@@ -219,7 +219,7 @@ const CheckId = () => {
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
           onClick={updateResourse}
         >
-          {t('save')}
+          {t('updateInformation')}
         </button>
         <br />
         <br />
@@ -239,52 +239,49 @@ const CheckId = () => {
           </button>
         </div>
 
-        <div>
-          {errorMessage ? (
-            <p className="text-red-600">{errorMessage}</p>
-          ) : inspectors ? (
-            <div>
-              <table className="w-full rounded-lg border border-gray-300">
-                <thead>
-                  <tr>
-                    <th className="bg-white border border-gray-300 px-4 py-2">
-                      {t('nameInspector')}
-                    </th>
-                    <th className=" bg-white border border-gray-300 px-4 py-2">
-                      {t('personalLink')}
-                    </th>
+        {inspectors?.length > 0 && (
+          <div>
+            <label className="block font-medium text-gray-700">
+              {t('inspectorsTable')}
+            </label>
+            <table className="w-full rounded-lg border border-gray-300">
+              <thead>
+                <tr>
+                  <th className="bg-white border border-gray-300 px-4 py-2">
+                    {t('nameInspector')}
+                  </th>
+                  <th className=" bg-white border border-gray-300 px-4 py-2">
+                    {t('personalLink')}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {inspectors.map((inspector) => (
+                  <tr key={inspector.id}>
+                    <td className=" bg-white border border-gray-300 px-4 py-2">
+                      {inspector.name}
+                    </td>
+                    <td className=" bg-white border border-gray-300 px-4 py-2">
+                      <div className="flex items-center">
+                        <Link
+                          href={`/checks/${checkId}/${inspector.id}/chapter/${chapterNumber}`}
+                          ref={checkPageRef}
+                        >
+                          {currentDomain}/{checkId}/{inspector.id}/chapter/
+                          {chapterNumber}
+                        </Link>
+                        <Copy
+                          className="h-5 w-5 ml-1 cursor-pointer"
+                          onClick={copyToClipboard}
+                        ></Copy>
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {inspectors.map((inspector) => (
-                    <tr key={inspector.id}>
-                      <td className=" bg-white border border-gray-300 px-4 py-2">
-                        {inspector.name}
-                      </td>
-                      <td className=" bg-white border border-gray-300 px-4 py-2">
-                        <div className="flex items-center">
-                          <Link
-                            href={`/checks/${checkId}/${inspector.id}/chapter/${chapterNumber}`}
-                            ref={checkPageRef}
-                          >
-                            {currentDomain}/{checkId}/{inspector.id}/chapter/
-                            {chapterNumber}
-                          </Link>
-                          <Copy
-                            className="h-5 w-5 ml-1 cursor-pointer"
-                            onClick={copyToClipboard}
-                          ></Copy>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p>{t('loading')}...</p>
-          )}
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
       <Toaster />
     </div>
