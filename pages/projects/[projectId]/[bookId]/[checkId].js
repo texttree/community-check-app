@@ -63,19 +63,21 @@ const CheckId = () => {
   }
   useEffect(() => {
     if (check) {
-      const formattedStartedDate = new Date(check.started_at).toISOString().slice(0, 16)
-      const formattedFinishedDate = new Date(check.finished_at).toISOString().slice(0, 16)
+      const currentDate = new Date().toISOString().slice(0, 16)
+      const formattedStartedDate = check.started_at
+        ? new Date(check.started_at).toISOString().slice(0, 16)
+        : currentDate
+      const formattedFinishedDate = check.finished_at
+        ? new Date(check.finished_at).toISOString().slice(0, 16)
+        : currentDate
+
+      setStartDate(formattedStartedDate)
+      setEndDate(formattedFinishedDate)
 
       setMaterialLink(check.material_link || '')
       setCheckName(check.name)
-      if (check.started_at) {
-        setEndDate(formattedStartedDate)
-      }
-      if (check.finished_at) {
-        setEndDate(formattedFinishedDate)
-      }
     }
-  }, [checkId, check, material])
+  }, [check])
 
   const updateResourse = async () => {
     setErrorMessage('')
