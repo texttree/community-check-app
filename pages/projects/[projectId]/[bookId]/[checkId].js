@@ -241,9 +241,6 @@ const CheckId = () => {
 
         {inspectors?.length > 0 && (
           <div>
-            <label className="block font-medium text-gray-700">
-              {t('inspectorsTable')}
-            </label>
             <table className="w-full rounded-lg border border-gray-300">
               <thead>
                 <tr>
