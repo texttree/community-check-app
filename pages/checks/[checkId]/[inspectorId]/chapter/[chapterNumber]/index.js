@@ -86,71 +86,78 @@ const CheckDetail = () => {
 
   return (
     <div className="bg-gray-200">
-      <div className="max-w-6xl mx-auto p-4">
-        <h1 className="text-2xl font-bold">{t('checkDetails')}</h1>
-        {error && <p className="text-red-500">{error}</p>}
-        {chapter.length > 0 && (
-          <div className="mt-4">
-            <div className="flex justify-between mb-4">
-              <button
-                onClick={() => navigateToChapter(currentChapterIndex - 1)}
-                className={`bg-blue-500 text-white py-2 px-4 rounded ${
-                  currentChapterIndex === 1 ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-              >
-                {t('previousChapter')}
-              </button>
+      {!material && (
+        <div className="max-w-6xl mx-auto p-4 text-center">
+          <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>{' '}
+        </div>
+      )}
+      {material && (
+        <div className="max-w-6xl mx-auto p-4">
+          <h1 className="text-2xl font-bold">{t('checkDetails')}</h1>
+          {error && <p className="text-red-500">{error}</p>}
+          {chapter.length > 0 && (
+            <div className="mt-4">
+              <div className="flex justify-between mb-4">
+                <button
+                  onClick={() => navigateToChapter(currentChapterIndex - 1)}
+                  className={`bg-blue-500 text-white py-2 px-4 rounded ${
+                    currentChapterIndex === 1 ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {t('previousChapter')}
+                </button>
 
-              <p className="text-2xl font-bold">{currentChapterIndex}</p>
-              <button
-                onClick={handleNextChapter}
-                className={`bg-blue-500 text-white py-2 px-4 rounded ${
-                  currentChapterIndex === arrayLength
-                    ? 'opacity-50 cursor-not-allowed'
-                    : ''
-                }`}
-              >
-                {t('nextChapter')}
-              </button>
-            </div>
-            {chapter.map((verse, index) => (
-              <div key={index} className="bg-gray-100 p-2 rounded-md my-2">
-                <p className="text-lg font-semibold">{verse.verse}</p>
-                <p className="text-gray-700">{verse.text}</p>
-                {editableVerseIndex === index ? (
-                  <div className="flex items-center">
-                    <textarea
-                      value={notes[index]}
-                      onChange={(e) => {
-                        const newNotes = [...notes]
-                        newNotes[index] = e.target.value
-                        setNotes(newNotes)
-                        setNote(e.target.value)
-                      }}
-                      className="w-full border rounded p-1"
-                    />
-                    <button
-                      onClick={uploadNotes}
-                      className="bg-blue-500 text-white py-1 px-2 rounded ml-2"
-                    >
-                      {t('save')}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-between">
-                    <button
-                      onClick={() => editVerse(index)}
-                      className="bg-blue-500 text-white py-1 px-2 rounded  ml-2"
-                    >
-                      {t('note')}
-                    </button>
-                  </div>
-                )}
+                <p className="text-2xl font-bold">{currentChapterIndex}</p>
+                <button
+                  onClick={handleNextChapter}
+                  className={`bg-blue-500 text-white py-2 px-4 rounded ${
+                    currentChapterIndex === arrayLength
+                      ? 'opacity-50 cursor-not-allowed'
+                      : ''
+                  }`}
+                >
+                  {t('nextChapter')}
+                </button>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+              {chapter.map((verse, index) => (
+                <div key={index} className="bg-gray-100 p-2 rounded-md my-2">
+                  <p className="text-lg font-semibold">{verse.verse}</p>
+                  <p className="text-gray-700">{verse.text}</p>
+                  {editableVerseIndex === index ? (
+                    <div className="flex items-center">
+                      <textarea
+                        value={notes[index]}
+                        onChange={(e) => {
+                          const newNotes = [...notes]
+                          newNotes[index] = e.target.value
+                          setNotes(newNotes)
+                          setNote(e.target.value)
+                        }}
+                        className="w-full border rounded p-1"
+                      />
+                      <button
+                        onClick={uploadNotes}
+                        className="bg-blue-500 text-white py-1 px-2 rounded ml-2"
+                      >
+                        {t('save')}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <button
+                        onClick={() => editVerse(index)}
+                        className="bg-blue-500 text-white py-1 px-2 rounded  ml-2"
+                      >
+                        {t('note')}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
       <Toaster />
     </div>
   )
