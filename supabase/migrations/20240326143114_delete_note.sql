@@ -3,10 +3,18 @@ $$
 DECLARE
     note_deleted BOOLEAN := FALSE;
 BEGIN
-     DELETE FROM public.notes AS n WHERE n.id = note_id AND n.inspector_id = delete_note.inspector_id;
-    
-    GET DIAGNOSTICS note_deleted = ROW_COUNT;
+    IF EXISTS (SELECT 1 FROM public.notes WHERE id = note_id AND inspector_id = delete_note.inspector_id) THEN
+        DELETE FROM public.notes WHERE id = note_id AND inspector_id = delete_note.inspector_id;
+        
+        GET DIAGNOSTICS note_deleted = ROW_COUNT;
+    ELSE
+        note_deleted := FALSE;
+    END IF;
     
     RETURN note_deleted;
+EXCEPTION
+
+    WHEN others THEN
+        RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;

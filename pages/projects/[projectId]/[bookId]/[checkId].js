@@ -232,8 +232,8 @@ const CheckId = () => {
                     href={`/checks/${checkId}/${inspector.id}/chapter/${chapterNumber}`}
                     ref={checkPageRef}
                   >
-                    https://community-check-app.netlify.app/checks/{checkId}/
-                    {inspector.id}
+                    {currentDomain}/checks/{checkId}/{inspector.id}/chapter/
+                    {chapterNumber}
                   </Link>
 
                   <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>

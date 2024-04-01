@@ -1,5 +1,4 @@
 import serverApi from '@/helpers/serverApi'
-import { supabaseService } from '@/helpers/supabaseService'
 
 export default async function handler(req, res) {
   const {
@@ -35,9 +34,9 @@ export default async function handler(req, res) {
           return res.status(400).json({ error: 'Missing required parameters' })
         }
 
-        const { data, error } = await supabaseService.rpc('insert_note', {
+        const { data, error } = await supabase.rpc('insert_note', {
           chapter,
-          check_id: checkId,
+          p_check_id: checkId,
           inspector_id: inspectorId ? inspectorId : null,
           material_id: materialId,
           note,
@@ -46,7 +45,7 @@ export default async function handler(req, res) {
         if (error) throw error
         return res.status(200).json(data)
       } catch (error) {
-        return res.status(404).json({ error })
+        return res.status(400).json({ error })
       }
     default:
       res.setHeader('Allow', ['GET', 'POST'])

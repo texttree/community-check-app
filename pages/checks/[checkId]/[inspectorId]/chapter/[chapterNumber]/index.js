@@ -81,14 +81,13 @@ const CheckDetail = () => {
         console.error(error)
       })
   }
-  const deleteNote = (n) => {
-    const updatedNotes = notes.filter((note) => note.id !== n.id)
-    setNotes(updatedNotes)
-    const noteId = n.id
+  const deleteNoteById = (noteId) => {
+    const updatedNotes = notes.filter((note) => note.id !== noteId)
     axios
       .delete(`/api/checks/${checkId}/notes/${inspectorId}/${noteId}`)
       .then((res) => {
         if (res.status === 200) {
+          setNotes(updatedNotes)
           toast.success(t('noteDeleted'))
         } else {
           throw res
@@ -97,7 +96,6 @@ const CheckDetail = () => {
       .catch((error) => {
         toast.error(error.message || t('errorOccurred'))
         console.error(error)
-
         setNotes(notes)
       })
   }
@@ -147,7 +145,10 @@ const CheckDetail = () => {
                       .map((n, i) => (
                         <div key={i} className="flex items-center justify-between">
                           <p className="text-gray-700">{n.note}</p>
-                          <button onClick={() => deleteNote(n)} className="text-red-500">
+                          <button
+                            onClick={() => deleteNoteById(n.id)}
+                            className="text-red-500"
+                          >
                             {t('delete')}
                           </button>
                         </div>

@@ -2,7 +2,7 @@ import { supabaseService } from '@/helpers/supabaseService'
 
 export default async function handler(req, res) {
   const {
-    query: { noteId, inspectorId, checkId },
+    query: { noteId, inspectorId },
     method,
   } = req
   switch (method) {
