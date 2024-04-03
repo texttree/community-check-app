@@ -18,7 +18,7 @@ const TokenGeneration = () => {
 
   const handleGenerateToken = async () => {
     try {
-      const { data, error } = await supabase.rpc('add_token', { name: tokenName })
+      const { data, error } = await supabase.rpc('add_token', { p_name: tokenName })
 
       if (error) {
         throw new Error(`Failed to store token in the database: ${error.message}`)
@@ -51,6 +51,20 @@ const TokenGeneration = () => {
 
   const handleCopyToken = () => {
     navigator.clipboard.writeText(accessToken)
+  }
+
+  const handleDeleteToken = async (token_id) => {
+    try {
+      const { error } = await supabase.rpc('delete_token', { token_id })
+
+      if (error) {
+        throw new Error(`Failed to delete token: ${error.message}`)
+      }
+
+      fetchTokens()
+    } catch (error) {
+      console.error('Error deleting token:', error.message)
+    }
   }
 
   return (
@@ -99,6 +113,7 @@ const TokenGeneration = () => {
               <th className="px-4 py-2 border border-gray-300">{t('tokenName')}</th>
               <th className="px-4 py-2 border border-gray-300">{t('id')}</th>
               <th className="px-4 py-2 border border-gray-300">{t('date')}</th>
+              <th className="px-4 py-2 border border-gray-300">{t('actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -117,6 +132,14 @@ const TokenGeneration = () => {
                   <td className="px-4 py-2 border border-gray-300">{token.name}</td>
                   <td className="px-4 py-2 border border-gray-300">{maskedId}</td>
                   <td className="px-4 py-2 border border-gray-300">{token.created_at}</td>
+                  <td className="px-4 py-2 border border-gray-300">
+                    <button
+                      onClick={() => handleDeleteToken(token.id)}
+                      className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                    >
+                      {t('delete')}
+                    </button>
+                  </td>
                 </tr>
               )
             })}
