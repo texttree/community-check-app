@@ -1,15 +1,20 @@
+import { useEffect, useState } from 'react'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 const TokenGeneration = () => {
+  const supabase = useSupabaseClient()
+  const { t } = useTranslation()
   const [accessToken, setAccessToken] = useState('')
   const [tokenName, setTokenName] = useState('')
   const [isTokenGenerated, setIsTokenGenerated] = useState(false)
   const [errorText, setErrorText] = useState('')
-  const supabase = useSupabaseClient()
-  const { t } = useTranslation()
+  const [tokens, setTokens] = useState([])
+
+  useEffect(() => {
+    fetchTokens()
+  }, [])
 
   const handleGenerateToken = async () => {
     try {
@@ -22,10 +27,25 @@ const TokenGeneration = () => {
       setAccessToken(data)
       setIsTokenGenerated(true)
       setErrorText('')
+      fetchTokens()
     } catch (error) {
       console.error('Error generating or storing tokens:', error.message)
       setIsTokenGenerated(false)
       setErrorText('Failed to generate or store tokens')
+    }
+  }
+
+  const fetchTokens = async () => {
+    try {
+      const { data, error } = await supabase.rpc('get_tokens')
+
+      if (error) {
+        throw new Error(`Failed to fetch tokens: ${error.message}`)
+      }
+
+      setTokens(data)
+    } catch (error) {
+      console.error('Error fetching tokens:', error.message)
     }
   }
 
@@ -53,7 +73,7 @@ const TokenGeneration = () => {
       {isTokenGenerated && (
         <p className="text-green-500 mt-2">{t('tokenGeneratedSuccessfully')}</p>
       )}
-      {errorText && <p className="text-red-500 mt-2">{errorText}</p>}{' '}
+      {errorText && <p className="text-red-500 mt-2">{errorText}</p>}
       {accessToken && (
         <div className="flex mt-4 items-center">
           <input
@@ -70,6 +90,34 @@ const TokenGeneration = () => {
           </button>
         </div>
       )}
+
+      <div className="mt-4">
+        <h2 className="text-xl font-bold">{t('yourTokens')}</h2>
+        <table className="mt-2 w-full border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="px-4 py-2">{t('tokenName')}</th>
+              <th className="px-4 py-2">{t('id')}</th>
+              <th className="px-4 py-2">{t('date')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tokens.map((token) => (
+              <tr key={token.id} className="bg-white">
+                <td className="px-4 py-2 border border-gray-300">{token.name}</td>
+                <td className="px-4 py-2 border border-gray-300">
+                  {token.id.length > 8
+                    ? `${token.id.substring(0, 4)}...${token.id.substring(
+                        token.id.length - 4
+                      )}`
+                    : token.id}
+                </td>
+                <td className="px-4 py-2 border border-gray-300">{token.created_at}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
