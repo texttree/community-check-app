@@ -95,26 +95,31 @@ const TokenGeneration = () => {
         <h2 className="text-xl font-bold">{t('yourTokens')}</h2>
         <table className="mt-2 w-full border-collapse border border-gray-300">
           <thead>
-            <tr className="bg-gray-200">
-              <th className="px-4 py-2">{t('tokenName')}</th>
-              <th className="px-4 py-2">{t('id')}</th>
-              <th className="px-4 py-2">{t('date')}</th>
+            <tr className="bg-white">
+              <th className="px-4 py-2 border border-gray-300">{t('tokenName')}</th>
+              <th className="px-4 py-2 border border-gray-300">{t('id')}</th>
+              <th className="px-4 py-2 border border-gray-300">{t('date')}</th>
             </tr>
           </thead>
           <tbody>
-            {tokens.map((token) => (
-              <tr key={token.id} className="bg-white">
-                <td className="px-4 py-2 border border-gray-300">{token.name}</td>
-                <td className="px-4 py-2 border border-gray-300">
-                  {token.id.length > 8
-                    ? `${token.id.substring(0, 4)}...${token.id.substring(
-                        token.id.length - 4
-                      )}`
-                    : token.id}
-                </td>
-                <td className="px-4 py-2 border border-gray-300">{token.created_at}</td>
-              </tr>
-            ))}
+            {tokens.map((token) => {
+              const id = token.id
+              const visibleChars = 4
+              const hiddenChars = id.length - visibleChars * 2
+              const hiddenPart = hiddenChars > 0 ? '.'.repeat(hiddenChars) : ''
+              const maskedId =
+                id.substring(0, visibleChars) +
+                hiddenPart +
+                id.substring(id.length - visibleChars)
+
+              return (
+                <tr key={token.id} className="bg-white">
+                  <td className="px-4 py-2 border border-gray-300">{token.name}</td>
+                  <td className="px-4 py-2 border border-gray-300">{maskedId}</td>
+                  <td className="px-4 py-2 border border-gray-300">{token.created_at}</td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
