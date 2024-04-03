@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 const TokenGeneration = () => {
   const [accessToken, setAccessToken] = useState('')
+  const [tokenName, setTokenName] = useState('')
   const [isTokenGenerated, setIsTokenGenerated] = useState(false)
   const [errorText, setErrorText] = useState('')
   const supabase = useSupabaseClient()
@@ -12,7 +13,7 @@ const TokenGeneration = () => {
 
   const handleGenerateToken = async () => {
     try {
-      const { data, error } = await supabase.rpc('add_token')
+      const { data, error } = await supabase.rpc('add_token', { name: tokenName })
 
       if (error) {
         throw new Error(`Failed to store token in the database: ${error.message}`)
@@ -32,45 +33,47 @@ const TokenGeneration = () => {
     navigator.clipboard.writeText(accessToken)
   }
 
-  const hideToken = (token) => {
-    return '*'.repeat(token.length)
-  }
-
   return (
-    <div className="flex ml-32 mt-4">
-      <div>
+    <div className="flex justify-center items-center flex-col mt-4">
+      <div className="flex items-center">
+        <input
+          type="text"
+          placeholder={t('tokenNamePlaceholder')}
+          className="border border-gray-300 px-4 py-2 rounded-md mr-2"
+          value={tokenName}
+          onChange={(e) => setTokenName(e.target.value)}
+        />
         <button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 inline-block rounded-md"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
           onClick={handleGenerateToken}
         >
           {t('generateToken')}
         </button>
-        {isTokenGenerated && (
-          <p className="text-green-500">Token generated successfully!</p>
-        )}
-        {errorText && <p className="text-red-500">{errorText}</p>}{' '}
       </div>
-      <div>
-        {accessToken && (
-          <div className="flex mt-4">
-            <input
-              type="password"
-              value={hideToken(accessToken)}
-              className="border border-gray-300 ml-2 px-4 py-2  rounded-md"
-              readOnly
-            />
-            <button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 ml-2 rounded-md"
-              onClick={handleCopyToken}
-            >
-              {t('copyToken')}
-            </button>
-          </div>
-        )}
-      </div>
+      {isTokenGenerated && (
+        <p className="text-green-500 mt-2">{t('tokenGeneratedSuccessfully')}</p>
+      )}
+      {errorText && <p className="text-red-500 mt-2">{errorText}</p>}{' '}
+      {accessToken && (
+        <div className="flex mt-4 items-center">
+          <input
+            type="text"
+            value={accessToken}
+            className="border border-gray-300 px-8 py-2 rounded-md mr-2 w-96"
+            readOnly
+          />
+          <button
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+            onClick={handleCopyToken}
+          >
+            {t('copyToken')}
+          </button>
+        </div>
+      )}
     </div>
   )
 }
+
 export async function getServerSideProps({ locale }) {
   return {
     props: {
@@ -78,4 +81,5 @@ export async function getServerSideProps({ locale }) {
     },
   }
 }
+
 export default TokenGeneration
