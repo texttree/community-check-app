@@ -16,6 +16,7 @@
 	"createToken": "Создать токен",
 	"dateCreation": "Дата создания",
 	"dateLastCheck": "Дата последней проверки",
+	"delete": "Удалить",
 	"download": "Скачать",
 	"downloadNotes": "Скачать заметки",
 	"editProject": "Редактировать проект",
@@ -54,6 +55,7 @@
 	"startNewCheck": "Начать новую проверку",
 	"titleInTable": "Заголовок",
 	"titleProject": "Название проекта",
+	"token": "Токен",
 	"uploadMaterial": "Загрузить материал",
 	"welcomeTo": "Добро пожаловать в Community Check",
 	"youLoggedIn": "Вы уже вошли в систему."

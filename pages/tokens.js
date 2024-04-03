@@ -106,14 +106,13 @@ const TokenGeneration = () => {
       )}
 
       <div className="mt-4">
-        <h2 className="text-xl font-bold">{t('yourTokens')}</h2>
         <table className="mt-2 w-full border-collapse border border-gray-300">
           <thead>
             <tr className="bg-white">
-              <th className="px-4 py-2 border border-gray-300">{t('tokenName')}</th>
-              <th className="px-4 py-2 border border-gray-300">{t('id')}</th>
-              <th className="px-4 py-2 border border-gray-300">{t('date')}</th>
-              <th className="px-4 py-2 border border-gray-300">{t('actions')}</th>
+              <th className="px-4 py-2 border border-gray-300">{t('name')}</th>
+              <th className="px-4 py-2 border border-gray-300">{t('token')}</th>
+              <th className="px-4 py-2 border border-gray-300">{t('dateCreation')}</th>
+              <th className="px-4 py-2 border border-gray-300">{t('')}</th>
             </tr>
           </thead>
           <tbody>
