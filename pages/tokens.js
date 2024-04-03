@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 const TokenGeneration = () => {
   const supabase = useSupabaseClient()
