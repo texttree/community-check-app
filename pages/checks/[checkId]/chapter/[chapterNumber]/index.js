@@ -41,7 +41,7 @@ const CheckDetail = () => {
     if (checkId) {
       mutate()
     }
-  }, [checkId])
+  }, [checkId, mutate])
 
   const editVerse = (index) => {
     setEditableVerseIndex(index)
