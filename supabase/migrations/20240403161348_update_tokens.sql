@@ -14,4 +14,14 @@ BEGIN
     
     RETURN new_id;
 END;
+
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION public.get_tokens()
+RETURNS SETOF public.tokens AS $$
+BEGIN
+    RETURN QUERY
+        SELECT * FROM public.tokens WHERE user_id = auth.uid();
+END;
 $$ LANGUAGE plpgsql;
