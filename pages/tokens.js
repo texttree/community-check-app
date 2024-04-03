@@ -130,7 +130,9 @@ const TokenGeneration = () => {
                 <tr key={token.id} className="bg-white">
                   <td className="px-4 py-2 border border-gray-300">{token.name}</td>
                   <td className="px-4 py-2 border border-gray-300">{maskedId}</td>
-                  <td className="px-4 py-2 border border-gray-300">{token.created_at}</td>
+                  <td className="px-4 py-2 border border-gray-300">
+                    {new Date(token.created_at).toLocaleString()}
+                  </td>
                   <td className="px-4 py-2 border border-gray-300">
                     <button
                       onClick={() => handleDeleteToken(token.id)}
