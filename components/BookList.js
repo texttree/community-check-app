@@ -20,9 +20,16 @@ const BookChecksInfo = ({ projectId, bookId, showLastCheck }) => {
 
   const getLatestCheckDate = (checks) => {
     if (checks && checks.length > 0) {
-      const dates = checks.map((check) => new Date(check.check_started_time))
-      const latestDate = new Date(Math.max(...dates))
-      return formatDate(latestDate)
+      const validDates = checks
+        .filter((check) => check.check_started_time !== null)
+        .map((check) => new Date(check.check_started_time))
+
+      if (validDates.length > 0) {
+        const latestDate = new Date(Math.max(...validDates))
+        return formatDate(latestDate)
+      } else {
+        return '-'
+      }
     }
     return '-'
   }

@@ -75,7 +75,7 @@ const CheckList = ({ projectId, bookId }) => {
           month: 'numeric',
           day: 'numeric',
         })
-      : ''
+      : '-'
   }
 
   return (
