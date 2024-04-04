@@ -22,7 +22,6 @@ const CheckId = () => {
   const { t } = useTranslation()
   const router = useRouter()
   const { projectId, bookId, checkId } = router.query
-  const [errorMessage, setErrorMessage] = useState('')
   const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 16))
   const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 16))
   const [materialLink, setMaterialLink] = useState('')
@@ -127,7 +126,6 @@ const CheckId = () => {
   }
 
   const updateResourse = async () => {
-    setErrorMessage('')
     if (checkName && materialLink) {
       await axios
         .get(materialLink)
@@ -137,23 +135,22 @@ const CheckId = () => {
             upsertMaterial(jsonData)
               .then(() => {
                 updateCheck()
-                setShowRef(true)
                 toast.success(t('save'))
               })
               .catch((error) => {
                 console.error(error)
-                setErrorMessage(error.message)
+                toast.error(error.message)
               })
           } else {
-            setErrorMessage(t('enterCorrectLink'))
+            toast.error(t('enterCorrectLink'))
           }
         })
         .catch((error) => {
           console.error(error)
-          setErrorMessage(error.message)
+          toast.error(error.message)
         })
     } else {
-      setErrorMessage(t('nameEmpty'))
+      toast.error(t('nameEmpty'))
     }
   }
 
@@ -194,12 +191,11 @@ const CheckId = () => {
 
         mutate()
         toast.success(t('inspectorCreated'))
-        setErrorMessage('')
       } else {
-        setErrorMessage(t('enterInspectorName'))
+        toast.error(t('enterInspectorName'))
       }
     } catch (error) {
-      setErrorMessage('Error:', error)
+      console.error(error)
     }
   }
 
@@ -279,7 +275,7 @@ const CheckId = () => {
             className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
           />
           <button
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2  my-2 rounded-md"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 my-2 rounded-md"
             onClick={createPersonalLink}
           >
             {t('addPersonalLink')}
