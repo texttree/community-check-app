@@ -86,7 +86,7 @@ const CheckDetail = () => {
     <div className="bg-gray-200">
       {!material && (
         <div className="max-w-6xl mx-auto p-4 text-center">
-          <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>{' '}
+          <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
       )}
       {material && (
@@ -139,7 +139,7 @@ const CheckDetail = () => {
                     <div className="flex items-center justify-between">
                       <button
                         onClick={() => editVerse(index)}
-                        className="bg-blue-500 text-white py-1 px-2 rounded  ml-2"
+                        className="bg-blue-500 text-white py-1 px-2 rounded ml-2"
                       >
                         {t('note')}
                       </button>
