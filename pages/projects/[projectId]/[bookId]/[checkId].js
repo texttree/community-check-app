@@ -126,7 +126,7 @@ const CheckId = () => {
   }
 
   const updateResourse = async () => {
-    if (checkName && materialLink) {
+    if (materialLink) {
       await axios
         .get(materialLink)
         .then((res) => {
@@ -150,7 +150,7 @@ const CheckId = () => {
           toast.error(error.message)
         })
     } else {
-      toast.error(t('nameEmpty'))
+      toast.error(t('provideLink'))
     }
   }
 
