@@ -2,11 +2,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
-
-const formatDate = (dateString) => {
-  const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
-  return new Date(dateString).toLocaleDateString(undefined, options)
-}
+import { formatDate } from '@/helpers/formatDate'
 
 const ErrorMessage = ({ message }) => <span className="text-red-600">{message}</span>
 

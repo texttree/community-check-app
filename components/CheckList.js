@@ -4,9 +4,13 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 
 import useSWR from 'swr'
+
 import { fetcher } from '@/helpers/fetcher'
+import { formatDate } from '@/helpers/formatDate'
+
 import downloadNotes from '@/helpers/downloadNotes'
 import Download from 'public/download.svg'
+
 import toast from 'react-hot-toast'
 import axios from 'axios'
 
@@ -66,16 +70,6 @@ const CheckList = ({ projectId, bookId }) => {
         const message = t('errorDownloadNotes') + ' ' + error
         toast.error(message)
       })
-  }
-
-  const formatDate = (dateString) => {
-    return dateString
-      ? new Date(dateString).toLocaleDateString(undefined, {
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric',
-        })
-      : '-'
   }
 
   return (
