@@ -22,6 +22,7 @@ const CheckDetail = () => {
   const [note, setNote] = useState('')
   const [error, setError] = useState(null)
   const [arrayLength, setArrayLength] = useState(0)
+  const [loading, setLoading] = useState(true)
 
   const { data: material, mutate } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
 
@@ -32,6 +33,7 @@ const CheckDetail = () => {
       setChapter(_chapter)
       setNotes(new Array(_chapter.length).fill(''))
       setArrayLength(Object.keys(chapters).length)
+      setLoading(false)
     }
   }, [material, currentChapterIndex])
 
@@ -86,12 +88,17 @@ const CheckDetail = () => {
 
   return (
     <div className="bg-gray-200">
-      {!material && (
+      {loading && (
+        <div className="max-w-6xl mx-auto p-4 text-center">
+          <p className="text-2xl text-blue-500">{t('loading')}</p>
+        </div>
+      )}
+      {!loading && !material && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>{' '}
         </div>
       )}
-      {material && (
+      {!loading && material && (
         <div className="max-w-6xl mx-auto p-4">
           <h1 className="text-2xl font-bold">{t('checkDetails')}</h1>
           {error && <p className="text-red-500">{error}</p>}
