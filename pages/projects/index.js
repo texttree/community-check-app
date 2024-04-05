@@ -1,9 +1,11 @@
 import Link from 'next/link'
-import useSWR from 'swr'
-import { fetcher } from '@/helpers/fetcher'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import useSWR from 'swr'
+
+import { fetcher } from '@/helpers/fetcher'
 
 const ProjectsPage = () => {
   const { t } = useTranslation()

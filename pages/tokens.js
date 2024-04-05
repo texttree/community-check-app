@@ -5,6 +5,11 @@ import { useTranslation } from 'next-i18next'
 
 import toast, { Toaster } from 'react-hot-toast'
 
+
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
+
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 const TokenGeneration = () => {
   const supabase = useSupabaseClient()
   const { t } = useTranslation()

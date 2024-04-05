@@ -1,6 +1,8 @@
-import Link from 'next/link'
 import { useState } from 'react'
+
+import Link from 'next/link'
 import { useRouter } from 'next/router'
+
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -27,16 +29,13 @@ const NewBookPage = () => {
           },
           body: JSON.stringify({ name }),
         })
-
-        if (response.status === 401) {
-          const errorData = await response.json()
-          console.error('Error fetching data from the service API:', errorData.error)
-        } else if (!response.ok) {
-          throw new Error(`Failed to create book: ${response.statusText}`)
-        } else {
-          const data = await response.json()
-          router.push(`/projects/${projectId}/${data.id}`)
+        if (!response.ok) {
+          const errorMessage =
+            response.status === 400 ? t('errorCreateBook') : response.statusText
+          throw new Error(`${errorMessage}`)
         }
+        const data = await response.json()
+        router.push(`/projects/${projectId}/${data.book_id}`)
       } catch (error) {
         console.error(error)
         setErrorMessage(error.message)

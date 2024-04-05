@@ -1,16 +1,22 @@
 import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/router'
+
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+
+import toast, { Toaster } from 'react-hot-toast'
+
 import useSWR from 'swr'
 import axios from 'axios'
-import toast, { Toaster } from 'react-hot-toast'
+
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import usfm from 'usfm-js'
-import LeftArrow from 'public/left.svg'
-import Copy from 'public/copy.svg'
 
 import { fetcher } from '@/helpers/fetcher'
+
+import LeftArrow from 'public/left.svg'
+import Copy from 'public/copy.svg'
 
 const CheckId = () => {
   const { t } = useTranslation()
@@ -20,22 +26,30 @@ const CheckId = () => {
   const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 16))
   const [materialLink, setMaterialLink] = useState('')
   const [checkName, setCheckName] = useState('')
+  const [inspectorName, setInspectorName] = useState('')
   const checkPageRef = useRef(null)
   const [showRef, setShowRef] = useState(false)
+  const chapterNumber = 1
 
-  const { data: material, error } = useSWR(
+  const { data: material } = useSWR(
     projectId &&
       materialLink &&
       bookId &&
       checkId &&
+      materialLink &&
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
     fetcher
   )
-  const { data: check, error: err } = useSWR(
+  const { data: check } = useSWR(
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
     fetcher
   )
-
+  const { data: inspectors, mutate } = useSWR(
+    projectId &&
+      bookId &&
+      `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
+    fetcher
+  )
   const copyToClipboard = () => {
     const textToCopy = checkPageRef.current.innerText
 
@@ -59,13 +73,60 @@ const CheckId = () => {
     }
   }, [checkId, check, material])
 
+  const parsingWordText = (jsonData) => {
+    if (!jsonData || !jsonData.chapters || typeof jsonData.chapters !== 'object') {
+      return
+    }
+
+    const result = { headers: jsonData.headers, chapters: {} }
+
+    const processVerseObject = (verseObject) => {
+      if (!verseObject || typeof verseObject !== 'object') return
+
+      if (verseObject.text) {
+        return { type: verseObject.type, text: verseObject.text }
+      } else if (
+        verseObject.type === 'milestone' &&
+        verseObject.children &&
+        Array.isArray(verseObject.children)
+      ) {
+        const childrenTexts = verseObject.children.map((child) =>
+          processVerseObject(child)
+        )
+        return { type: 'milestone', tag: 'zaln', children: childrenTexts.filter(Boolean) }
+      }
+    }
+
+    const processVerse = (verse) => {
+      const verseObjects = (verse.verseObjects || []).map(processVerseObject)
+      return { verseObjects: verseObjects.filter(Boolean) }
+    }
+
+    const processChapter = (chapter) => {
+      const chapterResult = {}
+
+      for (const [verseNumber, verse] of Object.entries(chapter)) {
+        chapterResult[verseNumber] = processVerse(verse)
+      }
+
+      return chapterResult
+    }
+
+    for (const [chapterNumber, chapter] of Object.entries(jsonData.chapters)) {
+      if (typeof chapter !== 'object') continue
+      result.chapters[chapterNumber] = processChapter(chapter)
+    }
+
+    return result
+  }
+
   const updateResourse = async () => {
     setErrorMessage('')
     if (checkName && materialLink) {
       await axios
         .get(materialLink)
         .then((res) => {
-          const jsonData = usfm.toJSON(res.data)
+          const jsonData = parsingWordText(usfm.toJSON(res.data))
           if (Object.keys(jsonData?.chapters).length > 0) {
             upsertMaterial(jsonData)
               .then(() => {
@@ -114,6 +175,31 @@ const CheckId = () => {
         return res.data.id
       })
   }
+  const createPersonalLink = async () => {
+    try {
+      if (inspectorName) {
+        await axios.post(
+          `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
+          {
+            inspectorName,
+          }
+        )
+
+        mutate()
+        toast.success(t('inspectorCreated'))
+        setErrorMessage('')
+      } else {
+        setErrorMessage(t('enterInspectorName'))
+      }
+    } catch (error) {
+      setErrorMessage('Произошла ошибка:', error)
+    }
+  }
+
+  const currentDomain =
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : 'https://community-check-app.netlify.app'
 
   return (
     <div className="bg-gray-200 py-8">
@@ -158,14 +244,50 @@ const CheckId = () => {
         )}
         {materialLink !== '' && showRef && (
           <div className="flex my-4">
-            <Link href={`/checks/${checkId}`} ref={checkPageRef}>
-              https://community-check-app.netlify.app/checks/{checkId}
+            <Link href={`/checks/${checkId}/chapter/${chapterNumber}`} ref={checkPageRef}>
+              {currentDomain}/checks/{checkId}/chapter/
+              {chapterNumber}
             </Link>
             <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
           </div>
         )}
+        <div className="my-2">
+          <button
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2  my-2 rounded-md"
+            onClick={createPersonalLink}
+          >
+            Add a personal link
+          </button>
+          <input
+            type="text"
+            value={inspectorName}
+            onChange={(e) => setInspectorName(e.target.value)}
+            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
+          />
+        </div>
 
-        {errorMessage && <p className="text-red-600">{errorMessage}</p>}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {errorMessage ? (
+            <p className="text-red-600">{errorMessage}</p>
+          ) : inspectors ? (
+            <div className="flex flex-col">
+              {inspectors.map((inspector) => (
+                <div key={inspector.id} className="border p-4 mb-4">
+                  <p>Name: {inspector.name}</p>
+
+                  <Link href={`/checks/${checkId}/${inspector.id}`} ref={checkPageRef}>
+                    https://community-check-app.netlify.app/checks/{checkId}/
+                    {inspector.id}
+                  </Link>
+
+                  <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>{t('loading')}...</p>
+          )}
+        </div>
 
         <button
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"

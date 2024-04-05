@@ -14,15 +14,12 @@ export default async function handler(req, res) {
     body: { name },
     method,
   } = req
-
   try {
     switch (method) {
-      case 'GET': // получить книги
-        const { data, error } = await supabase
-          .from('books')
-          .select()
-          .eq('project_id', projectId)
-
+      case 'GET': // получить книги в рамках проекта
+        const { data, error } = await supabase.rpc('get_books_by_project', {
+          p_project_id: projectId,
+        })
         if (error) {
           throw error
         }
@@ -30,18 +27,18 @@ export default async function handler(req, res) {
 
       case 'POST': // создать новую книгу
         await checkComCheckAppMiddleware(supabase, req, res, async () => {
-          const { data: book, error } = await supabase
-            .from('books')
-            .insert([
-              {
-                name,
-                project_id: projectId,
-              },
-            ])
-            .single()
-            .select('id')
-          if (error) throw error
-          return res.status(200).json(book)
+          const { data: newBook, error: createError } = await supabase.rpc(
+            'create_book',
+            {
+              p_project_id: projectId,
+              book_name: name,
+            }
+          )
+          if (createError) {
+            return res.status(400).json()
+          }
+
+          return res.status(200).json(newBook)
         })
         break
       default:

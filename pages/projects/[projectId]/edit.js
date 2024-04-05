@@ -1,11 +1,15 @@
+import { useEffect, useState } from 'react'
+
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import useSWR from 'swr'
-import { fetcher } from '@/helpers/fetcher'
-import axios from 'axios'
-import { useEffect, useState } from 'react'
+
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import useSWR from 'swr'
+import axios from 'axios'
+
+import { fetcher } from '@/helpers/fetcher'
 
 import LeftArrow from 'public/left.svg'
 
@@ -36,19 +40,15 @@ const ProjectEditPage = () => {
         .then((res) => {
           if (res.status === 200) {
             router.push('/projects/' + projectId)
-          } else {
-            throw res
           }
         })
-        .catch((error) => {
-          console.error(error)
-          setErrorMessage(error.message)
+        .catch(() => {
+          setErrorMessage(t('errorEditNameProject'))
         })
     } else {
       setErrorMessage(t('nameEmpty'))
     }
   }
-
   return (
     <div className="bg-gray-200 min-h-screen py-8">
       <div className="max-w-6xl mx-auto p-4">

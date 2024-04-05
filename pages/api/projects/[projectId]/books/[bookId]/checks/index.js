@@ -17,10 +17,9 @@ export default async function handler(req, res) {
   switch (method) {
     case 'GET': // получить проверки
       try {
-        const { data, error } = await supabase
-          .from('checks')
-          .select()
-          .eq('book_id', bookId)
+        const { data, error } = await supabase.rpc('get_checks_for_book', {
+          book_id_param: bookId,
+        })
 
         if (error) {
           throw error

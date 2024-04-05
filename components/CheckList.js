@@ -13,13 +13,13 @@ const CheckList = ({ projectId, bookId }) => {
     fetcher
   )
   const handleDownloadNotes = (check) => {
-    downloadNotes(check)
+    downloadNotes(check, t)
       .then((notes) => {
         const blob = new Blob([notes])
 
         const link = document.createElement('a')
         link.href = window.URL.createObjectURL(blob)
-        link.download = `${check.name}.tsv`
+        link.download = `${check.check_name}.tsv`
 
         document.body.appendChild(link)
         link.click()
@@ -48,16 +48,16 @@ const CheckList = ({ projectId, bookId }) => {
             </thead>
             <tbody>
               {checks.map((check) => (
-                <tr key={check.id}>
+                <tr key={check.check_id}>
                   <td className="border p-2 text-center">
                     <Link
-                      href={`/projects/${projectId}/${bookId}/${check.id}`}
+                      href={`/projects/${projectId}/${bookId}/${check.check_id}`}
                       className="text-blue-600 hover:underline"
                     >
-                      {check.name}
+                      {check.check_name}
                     </Link>
                   </td>
-                  <td className="border p-2 text-center">{check.finished_at}</td>
+                  <td className="border p-2 text-center">{check.check_finish_time}</td>
                   <td className="border p-2 text-center">
                     {
                       <button onClick={() => handleDownloadNotes(check)}>
@@ -65,7 +65,7 @@ const CheckList = ({ projectId, bookId }) => {
                       </button>
                     }
                   </td>
-                  <td className="border p-2 text-center">{check.id}</td>
+                  <td className="border p-2 text-center">{check.check_id}</td>
                 </tr>
               ))}
             </tbody>

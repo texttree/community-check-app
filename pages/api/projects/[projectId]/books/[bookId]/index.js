@@ -17,29 +17,26 @@ export default async function handler(req, res) {
   switch (method) {
     case 'GET': // получить книгу
       try {
-        const { data, error } = await supabase
-          .from('books')
-          .select('*')
-          .eq('id', bookId)
-          .single()
+        const { data, error } = await supabase.rpc('get_book_by_id', { book_id: bookId })
         if (error) {
           throw error
         }
-        return res.status(200).json(data)
+        return res.status(200).json(data[0])
       } catch (error) {
         return res.status(404).json({ error })
       }
 
     case 'POST': // обновить книгу
       try {
-        const { data: book, error } = await supabase
-          .from('books')
-          .update({
-            name,
-          })
-          .eq('id', bookId)
-          .select()
-        if (error) throw error
+        const { data: book, error } = await supabase.rpc('update_book_name', {
+          book_id: bookId,
+          new_name: name,
+        })
+
+        if (error) {
+          throw error
+        }
+
         return res.status(200).json(book)
       } catch (error) {
         return res.status(404).json({ error })
