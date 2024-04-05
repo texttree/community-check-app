@@ -20,10 +20,25 @@ const CheckDetail = () => {
   })
   const [note, setNote] = useState('')
   const [error, setError] = useState(null)
-  const [chapterLength, setChapterLength] = useState(0)
-  const [loading, setLoading] = useState(true)
 
-  const { data: material, mutate } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
+  const [chapterLength, setChapterLength] = useState(0)
+  const [checkName, setCheckName] = useState('')
+  const [bookName, setBookName] = useState('')
+
+  const {
+    data: material,
+    isLoading,
+    mutate,
+  } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
+
+  const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
+
+  useEffect(() => {
+    if (info) {
+      setCheckName(info.check_name)
+      setBookName(info.book_name)
+    }
+  }, [info])
 
   useEffect(() => {
     if (material?.content) {
@@ -31,7 +46,6 @@ const CheckDetail = () => {
       const _chapter = parseChapter(chapters[currentChapterIndex])
       setChapter(_chapter)
       setChapterLength(Object.keys(chapters).length)
-      setLoading(false)
     }
   }, [material, currentChapterIndex])
 
@@ -54,14 +68,13 @@ const CheckDetail = () => {
   }
 
   const addNotes = () => {
-    const chapterNum = currentChapterIndex
     const verse = editableVerseIndex + 1
     const materialId = material.id
     axios
       .post(`/api/checks/${checkId}/notes`, {
         materialId,
         note,
-        chapter: chapterNum,
+        chapter: currentChapterIndex,
         verse,
       })
       .then((res) => {
@@ -86,19 +99,19 @@ const CheckDetail = () => {
 
   return (
     <div className="bg-gray-200">
-      {loading && (
+      {isLoading && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-blue-500">{t('loading')}</p>
         </div>
       )}
-      {!loading && !material && (
+      {!isLoading && !material && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
       )}
-      {!loading && material && (
+      {!isLoading && material && (
         <div className="max-w-6xl mx-auto p-4">
-          <h1 className="text-2xl font-bold">{t('checkDetails')}</h1>
+          <h1 className="text-2xl font-bold">{`${checkName}, ${bookName}`}</h1>
           {error && <p className="text-red-500">{error}</p>}
           {chapter.length > 0 && (
             <div className="mt-4">
@@ -111,7 +124,7 @@ const CheckDetail = () => {
                 >
                   {t('previousChapter')}
                 </button>
-
+                <p className="text-2xl font-bold">{currentChapterIndex}</p>
                 <button
                   onClick={handleNextChapter}
                   className={`bg-blue-500 text-white py-2 px-4 rounded ${
