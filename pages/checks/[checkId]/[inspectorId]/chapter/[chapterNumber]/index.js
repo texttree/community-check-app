@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { fetcher } from '@/helpers/fetcher'
 import { parseChapter } from '@/helpers/usfmHelper'
+import CheckInfo from '@/components/CheckInfo'
 
 const CheckDetail = () => {
   const { t } = useTranslation()
@@ -113,8 +114,7 @@ const CheckDetail = () => {
       )}
       {!isLoading && material && (
         <div className="max-w-6xl mx-auto p-4">
-          <h1 className="text-2xl font-bold">{`${checkName}, ${bookName}`}</h1>
-          {error && <p className="text-red-500">{error}</p>}
+          <CheckInfo t={t} error={error} checkName={checkName} bookName={bookName} />
           {chapter.length > 0 && (
             <div className="mt-4">
               <div className="flex justify-between mb-4">
