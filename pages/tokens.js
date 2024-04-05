@@ -5,11 +5,6 @@ import { useTranslation } from 'next-i18next'
 
 import toast, { Toaster } from 'react-hot-toast'
 
-
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
-
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
 const TokenGeneration = () => {
   const supabase = useSupabaseClient()
   const { t } = useTranslation()
@@ -113,48 +108,50 @@ const TokenGeneration = () => {
         </div>
       )}
 
-      <div className="mt-4">
-        <table className="mt-2 w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-white">
-              <th className="px-4 py-2 border border-gray-300">{t('name')}</th>
-              <th className="px-4 py-2 border border-gray-300">{t('token')}</th>
-              <th className="px-4 py-2 border border-gray-300">{t('dateCreation')}</th>
-              <th className="px-4 py-2 border border-gray-300">{t('')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tokens.map((token) => {
-              const id = token.id
-              const visibleChars = 4
-              const hiddenChars = id.length - visibleChars * 2
-              const hiddenPart = hiddenChars > 0 ? '.'.repeat(hiddenChars) : ''
-              const maskedId =
-                id.substring(0, visibleChars) +
-                hiddenPart +
-                id.substring(id.length - visibleChars)
+      {tokens.length > 0 && (
+        <div className="mt-4">
+          <table className="mt-2 w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-white">
+                <th className="px-4 py-2 border border-gray-300">{t('name')}</th>
+                <th className="px-4 py-2 border border-gray-300">{t('token')}</th>
+                <th className="px-4 py-2 border border-gray-300">{t('dateCreation')}</th>
+                <th className="px-4 py-2 border border-gray-300">{t('')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tokens.map((token) => {
+                const id = token.id
+                const visibleChars = 4
+                const hiddenChars = id.length - visibleChars * 2
+                const hiddenPart = hiddenChars > 0 ? '.'.repeat(hiddenChars) : ''
+                const maskedId =
+                  id.substring(0, visibleChars) +
+                  hiddenPart +
+                  id.substring(id.length - visibleChars)
 
-              return (
-                <tr key={token.id} className="bg-white">
-                  <td className="px-4 py-2 border border-gray-300">{token.name}</td>
-                  <td className="px-4 py-2 border border-gray-300">{maskedId}</td>
-                  <td className="px-4 py-2 border border-gray-300">
-                    {new Date(token.created_at).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-2 border border-gray-300">
-                    <button
-                      onClick={() => handleDeleteToken(token.id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
-                    >
-                      {t('delete')}
-                    </button>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
+                return (
+                  <tr key={token.id} className="bg-white">
+                    <td className="px-4 py-2 border border-gray-300">{token.name}</td>
+                    <td className="px-4 py-2 border border-gray-300">{maskedId}</td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      {new Date(token.created_at).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-2 border border-gray-300">
+                      <button
+                        onClick={() => handleDeleteToken(token.id)}
+                        className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                      >
+                        {t('delete')}
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }
