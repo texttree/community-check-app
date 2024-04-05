@@ -5,7 +5,6 @@ export default async function handler(req, res) {
     query: { bookId },
     method,
   } = req
-  console.log(bookId, 8)
   try {
     switch (method) {
       case 'GET':

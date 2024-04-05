@@ -23,35 +23,17 @@ const CheckList = ({ projectId, bookId }) => {
     fetcher
   )
 
+  const { data: info } = useSWR(bookId && `/api/info_check/books/${bookId}`, fetcher)
+
   useEffect(() => {
-    const counterNotes = async (check) => {
-      try {
-        const responseMaterials = await axios.get(`/api/checks/${check.check_id}/notes`)
-        const notes = responseMaterials.data
-
-        return notes.length
-      } catch (error) {
-        throw error
-      }
-    }
-
-    const fetchNotesCounts = async () => {
+    if (info) {
       const counts = {}
-      for (const check of checks) {
-        try {
-          const count = await counterNotes(check)
-          counts[check.check_id] = count
-        } catch (error) {
-          counts[check.check_id] = 'error'
-        }
-      }
+      info.forEach((item) => {
+        counts[item.check_id] = item.notes_count
+      })
       setNotesCounts(counts)
     }
-
-    if (checks) {
-      fetchNotesCounts()
-    }
-  }, [checks])
+  }, [info])
 
   const handleDownloadNotes = (check) => {
     downloadNotes(check, t)
