@@ -12,7 +12,6 @@ import downloadNotes from '@/helpers/downloadNotes'
 import Download from 'public/download.svg'
 
 import toast from 'react-hot-toast'
-import axios from 'axios'
 
 const CheckList = ({ projectId, bookId }) => {
   const { t } = useTranslation()
@@ -89,27 +88,25 @@ const CheckList = ({ projectId, bookId }) => {
                     {formatDate(check.check_finished_time)}
                   </td>
                   <td className="border p-2 text-center">
-                    {
-                      <button
-                        onClick={() => handleDownloadNotes(check)}
-                        disabled={notesCounts[check.check_id] === 'error'}
-                        className={
-                          notesCounts[check.check_id] === 'error'
-                            ? 'opacity-50 cursor-not-allowed'
-                            : ''
-                        }
-                      >
-                        <Download className="h-5 w-5 mr-1" />
-                      </button>
-                    }
+                    <button
+                      onClick={() => handleDownloadNotes(check)}
+                      disabled={
+                        notesCounts[check.check_id] === undefined ||
+                        notesCounts[check.check_id] === 0
+                      }
+                      className={
+                        notesCounts[check.check_id] === undefined ||
+                        notesCounts[check.check_id] === 0
+                          ? 'opacity-50 cursor-not-allowed'
+                          : ''
+                      }
+                    >
+                      <Download className="h-5 w-5 mr-1" />
+                    </button>
                   </td>
 
                   <td className="border p-2 text-center">
-                    {notesCounts[check.check_id] === 'error' ? (
-                      <span>0</span>
-                    ) : (
-                      notesCounts[check.check_id]
-                    )}
+                    {notesCounts[check.check_id] || 0}
                   </td>
                 </tr>
               ))}
