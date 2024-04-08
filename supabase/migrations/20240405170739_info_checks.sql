@@ -1,3 +1,4 @@
+DROP FUNCTION IF EXISTS get_check_and_book_names
 CREATE OR REPLACE FUNCTION get_check_and_book_names(checks_id uuid)
 RETURNS json AS
 $$
