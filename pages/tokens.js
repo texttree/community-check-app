@@ -18,10 +18,6 @@ const TokenGeneration = () => {
   }, [])
 
   const handleGenerateToken = async () => {
-    if (tokenName.trim() === '') {
-      toast.error(t('tokenErrorEmpty'))
-      return
-    }
     try {
       const { data, error } = await supabase.rpc('add_token', { p_name: tokenName })
 
