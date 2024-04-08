@@ -116,7 +116,7 @@ const TokenGeneration = () => {
                 <th className="px-4 py-2 border border-gray-300">{t('name')}</th>
                 <th className="px-4 py-2 border border-gray-300">{t('token')}</th>
                 <th className="px-4 py-2 border border-gray-300">{t('dateCreation')}</th>
-                <th className="px-4 py-2 border border-gray-300">{t('')}</th>
+                <th className="px-4 py-2 border border-gray-300">{''}</th>
               </tr>
             </thead>
             <tbody>
