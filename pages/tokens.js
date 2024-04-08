@@ -19,7 +19,7 @@ const TokenGeneration = () => {
 
   const handleGenerateToken = async () => {
     if (tokenName.trim() === '') {
-      toast.error('Token name cannot be empty!')
+      toast.error(t('tokenErrorEmpty'))
       return
     }
     try {
@@ -32,10 +32,10 @@ const TokenGeneration = () => {
       setToken(data)
       fetchTokens()
 
-      toast.success('Token generated successfully!')
+      toast.success(t('tokenSuccessCreated'))
     } catch (error) {
       console.error('Error generating or storing tokens:', error.message)
-      toast.error('Failed to generate or store tokens')
+      toast.error(t('tokenErrorCreated'))
     }
   }
 

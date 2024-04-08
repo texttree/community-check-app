@@ -65,7 +65,10 @@
 	"titleInTable": "Заголовок",
 	"titleProject": "Название проекта",
 	"token": "Токен",
+	"tokenErrorCreated": "Ошибка при генерации и сохранении токена",
+	"tokenErrorEmpty": "Имя токена не может быть пустым",
 	"tokenName": "Название токена",
+	"tokenSuccessCreated": "Токен успешно сгенерирован",
 	"uploadMaterial": "Загрузить материал",
 	"welcomeTo": "Добро пожаловать в Community Check",
 	"youLoggedIn": "Вы уже вошли в систему."
