@@ -94,12 +94,7 @@ const CheckList = ({ projectId, bookId }) => {
                         notesCounts[check.check_id] === undefined ||
                         notesCounts[check.check_id] === 0
                       }
-                      className={
-                        notesCounts[check.check_id] === undefined ||
-                        notesCounts[check.check_id] === 0
-                          ? 'opacity-50 cursor-not-allowed'
-                          : ''
-                      }
+                      className="disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Download className="h-5 w-5 mr-1" />
                     </button>
