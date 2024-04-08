@@ -1,15 +1,23 @@
 CREATE OR REPLACE FUNCTION get_check_and_book_names(checks_id uuid)
-RETURNS TABLE(check_name text, book_name text) AS
+RETURNS json AS
 $$
+DECLARE
+    check_info json;
 BEGIN
-    RETURN QUERY
-    SELECT c.name AS check_name, b.name AS book_name
+    SELECT json_build_object(
+        'check_name', c.name,
+        'book_name', b.name
+    )
+    INTO check_info
     FROM public.checks c
     INNER JOIN public.books b ON c.book_id = b.id
     WHERE c.id = checks_id;
+
+    RETURN check_info;
 END;
 $$
 LANGUAGE plpgsql;
+
 
 
 
