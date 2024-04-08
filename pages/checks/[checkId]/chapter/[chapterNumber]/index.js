@@ -112,7 +112,7 @@ const CheckDetail = () => {
       )}
       {!isLoading && material && (
         <div className="max-w-6xl mx-auto p-4">
-          <CheckInfo t={t} error={error} checkName={checkName} bookName={bookName} />
+          <CheckInfo error={error} checkName={checkName} bookName={bookName} />
           {chapter.length > 0 && (
             <div className="mt-4">
               <div className="flex justify-between mb-4">
