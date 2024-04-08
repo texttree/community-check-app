@@ -73,13 +73,60 @@ const CheckId = () => {
     }
   }, [checkId, check, material])
 
+  const parsingWordText = (jsonData) => {
+    if (!jsonData || !jsonData.chapters || typeof jsonData.chapters !== 'object') {
+      return
+    }
+
+    const result = { headers: jsonData.headers, chapters: {} }
+
+    const processVerseObject = (verseObject) => {
+      if (!verseObject || typeof verseObject !== 'object') return
+
+      if (verseObject.text) {
+        return { type: verseObject.type, text: verseObject.text }
+      } else if (
+        verseObject.type === 'milestone' &&
+        verseObject.children &&
+        Array.isArray(verseObject.children)
+      ) {
+        const childrenTexts = verseObject.children.map((child) =>
+          processVerseObject(child)
+        )
+        return { type: 'milestone', tag: 'zaln', children: childrenTexts.filter(Boolean) }
+      }
+    }
+
+    const processVerse = (verse) => {
+      const verseObjects = (verse.verseObjects || []).map(processVerseObject)
+      return { verseObjects: verseObjects.filter(Boolean) }
+    }
+
+    const processChapter = (chapter) => {
+      const chapterResult = {}
+
+      for (const [verseNumber, verse] of Object.entries(chapter)) {
+        chapterResult[verseNumber] = processVerse(verse)
+      }
+
+      return chapterResult
+    }
+
+    for (const [chapterNumber, chapter] of Object.entries(jsonData.chapters)) {
+      if (typeof chapter !== 'object') continue
+      result.chapters[chapterNumber] = processChapter(chapter)
+    }
+
+    return result
+  }
+
   const updateResourse = async () => {
     setErrorMessage('')
     if (checkName && materialLink) {
       await axios
         .get(materialLink)
         .then((res) => {
-          const jsonData = usfm.toJSON(res.data)
+          const jsonData = parsingWordText(usfm.toJSON(res.data))
           if (Object.keys(jsonData?.chapters).length > 0) {
             upsertMaterial(jsonData)
               .then(() => {
