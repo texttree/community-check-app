@@ -10,7 +10,6 @@ BEGIN
         WHEN others THEN
             note_deleted := FALSE;
     END;
-    
     RETURN note_deleted;
 END;
 $$ LANGUAGE plpgsql;
