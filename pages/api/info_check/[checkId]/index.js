@@ -1,4 +1,4 @@
-import serverApi from '@/helpers/serverApi'
+import { supabaseService } from '@/helpers/supabaseService'
 
 export default async function handler(req, res) {
   const {
@@ -9,14 +9,7 @@ export default async function handler(req, res) {
   try {
     switch (method) {
       case 'GET':
-        let supabase
-        try {
-          supabase = await serverApi(req, res)
-        } catch (error) {
-          return res.status(401).json({ error })
-        }
-
-        const { data, error } = await supabase.rpc('get_check_and_book_names', {
+        const { data, error } = await supabaseService.rpc('get_check_and_book_names', {
           checks_id: checkId,
         })
 
