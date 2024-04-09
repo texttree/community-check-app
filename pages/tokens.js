@@ -47,7 +47,7 @@ const TokenGeneration = () => {
       }
 
       mutateTokens()
-      toast.success('Token deleted successfully!')
+      toast.success(t('tokenSuccessDeleted'))
     } catch (error) {
       console.error('Error deleting token:', error.message)
     }
