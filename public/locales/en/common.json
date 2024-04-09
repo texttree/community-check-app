@@ -68,6 +68,7 @@
   "tokenErrorCreated": "Failed to generate or store tokens",
   "tokenName": "Name token",
   "tokenSuccessCreated": "Token generated successfully!",
+  "tokenSuccessDeleted": "Token deleted successfully!",
   "uploadMaterial": "Upload material",
   "welcomeTo": "Welcome to Community Check",
   "youLoggedIn": "You are already logged in."

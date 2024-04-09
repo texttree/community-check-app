@@ -33,8 +33,8 @@
 	"expirationDate": "Дата истечения срока действия:",
 	"generateToken": "Сгенерировать токен",
 	"goToProjects": "Перейти к проектам",
-	"invalidInformationNote": "Неверные данные для отправки заметки.",
 	"inspectorCreated": "Проверяющий создан",
+	"invalidInformationNote": "Неверные данные для отправки заметки.",
 	"linkResource": "Ссылка на ресурс",
 	"loading": "Загрузка",
 	"loginToAccess": "Пожалуйста, войдите, чтобы получить доступ к полному функционалу.",
@@ -68,6 +68,7 @@
 	"tokenErrorCreated": "Ошибка при генерации и сохранении токена",
 	"tokenName": "Название токена",
 	"tokenSuccessCreated": "Токен успешно сгенерирован",
+	"tokenSuccessDeleted": "Токен успешно удален",
 	"uploadMaterial": "Загрузить материал",
 	"welcomeTo": "Добро пожаловать в Community Check",
 	"youLoggedIn": "Вы уже вошли в систему."
