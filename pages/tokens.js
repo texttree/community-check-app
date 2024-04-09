@@ -1,7 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
+
+import useSWR from 'swr'
+import { fetcher } from '@/helpers/fetcher'
 
 import toast, { Toaster } from 'react-hot-toast'
 
@@ -10,12 +13,9 @@ const TokenGeneration = () => {
   const { t } = useTranslation()
 
   const [token, setToken] = useState('')
-  const [tokens, setTokens] = useState([])
   const [tokenName, setTokenName] = useState('')
 
-  useEffect(() => {
-    fetchTokens()
-  }, [])
+  const { data: tokens, mutate: mutateTokens } = useSWR(`/api/mask_tokens`, fetcher)
 
   const handleGenerateToken = async () => {
     try {
@@ -26,26 +26,11 @@ const TokenGeneration = () => {
       }
 
       setToken(data)
-      fetchTokens()
-
+      mutateTokens()
       toast.success(t('tokenSuccessCreated'))
     } catch (error) {
       console.error('Error generating or storing tokens:', error.message)
       toast.error(t('tokenErrorCreated'))
-    }
-  }
-
-  const fetchTokens = async () => {
-    try {
-      const { data, error } = await supabase.rpc('get_tokens')
-
-      if (error) {
-        throw new Error(`Failed to fetch tokens: ${error.message}`)
-      }
-
-      setTokens(data)
-    } catch (error) {
-      console.error('Error fetching tokens:', error.message)
     }
   }
 
@@ -61,7 +46,7 @@ const TokenGeneration = () => {
         throw new Error(`Failed to delete token: ${error.message}`)
       }
 
-      fetchTokens()
+      mutateTokens()
       toast.success('Token deleted successfully!')
     } catch (error) {
       console.error('Error deleting token:', error.message)
@@ -104,7 +89,7 @@ const TokenGeneration = () => {
         </div>
       )}
 
-      {tokens.length > 0 && (
+      {tokens && tokens.length > 0 && (
         <div className="mt-4">
           <table className="mt-2 w-full border-collapse border border-gray-300">
             <thead>
@@ -117,19 +102,10 @@ const TokenGeneration = () => {
             </thead>
             <tbody>
               {tokens.map((token) => {
-                const id = token.id
-                const visibleChars = 4
-                const hiddenChars = id.length - visibleChars * 2
-                const hiddenPart = hiddenChars > 0 ? '.'.repeat(hiddenChars) : ''
-                const maskedId =
-                  id.substring(0, visibleChars) +
-                  hiddenPart +
-                  id.substring(id.length - visibleChars)
-
                 return (
                   <tr key={token.id} className="bg-white">
                     <td className="px-4 py-2 border border-gray-300">{token.name}</td>
-                    <td className="px-4 py-2 border border-gray-300">{maskedId}</td>
+                    <td className="px-4 py-2 border border-gray-300">{token.token}</td>
                     <td className="px-4 py-2 border border-gray-300">
                       {new Date(token.created_at).toLocaleString()}
                     </td>
