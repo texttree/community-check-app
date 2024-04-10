@@ -15,8 +15,7 @@ const TokenGeneration = () => {
   const [token, setToken] = useState('')
   const [tokenName, setTokenName] = useState('')
 
-  const { data: tokens, mutate: mutateTokens } = useSWR(`/api/mask_tokens`, fetcher)
-
+  const { data: tokens, mutate: mutateTokens } = useSWR(`/api/name_tokens`, fetcher)
   const handleGenerateToken = async () => {
     try {
       const { data, error } = await supabase.rpc('add_token', { p_name: tokenName })
@@ -36,11 +35,12 @@ const TokenGeneration = () => {
 
   const handleCopyToken = () => {
     navigator.clipboard.writeText(token)
+    toast.success(t('tokenSuccessCopy'))
   }
 
-  const handleDeleteToken = async (token_id) => {
+  const handleDeleteToken = async (token_name) => {
     try {
-      const { error } = await supabase.rpc('delete_token', { token_id })
+      const { error } = await supabase.rpc('delete_token', { token_name })
 
       if (error) {
         throw new Error(`Failed to delete token: ${error.message}`)
@@ -95,7 +95,6 @@ const TokenGeneration = () => {
             <thead>
               <tr className="bg-white">
                 <th className="px-4 py-2 border border-gray-300">{t('name')}</th>
-                <th className="px-4 py-2 border border-gray-300">{t('token')}</th>
                 <th className="px-4 py-2 border border-gray-300">{t('dateCreation')}</th>
                 <th className="px-4 py-2 border border-gray-300">{''}</th>
               </tr>
@@ -103,15 +102,14 @@ const TokenGeneration = () => {
             <tbody>
               {tokens.map((token) => {
                 return (
-                  <tr key={token.id} className="bg-white">
-                    <td className="px-4 py-2 border border-gray-300">{token.name}</td>
-                    <td className="px-4 py-2 border border-gray-300">{token.token}</td>
+                  <tr key={token.p_name} className="bg-white">
+                    <td className="px-4 py-2 border border-gray-300">{token.p_name}</td>
                     <td className="px-4 py-2 border border-gray-300">
-                      {new Date(token.created_at).toLocaleString()}
+                      {new Date(token.p_created_at).toLocaleString()}
                     </td>
                     <td className="px-4 py-2 border border-gray-300">
                       <button
-                        onClick={() => handleDeleteToken(token.id)}
+                        onClick={() => handleDeleteToken(token.p_name)}
                         className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
                       >
                         {t('delete')}
