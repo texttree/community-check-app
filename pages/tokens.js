@@ -53,6 +53,8 @@ const TokenGeneration = () => {
     }
   }
 
+  const areTokensExist = tokens && tokens.length > 0
+
   return (
     <div className="flex justify-center items-center flex-col mt-4">
       <Toaster />
@@ -72,7 +74,7 @@ const TokenGeneration = () => {
         </button>
       </div>
 
-      {token && (
+      {areTokensExist && (
         <div className="flex mt-4 items-center">
           <input
             type="text"
@@ -89,7 +91,7 @@ const TokenGeneration = () => {
         </div>
       )}
 
-      {tokens && tokens.length > 0 && (
+      {areTokensExist && (
         <div className="mt-4">
           <table className="mt-2 w-full border-collapse border border-gray-300">
             <thead>
