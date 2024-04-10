@@ -67,6 +67,7 @@
 	"token": "Токен",
 	"tokenErrorCreated": "Ошибка при генерации и сохранении токена",
 	"tokenName": "Название токена",
+	"tokenSuccessCopy": "Токен успешно скопирован",
 	"tokenSuccessCreated": "Токен успешно сгенерирован",
 	"tokenSuccessDeleted": "Токен успешно удален",
 	"uploadMaterial": "Загрузить материал",
