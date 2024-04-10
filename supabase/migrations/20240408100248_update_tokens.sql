@@ -1,6 +1,3 @@
-ALTER TABLE public.tokens
-ADD COLUMN name text;
-
 DROP FUNCTION IF EXISTS public.add_token;
 
 CREATE OR REPLACE FUNCTION public.add_token(p_name text)
