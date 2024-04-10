@@ -1,4 +1,4 @@
-DROP FUNCTION IF EXISTS public.add_token;
+DROP FUNCTION IF EXISTS public.add_token(text);
 
 CREATE OR REPLACE FUNCTION public.add_token(p_name text)
 RETURNS uuid AS $$
