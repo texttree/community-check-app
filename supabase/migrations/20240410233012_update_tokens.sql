@@ -1,3 +1,15 @@
+DROP TABLE IF EXISTS public.tokens CASCADE;
+
+CREATE TABLE public.tokens (
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NULL DEFAULT NOW(),
+    name TEXT NULL,
+    CONSTRAINT tokens_pkey PRIMARY KEY (id),
+    CONSTRAINT tokens_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id)
+) TABLESPACE pg_default;
+
+
 DROP FUNCTION IF EXISTS public.get_tokens;
 
 CREATE OR REPLACE FUNCTION get_tokens()
