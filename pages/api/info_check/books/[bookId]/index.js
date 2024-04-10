@@ -8,13 +8,7 @@ export default async function handler(req, res) {
   try {
     switch (method) {
       case 'GET':
-        let supabase
-        try {
-          supabase = await serverApi(req, res)
-        } catch (error) {
-          return res.status(401).json({ error })
-        }
-        const { data, error } = await serverApi.rpc('get_notes_count_for_book', {
+        const { data, error } = await supabaseService.rpc('get_notes_count_for_book', {
           book_id: bookId,
         })
 
