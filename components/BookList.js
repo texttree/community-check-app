@@ -14,7 +14,7 @@ const BookList = ({ projectId }) => {
 
   const ErrorMessage = ({ message }) => <span className="text-red-600">{message}</span>
 
-  const LoadingMessage = () => <span class="sr-only">{t('loading')}...</span>
+  const LoadingMessage = () => <span>{t('loading')}...</span>
 
   const BookChecksInfo = ({ projectId, bookId, showLastCheck }) => {
     const { data: checks, error } = useSWR(
