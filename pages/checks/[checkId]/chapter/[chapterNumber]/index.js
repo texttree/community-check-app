@@ -8,6 +8,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { fetcher } from '@/helpers/fetcher'
 import { parseChapter } from '@/helpers/usfmHelper'
 import CheckInfo from '@/components/CheckInfo'
+import ChapterContent from '@/components/ChapterContent'
+import Loader from '@/components/Loader'
 
 const CheckDetail = () => {
   const { t } = useTranslation()
@@ -102,16 +104,7 @@ const CheckDetail = () => {
     <div className="bg-gray-200">
       {isLoading && (
         <div className="max-w-6xl mx-auto p-4 text-center">
-          <p>
-            <div role="status" class="max-w-sm animate-pulse">
-              <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
-              <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
-              <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
-              <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
-              <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
-              <div class="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
-            </div>
-          </p>
+          <Loader />
         </div>
       )}
       {!isLoading && !material && (
@@ -146,35 +139,13 @@ const CheckDetail = () => {
                 </button>
               </div>
               {chapter.map((verse, index) => (
-                <div key={index} className="bg-gray-100 p-2 rounded-md my-2">
-                  <p className="text-lg font-semibold">{verse.verse}</p>
-                  <p className="text-gray-700">{verse.text}</p>
-                  {editableVerseIndex === index ? (
-                    <div className="flex items-center">
-                      <textarea
-                        onChange={(e) => {
-                          setNote(e.target.value)
-                        }}
-                        className="w-full border rounded p-1"
-                      />
-                      <button
-                        onClick={addNotes}
-                        className="bg-blue-500 text-white py-1 px-2 rounded ml-2"
-                      >
-                        {t('save')}
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between">
-                      <button
-                        onClick={() => editVerse(index)}
-                        className="bg-blue-500 text-white py-1 px-2 rounded ml-2"
-                      >
-                        {t('note')}
-                      </button>
-                    </div>
-                  )}
-                </div>
+                <ChapterContent
+                  key={index}
+                  verse={verse}
+                  index={index}
+                  editableVerseIndex={editableVerseIndex}
+                  editVerse={editVerse}
+                />
               ))}
             </div>
           )}
