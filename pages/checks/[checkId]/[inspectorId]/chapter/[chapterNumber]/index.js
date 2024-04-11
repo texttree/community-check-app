@@ -8,8 +8,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { fetcher } from '@/helpers/fetcher'
 import { parseChapter } from '@/helpers/usfmHelper'
 import CheckInfo from '@/components/CheckInfo'
-import ChapterContent from '@/components/ChapterContent'
 import Loader from '@/components/Loader'
+import InspectorNotes from '@/components/InspectorNotes '
 
 const CheckDetail = () => {
   const { t } = useTranslation()
@@ -137,14 +137,17 @@ const CheckDetail = () => {
                 </button>
               </div>
               {chapter.map((verse, index) => (
-                <ChapterContent
+                <InspectorNotes
                   key={index}
                   verse={verse}
                   index={index}
                   editableVerseIndex={editableVerseIndex}
                   notes={notes}
-                  editVerse={editVerse}
+                  setNotes={setNotes}
+                  setNote={setNote}
                   uploadNotes={uploadNotes}
+                  editVerse={editVerse}
+                  t={t}
                 />
               ))}
             </div>

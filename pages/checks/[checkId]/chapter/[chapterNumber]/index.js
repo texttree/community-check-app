@@ -8,8 +8,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { fetcher } from '@/helpers/fetcher'
 import { parseChapter } from '@/helpers/usfmHelper'
 import CheckInfo from '@/components/CheckInfo'
-import ChapterContent from '@/components/ChapterContent'
 import Loader from '@/components/Loader'
+import PublicNotes from '@/components/PublicNotes'
 
 const CheckDetail = () => {
   const { t } = useTranslation()
@@ -70,8 +70,8 @@ const CheckDetail = () => {
     router.push(`/checks/${checkId}/chapter/${index}`)
   }
 
-  const addNotes = () => {
-    const verse = editableVerseIndex + 1
+  const addNotes = (index) => {
+    const verse = index + 1
     const materialId = material.id
     axios
       .post(`/api/checks/${checkId}/notes`, {
@@ -128,19 +128,25 @@ const CheckDetail = () => {
                 <p className="text-2xl font-bold">{currentChapterIndex}</p>
                 <button
                   onClick={handleNextChapter}
-                  disabled={currentChapterIndex === chapterLength}
-                  className={`bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className={`bg-blue-500 text-white py-2 px-4 rounded ${
+                    currentChapterIndex === chapterLength
+                      ? 'opacity-50 cursor-not-allowed'
+                      : ''
+                  }`}
                 >
                   {t('nextChapter')}
                 </button>
               </div>
               {chapter.map((verse, index) => (
-                <ChapterContent
+                <PublicNotes
                   key={index}
                   verse={verse}
                   index={index}
                   editableVerseIndex={editableVerseIndex}
+                  setNote={setNote}
+                  addNotes={addNotes}
                   editVerse={editVerse}
+                  t={t}
                 />
               ))}
             </div>
