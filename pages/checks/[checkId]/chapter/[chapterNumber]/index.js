@@ -120,20 +120,16 @@ const CheckDetail = () => {
               <div className="flex justify-between mb-4">
                 <button
                   onClick={() => navigateToChapter(currentChapterIndex - 1)}
-                  className={`bg-blue-500 text-white py-2 px-4 rounded ${
-                    currentChapterIndex === 1 ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  disabled={currentChapterIndex === 1}
+                  className={`bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {t('previousChapter')}
                 </button>
                 <p className="text-2xl font-bold">{currentChapterIndex}</p>
                 <button
                   onClick={handleNextChapter}
-                  className={`bg-blue-500 text-white py-2 px-4 rounded ${
-                    currentChapterIndex === chapterLength
-                      ? 'opacity-50 cursor-not-allowed'
-                      : ''
-                  }`}
+                  disabled={currentChapterIndex === chapterLength}
+                  className={`bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {t('nextChapter')}
                 </button>
