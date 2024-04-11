@@ -9,7 +9,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { fetcher } from '@/helpers/fetcher'
 
 import { parseChapter } from '@/helpers/usfmHelper'
-import ChapterContent from '@/components/ChapterContent'
+import Notes from '@/components/Notes'
 
 const CheckDetail = () => {
   const { t } = useTranslation()
@@ -109,7 +109,7 @@ const CheckDetail = () => {
               </button>
             </div>
             {chapter.map((verse, index) => (
-              <ChapterContent
+              <Notes
                 key={index}
                 verse={verse}
                 index={index}

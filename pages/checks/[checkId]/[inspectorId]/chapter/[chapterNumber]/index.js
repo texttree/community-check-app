@@ -9,7 +9,7 @@ import { fetcher } from '@/helpers/fetcher'
 import { parseChapter } from '@/helpers/usfmHelper'
 import CheckInfo from '@/components/CheckInfo'
 import Loader from '@/components/Loader'
-import InspectorNotes from '@/components/InspectorNotes '
+import Notes from '@/components/Notes'
 
 const CheckDetail = () => {
   const { t } = useTranslation()
@@ -137,7 +137,7 @@ const CheckDetail = () => {
                 </button>
               </div>
               {chapter.map((verse, index) => (
-                <InspectorNotes
+                <Notes
                   key={index}
                   verse={verse}
                   index={index}
