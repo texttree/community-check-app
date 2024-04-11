@@ -128,11 +128,8 @@ const CheckDetail = () => {
                 <p className="text-2xl font-bold">{currentChapterIndex}</p>
                 <button
                   onClick={handleNextChapter}
-                  className={`bg-blue-500 text-white py-2 px-4 rounded ${
-                    currentChapterIndex === chapterLength
-                      ? 'opacity-50 cursor-not-allowed'
-                      : ''
-                  }`}
+                  disabled={currentChapterIndex === chapterLength}
+                  className={`bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {t('nextChapter')}
                 </button>
