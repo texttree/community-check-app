@@ -39,7 +39,7 @@ const BookList = ({ projectId }) => {
     }
 
     if (error) {
-      return <ErrorMessage message="Error" />
+      return <ErrorMessage message={t('errorOccurred')} />
     } else if (!checks) {
       return <LoadingMessage />
     } else {
