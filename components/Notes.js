@@ -14,7 +14,7 @@ const Notes = ({
   const currentNotes = isInspector ? notes[index] : null
 
   return (
-    <div key={index} className="bg-gray-100 p-2 rounded-md my-2">
+    <div className="bg-gray-100 p-2 rounded-md my-2">
       <p className="text-lg font-semibold">{verse.verse}</p>
       <p className="text-gray-700">{verse.text}</p>
       {editableVerseIndex === index ? (
