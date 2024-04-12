@@ -4,7 +4,8 @@ ADD COLUMN created_at timestamp with time zone not null default now();
 
 DROP FUNCTION IF EXISTS  public.get_books_by_project;
 
-CREATE FUNCTION get_books_by_project(p_project_id bigint)
+
+CREATE OR REPLACE FUNCTION get_books_by_project(p_project_id bigint)
 RETURNS TABLE (
     book_id bigint,
     book_name text,
@@ -37,7 +38,8 @@ ADD COLUMN started_at timestamp with time zone null;
 
 DROP FUNCTION IF EXISTS  public.get_checks_for_book;
 
-CREATE FUNCTION get_checks_for_book(book_id_param bigint)
+
+CREATE OR REPLACE FUNCTION get_checks_for_book(book_id_param bigint)
 RETURNS TABLE (
     check_id uuid,
     check_name text,
