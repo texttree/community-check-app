@@ -7,6 +7,9 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { fetcher } from '@/helpers/fetcher'
 import { parseChapter } from '@/helpers/usfmHelper'
+import CheckInfo from '@/components/CheckInfo'
+import Loader from '@/components/Loader'
+import Notes from '@/components/Notes'
 
 const CheckDetail = () => {
   const { t } = useTranslation()
@@ -20,9 +23,25 @@ const CheckDetail = () => {
   })
   const [note, setNote] = useState('')
   const [error, setError] = useState(null)
-  const [chapterLength, setChapterLength] = useState(0)
 
-  const { data: material, mutate } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
+  const [chapterLength, setChapterLength] = useState(0)
+  const [checkName, setCheckName] = useState('')
+  const [bookName, setBookName] = useState('')
+
+  const {
+    data: material,
+    isLoading,
+    mutate,
+  } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
+
+  const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
+
+  useEffect(() => {
+    if (info) {
+      setCheckName(info.check_name)
+      setBookName(info.book_name)
+    }
+  }, [info])
 
   useEffect(() => {
     if (material?.content) {
@@ -41,7 +60,7 @@ const CheckDetail = () => {
     if (checkId) {
       mutate()
     }
-  }, [checkId])
+  }, [checkId, mutate])
 
   const editVerse = (index) => {
     setEditableVerseIndex(index)
@@ -51,15 +70,14 @@ const CheckDetail = () => {
     router.push(`/checks/${checkId}/chapter/${index}`)
   }
 
-  const addNotes = () => {
-    const chapterNum = currentChapterIndex
-    const verse = editableVerseIndex + 1
+  const addNotes = (index) => {
+    const verse = index + 1
     const materialId = material.id
     axios
       .post(`/api/checks/${checkId}/notes`, {
         materialId,
         note,
-        chapter: chapterNum,
+        chapter: currentChapterIndex,
         verse,
       })
       .then((res) => {
@@ -84,62 +102,54 @@ const CheckDetail = () => {
 
   return (
     <div className="bg-gray-200">
-      <div className="max-w-6xl mx-auto p-4">
-        <h1 className="text-2xl font-bold">{t('checkDetails')}</h1>
-        {error && <p className="text-red-500">{error}</p>}
-        {chapter.length > 0 && (
-          <div className="mt-4">
-            <div className="flex justify-between mb-4">
-              <button
-                onClick={() => navigateToChapter(currentChapterIndex - 1)}
-                className="bg-blue-500 text-white py-2 px-4 rounded"
-                disabled={currentChapterIndex === 1}
-              >
-                {t('previousChapter')}
-              </button>
-              <p className="text-2xl font-bold">{currentChapterIndex}</p>
-              <button
-                onClick={handleNextChapter}
-                className="bg-blue-500 text-white py-2 px-4 rounded"
-                disabled={currentChapterIndex === chapterLength}
-              >
-                {t('nextChapter')}
-              </button>
-            </div>
-            {chapter.map((verse, index) => (
-              <div key={index} className="bg-gray-100 p-2 rounded-md my-2">
-                <p className="text-lg font-semibold">{verse.verse}</p>
-                <p className="text-gray-700">{verse.text}</p>
-                {editableVerseIndex === index ? (
-                  <div className="flex items-center">
-                    <textarea
-                      onChange={(e) => {
-                        setNote(e.target.value)
-                      }}
-                      className="w-full border rounded p-1"
-                    />
-                    <button
-                      onClick={addNotes}
-                      className="bg-blue-500 text-white py-1 px-2 rounded ml-2"
-                    >
-                      {t('save')}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-between">
-                    <button
-                      onClick={() => editVerse(index)}
-                      className="bg-blue-500 text-white py-1 px-2 rounded  ml-2"
-                    >
-                      {t('note')}
-                    </button>
-                  </div>
-                )}
+      {isLoading && (
+        <div className="max-w-6xl mx-auto p-4 text-center">
+          <Loader />
+        </div>
+      )}
+      {!isLoading && !material && (
+        <div className="max-w-6xl mx-auto p-4 text-center">
+          <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
+        </div>
+      )}
+      {!isLoading && material && (
+        <div className="max-w-6xl mx-auto p-4">
+          <CheckInfo error={error} checkName={checkName} bookName={bookName} />
+          {chapter.length > 0 && (
+            <div className="mt-4">
+              <div className="flex justify-between mb-4">
+                <button
+                  onClick={() => navigateToChapter(currentChapterIndex - 1)}
+                  disabled={currentChapterIndex === 1}
+                  className={`bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {t('previousChapter')}
+                </button>
+                <p className="text-2xl font-bold">{currentChapterIndex}</p>
+                <button
+                  onClick={handleNextChapter}
+                  disabled={currentChapterIndex === chapterLength}
+                  className={`bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  {t('nextChapter')}
+                </button>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+              {chapter.map((verse, index) => (
+                <Notes
+                  key={index}
+                  verse={verse}
+                  index={index}
+                  editableVerseIndex={editableVerseIndex}
+                  setNote={setNote}
+                  addNotes={addNotes}
+                  editVerse={editVerse}
+                  t={t}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
       <Toaster />
     </div>
   )

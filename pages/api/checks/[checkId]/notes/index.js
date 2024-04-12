@@ -8,16 +8,15 @@ export default async function handler(req, res) {
     method,
   } = req
 
-  let supabase
-  try {
-    supabase = await serverApi(req, res)
-  } catch (error) {
-    return res.status(401).json({ error })
-  }
-
   switch (method) {
     case 'GET': // получить заметки
       try {
+        let supabase
+        try {
+          supabase = await serverApi(req, res)
+        } catch (error) {
+          return res.status(401).json({ error })
+        }
         const { data: material, error } = await supabase.rpc('get_notes_by_check_id', {
           p_check_id: checkId,
         })

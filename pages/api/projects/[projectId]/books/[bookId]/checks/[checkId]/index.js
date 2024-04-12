@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
   const {
     query: { checkId },
-    body: { name, material_link, finished_at },
+    body: { name, material_link, started_at, finished_at },
     method,
   } = req
 
@@ -37,6 +37,7 @@ export default async function handler(req, res) {
             {
               name,
               material_link,
+              started_at,
               finished_at,
             },
           ])

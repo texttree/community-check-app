@@ -6,6 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import useSWR from 'swr'
 
 import { fetcher } from '@/helpers/fetcher'
+import Loader from '@/components/Loader'
 
 const ProjectsPage = () => {
   const { t } = useTranslation()
@@ -30,7 +31,7 @@ const ProjectsPage = () => {
               </Link>
             ))
           ) : (
-            <p>{t('loading')}...</p>
+            <Loader />
           )}
         </div>
         <Link

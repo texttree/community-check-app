@@ -13,6 +13,7 @@ import CheckList from '@/components/CheckList'
 import { fetcher } from '@/helpers/fetcher'
 
 import LeftArrow from 'public/left.svg'
+import Loader from '@/components/Loader'
 
 const BookDetailsPage = () => {
   const { t } = useTranslation()
@@ -69,7 +70,7 @@ const BookDetailsPage = () => {
             <CheckList projectId={projectId} bookId={bookId} />
           </>
         ) : (
-          <p>{t('loading')}</p>
+          <Loader />
         )}
         <button
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 rounded-md inline-block"

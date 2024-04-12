@@ -22,18 +22,16 @@ const CheckId = () => {
   const { t } = useTranslation()
   const router = useRouter()
   const { projectId, bookId, checkId } = router.query
-  const [errorMessage, setErrorMessage] = useState('')
+  const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 16))
   const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 16))
   const [materialLink, setMaterialLink] = useState('')
   const [checkName, setCheckName] = useState('')
   const [inspectorName, setInspectorName] = useState('')
   const checkPageRef = useRef(null)
-  const [showRef, setShowRef] = useState(false)
   const chapterNumber = 1
 
   const { data: material } = useSWR(
     projectId &&
-      materialLink &&
       bookId &&
       checkId &&
       materialLink &&
@@ -64,14 +62,21 @@ const CheckId = () => {
   }
   useEffect(() => {
     if (check) {
-      const formattedFinishedDate = new Date(check.finished_at).toISOString().slice(0, 16)
+      const currentDate = new Date().toISOString().slice(0, 16)
+      const formattedStartedDate = check.started_at
+        ? new Date(check.started_at).toISOString().slice(0, 16)
+        : currentDate
+      const formattedFinishedDate = check.finished_at
+        ? new Date(check.finished_at).toISOString().slice(0, 16)
+        : currentDate
+
+      setStartDate(formattedStartedDate)
+      setEndDate(formattedFinishedDate)
+
       setMaterialLink(check.material_link || '')
       setCheckName(check.name)
-      if (check.finished_at) {
-        setEndDate(formattedFinishedDate)
-      }
     }
-  }, [checkId, check, material])
+  }, [check])
 
   const parsingWordText = (jsonData) => {
     if (!jsonData || !jsonData.chapters || typeof jsonData.chapters !== 'object') {
@@ -121,8 +126,7 @@ const CheckId = () => {
   }
 
   const updateResourse = async () => {
-    setErrorMessage('')
-    if (checkName && materialLink) {
+    if (materialLink) {
       await axios
         .get(materialLink)
         .then((res) => {
@@ -131,23 +135,22 @@ const CheckId = () => {
             upsertMaterial(jsonData)
               .then(() => {
                 updateCheck()
-                setShowRef(true)
                 toast.success(t('save'))
               })
               .catch((error) => {
                 console.error(error)
-                setErrorMessage(error.message)
+                toast.error(error.message)
               })
           } else {
-            setErrorMessage(t('enterCorrectLink'))
+            toast.error(t('enterCorrectLink'))
           }
         })
         .catch((error) => {
           console.error(error)
-          setErrorMessage(error.message)
+          toast.error(error.message)
         })
     } else {
-      setErrorMessage(t('nameEmpty'))
+      toast.error(t('provideLink'))
     }
   }
 
@@ -155,6 +158,7 @@ const CheckId = () => {
     return await axios.post(
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
       {
+        started_at: startDate,
         finished_at: endDate,
         name: checkName,
         material_link: materialLink,
@@ -187,12 +191,11 @@ const CheckId = () => {
 
         mutate()
         toast.success(t('inspectorCreated'))
-        setErrorMessage('')
       } else {
-        setErrorMessage(t('enterInspectorName'))
+        toast.error(t('enterInspectorName'))
       }
     } catch (error) {
-      setErrorMessage('Произошла ошибка:', error)
+      console.error(error)
     }
   }
 
@@ -229,6 +232,13 @@ const CheckId = () => {
             value={materialLink}
             onChange={(e) => setMaterialLink(e.target.value)}
             placeholder={t('linkResource')}
+            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full"
+          />
+          <label className="block font-medium text-gray-700">{t('startingDate')}</label>
+          <input
+            type="datetime-local"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
             className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
           />
           <label className="block font-medium text-gray-700">{t('expirationDate')}</label>
@@ -239,10 +249,7 @@ const CheckId = () => {
             className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
           />
         </div>
-        {materialLink !== '' && !showRef && (
-          <p className="text-gray-700">{t('saveToShowLink')}</p>
-        )}
-        {materialLink !== '' && showRef && (
+        {checkName !== '' && (
           <div className="flex my-4">
             <Link href={`/checks/${checkId}/chapter/${chapterNumber}`} ref={checkPageRef}>
               {currentDomain}/checks/{checkId}/chapter/
@@ -251,50 +258,70 @@ const CheckId = () => {
             <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
           </div>
         )}
+        <button
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
+          onClick={updateResourse}
+        >
+          {t('updateInformation')}
+        </button>
+        <br />
+        <br />
         <div className="my-2">
-          <button
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2  my-2 rounded-md"
-            onClick={createPersonalLink}
-          >
-            Add a personal link
-          </button>
+          <label className="block font-medium text-gray-700">{t('nameInspector')}</label>
           <input
             type="text"
             value={inspectorName}
             onChange={(e) => setInspectorName(e.target.value)}
             className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
           />
+          <button
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 my-2 rounded-md"
+            onClick={createPersonalLink}
+          >
+            {t('addPersonalLink')}
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {errorMessage ? (
-            <p className="text-red-600">{errorMessage}</p>
-          ) : inspectors ? (
-            <div className="flex flex-col">
-              {inspectors.map((inspector) => (
-                <div key={inspector.id} className="border p-4 mb-4">
-                  <p>Name: {inspector.name}</p>
-
-                  <Link href={`/checks/${checkId}/${inspector.id}`} ref={checkPageRef}>
-                    https://community-check-app.netlify.app/checks/{checkId}/
-                    {inspector.id}
-                  </Link>
-
-                  <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p>{t('loading')}...</p>
-          )}
-        </div>
-
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
-          onClick={updateResourse}
-        >
-          {t('save')}
-        </button>
+        {inspectors?.length > 0 && (
+          <div>
+            <table className="w-full rounded-lg border border-gray-300">
+              <thead>
+                <tr>
+                  <th className="bg-white border border-gray-300 px-4 py-2">
+                    {t('nameInspector')}
+                  </th>
+                  <th className=" bg-white border border-gray-300 px-4 py-2">
+                    {t('personalLink')}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {inspectors.map((inspector) => (
+                  <tr key={inspector.id}>
+                    <td className=" bg-white border border-gray-300 px-4 py-2">
+                      {inspector.name}
+                    </td>
+                    <td className=" bg-white border border-gray-300 px-4 py-2">
+                      <div className="flex items-center">
+                        <Link
+                          href={`/checks/${checkId}/${inspector.id}/chapter/${chapterNumber}`}
+                          ref={checkPageRef}
+                        >
+                          {currentDomain}/{checkId}/{inspector.id}/chapter/
+                          {chapterNumber}
+                        </Link>
+                        <Copy
+                          className="h-5 w-5 ml-1 cursor-pointer"
+                          onClick={copyToClipboard}
+                        ></Copy>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
       <Toaster />
     </div>

@@ -12,6 +12,7 @@ import axios from 'axios'
 import { fetcher } from '@/helpers/fetcher'
 
 import LeftArrow from 'public/left.svg'
+import Loader from '@/components/Loader'
 
 const ProjectEditPage = () => {
   const { t } = useTranslation()
@@ -85,7 +86,7 @@ const ProjectEditPage = () => {
             </button>
           </>
         ) : (
-          <p>{t('loading')}</p>
+          <Loader />
         )}
       </div>
     </div>
