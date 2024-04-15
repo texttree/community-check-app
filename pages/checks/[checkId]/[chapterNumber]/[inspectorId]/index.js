@@ -109,22 +109,14 @@ const CheckInspectorDetail = () => {
                   <div key={verse.verse} className="bg-gray-100 p-2 rounded-md my-2">
                     <p className="text-lg font-semibold">{verse.verse}</p>
                     <p className="text-gray-700">{verse.text}</p>
-                    {inspectorId ? (
-                      <InspectorNotes
-                        checkId={checkId}
-                        materialId={material.id}
-                        notes={notes[verse.verse]}
-                        mutate={inspectorMutate}
-                        inspectorId={inspectorId}
-                        reference={{ verse: verse.verse, chapter: currentChapterIndex }}
-                      />
-                    ) : (
-                      <Notes
-                        checkId={checkId}
-                        materialId={material.id}
-                        reference={{ verse: verse.verse, chapter: currentChapterIndex }}
-                      />
-                    )}
+                    <InspectorNotes
+                      checkId={checkId}
+                      materialId={material.id}
+                      notes={notes[verse.verse]}
+                      mutate={inspectorMutate}
+                      inspectorId={inspectorId}
+                      reference={{ verse: verse.verse, chapter: currentChapterIndex }}
+                    />
                   </div>
                 ))}
             </div>
