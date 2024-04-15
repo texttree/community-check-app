@@ -16,12 +16,13 @@ const TokenGeneration = () => {
 
   const { data: tokens, mutate: mutateTokens } = useSWR(`/api/tokens`, fetcher)
   const handleGenerateToken = async () => {
-    if (trim(tokenName) === '') {
+    if (tokenName.trim() === '') {
       toast.error(t('tokenEmpty'))
+      return
     }
     try {
       const { data, error } = await axios.post('/api/tokens', {
-        tokenName: trim(tokenName),
+        tokenName: tokenName.trim(),
       })
 
       if (error) {
