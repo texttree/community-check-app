@@ -48,7 +48,6 @@ const InspectorNotes = ({
       .delete(`/api/checks/${checkId}/${inspectorId}`, { data: { noteId } })
       .then((res) => {
         if (res.status === 200) {
-          // setNotes(updatedNotes)
           mutate()
           toast.success(t('noteDeleted'))
         } else {
@@ -58,7 +57,6 @@ const InspectorNotes = ({
       .catch((error) => {
         toast.error(error.message || t('errorOccurred'))
         console.error(error)
-        // setNotes(notes)
       })
   }
   return (
@@ -78,11 +76,6 @@ const InspectorNotes = ({
           <textarea
             value={note}
             onChange={(e) => {
-              // if (inspectorId) {
-              //   const newNotes = [...notes]
-              //   newNotes[index] = e.target.value
-              //   // setNotes(newNotes)
-              // }
               setNote(e.target.value)
             }}
             className="w-full border rounded p-1"

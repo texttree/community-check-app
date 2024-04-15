@@ -8,37 +8,37 @@ export default async function handler(req, res) {
   } = req
   switch (method) {
     case 'GET': // получить заметки инспектора
-      // try {
-      if (!checkId || !inspectorId) {
-        return res.status(400).json({ error: 'Missing required parameters' })
-      }
+      try {
+        if (!checkId || !inspectorId) {
+          return res.status(400).json({ error: 'Missing required parameters' })
+        }
 
-      const { data, error } = await supabaseService
-        .from('materials')
-        .select(`notes(inspector_id, note, chapter, verse, created_at, id)`)
-        .eq('check_id', checkId)
-        .eq(`notes.inspector_id`, inspectorId)
-        .is(`notes.deleted_at`, null)
-      if (error) {
-        throw error
-      }
-      if (data.length === 0 || !data[0].notes) {
-        return res.status(404).json({ error: 'No notes found for this inspector' })
-      }
-      let notes = {}
-      data[0].notes.forEach((note) => {
-        notes[note.chapter] ??= {}
-        notes[note.chapter][note.verse] ??= []
-        notes[note.chapter][note.verse].push({
-          note: note.note,
-          id: note.id,
-          created_at: note.created_at,
+        const { data, error } = await supabaseService
+          .from('materials')
+          .select(`notes(inspector_id, note, chapter, verse, created_at, id)`)
+          .eq('check_id', checkId)
+          .eq(`notes.inspector_id`, inspectorId)
+          .is(`notes.deleted_at`, null)
+        if (error) {
+          throw error
+        }
+        if (data.length === 0 || !data[0].notes) {
+          return res.status(404).json({ error: 'No notes found for this inspector' })
+        }
+        let notes = {}
+        data[0].notes.forEach((note) => {
+          notes[note.chapter] ??= {}
+          notes[note.chapter][note.verse] ??= []
+          notes[note.chapter][note.verse].push({
+            note: note.note,
+            id: note.id,
+            created_at: note.created_at,
+          })
         })
-      })
-      return res.status(200).json(notes)
-    // } catch (error) {
-    //   return res.status(404).json({ error })
-    // }
+        return res.status(200).json(notes)
+      } catch (error) {
+        return res.status(404).json({ error })
+      }
     case 'DELETE': // удалить заметку инспектора
       try {
         if (!inspectorId || !noteId) {
