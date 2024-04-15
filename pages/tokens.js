@@ -1,24 +1,29 @@
 import { useState } from 'react'
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 
+import axios from 'axios'
 import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
 
 import toast, { Toaster } from 'react-hot-toast'
 
 const TokenGeneration = () => {
-  const supabase = useSupabaseClient()
   const { t } = useTranslation()
 
   const [token, setToken] = useState('')
   const [tokenName, setTokenName] = useState('')
 
-  const { data: tokens, mutate: mutateTokens } = useSWR(`/api/name_tokens`, fetcher)
+  const { data: tokens, mutate: mutateTokens } = useSWR(`/api/tokens`, fetcher)
   const handleGenerateToken = async () => {
+    if (tokenName.trim() === '') {
+      toast.error(t('tokenEmpty'))
+      return
+    }
     try {
-      const { data, error } = await supabase.rpc('add_token', { p_name: tokenName })
+      const { data, error } = await axios.post('/api/tokens', {
+        tokenName: tokenName.trim(),
+      })
 
       if (error) {
         throw new Error(`Failed to store token in the database: ${error.message}`)
@@ -40,11 +45,13 @@ const TokenGeneration = () => {
 
   const handleDeleteToken = async (token_name) => {
     try {
-      const { error } = await supabase.rpc('delete_token', { token_name })
-
-      if (error) {
-        throw new Error(`Failed to delete token: ${error.message}`)
+      if (!token_name) {
+        throw new Error('Token name is required')
       }
+
+      await axios.delete('/api/tokens', {
+        data: { tokenName: token_name },
+      })
 
       mutateTokens()
       toast.success(t('tokenSuccessDeleted'))
@@ -74,7 +81,7 @@ const TokenGeneration = () => {
         </button>
       </div>
 
-      {areTokensExist && (
+      {token && (
         <div className="flex mt-4 items-center">
           <input
             type="text"
@@ -104,14 +111,14 @@ const TokenGeneration = () => {
             <tbody>
               {tokens.map((token) => {
                 return (
-                  <tr key={token.p_name} className="bg-white">
-                    <td className="px-4 py-2 border border-gray-300">{token.p_name}</td>
+                  <tr key={token.name} className="bg-white">
+                    <td className="px-4 py-2 border border-gray-300">{token.name}</td>
                     <td className="px-4 py-2 border border-gray-300">
-                      {new Date(token.p_created_at).toLocaleString()}
+                      {new Date(token.created_at).toLocaleString()}
                     </td>
                     <td className="px-4 py-2 border border-gray-300">
                       <button
-                        onClick={() => handleDeleteToken(token.p_name)}
+                        onClick={() => handleDeleteToken(token.name)}
                         className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
                       >
                         {t('delete')}
