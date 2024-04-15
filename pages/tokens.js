@@ -81,7 +81,7 @@ const TokenGeneration = () => {
         </button>
       </div>
 
-      {areTokensExist && (
+      {token && (
         <div className="flex mt-4 items-center">
           <input
             type="text"
