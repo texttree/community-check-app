@@ -6,7 +6,7 @@ import axios from 'axios'
 import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
 
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 const TokenGeneration = () => {
   const { t } = useTranslation()
@@ -64,7 +64,6 @@ const TokenGeneration = () => {
 
   return (
     <div className="flex justify-center items-center flex-col mt-4">
-      <Toaster />
       <div className="flex items-center">
         <input
           type="text"

@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 import useSWR from 'swr'
 import axios from 'axios'
@@ -17,6 +17,7 @@ import { fetcher } from '@/helpers/fetcher'
 
 import LeftArrow from 'public/left.svg'
 import Copy from 'public/copy.svg'
+import { parsingWordText } from '@/helpers/usfmHelper'
 
 const CheckId = () => {
   const { t } = useTranslation()
@@ -56,7 +57,7 @@ const CheckId = () => {
         toast.success(t('copied'))
       },
       (err) => {
-        toast.error('Unable to copy text', err)
+        toast.error(t('copyError'), err)
       }
     )
   }
@@ -77,53 +78,6 @@ const CheckId = () => {
       setCheckName(check.name)
     }
   }, [check])
-
-  const parsingWordText = (jsonData) => {
-    if (!jsonData || !jsonData.chapters || typeof jsonData.chapters !== 'object') {
-      return
-    }
-
-    const result = { headers: jsonData.headers, chapters: {} }
-
-    const processVerseObject = (verseObject) => {
-      if (!verseObject || typeof verseObject !== 'object') return
-
-      if (verseObject.text) {
-        return { type: verseObject.type, text: verseObject.text }
-      } else if (
-        verseObject.type === 'milestone' &&
-        verseObject.children &&
-        Array.isArray(verseObject.children)
-      ) {
-        const childrenTexts = verseObject.children.map((child) =>
-          processVerseObject(child)
-        )
-        return { type: 'milestone', tag: 'zaln', children: childrenTexts.filter(Boolean) }
-      }
-    }
-
-    const processVerse = (verse) => {
-      const verseObjects = (verse.verseObjects || []).map(processVerseObject)
-      return { verseObjects: verseObjects.filter(Boolean) }
-    }
-
-    const processChapter = (chapter) => {
-      const chapterResult = {}
-
-      for (const [verseNumber, verse] of Object.entries(chapter)) {
-        chapterResult[verseNumber] = processVerse(verse)
-      }
-
-      return chapterResult
-    }
-
-    for (const [chapterNumber, chapter] of Object.entries(jsonData.chapters)) {
-      if (typeof chapter !== 'object') continue
-      result.chapters[chapterNumber] = processChapter(chapter)
-    }
-
-    return result
-  }
 
   const updateResourse = async () => {
     if (materialLink) {
@@ -165,19 +119,16 @@ const CheckId = () => {
       }
     )
   }
-  const upsertMaterial = (jsonData) => {
+  const upsertMaterial = async (jsonData) => {
     const postData = { content: jsonData }
     if (material?.id) {
       postData.id = material.id
     }
-    return axios
-      .post(
-        `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
-        postData
-      )
-      .then((res) => {
-        return res.data.id
-      })
+    const res = await axios.post(
+      `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
+      postData
+    )
+    return res.data.id
   }
   const createPersonalLink = async () => {
     try {
@@ -251,9 +202,8 @@ const CheckId = () => {
         </div>
         {checkName !== '' && (
           <div className="flex my-4">
-            <Link href={`/checks/${checkId}/chapter/${chapterNumber}`} ref={checkPageRef}>
-              {currentDomain}/checks/{checkId}/chapter/
-              {chapterNumber}
+            <Link href={`/checks/${checkId}/${chapterNumber}`} ref={checkPageRef}>
+              {currentDomain}/checks/{checkId}/{chapterNumber}
             </Link>
             <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
           </div>
@@ -304,11 +254,10 @@ const CheckId = () => {
                     <td className=" bg-white border border-gray-300 px-4 py-2">
                       <div className="flex items-center">
                         <Link
-                          href={`/checks/${checkId}/${inspector.id}/chapter/${chapterNumber}`}
+                          href={`/checks/${checkId}/${chapterNumber}/${inspector.id}`}
                           ref={checkPageRef}
                         >
-                          {currentDomain}/{checkId}/{inspector.id}/chapter/
-                          {chapterNumber}
+                          {currentDomain}/{checkId}/{chapterNumber}/{inspector.id}
                         </Link>
                         <Copy
                           className="h-5 w-5 ml-1 cursor-pointer"
@@ -323,7 +272,6 @@ const CheckId = () => {
           </div>
         )}
       </div>
-      <Toaster />
     </div>
   )
 }

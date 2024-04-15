@@ -5,23 +5,26 @@ import { useTranslation } from 'next-i18next'
 import toast from 'react-hot-toast'
 import axios from 'axios'
 
-const Notes = ({ reference, materialId, checkId }) => {
+const InspectorNotes = ({
+  reference,
+  materialId,
+  checkId,
+  notes = [],
+  mutate,
+  inspectorId,
+}) => {
   const { t } = useTranslation()
   const [error, setError] = useState(null)
   const [note, setNote] = useState('')
-
   const [writeNote, setWriteNote] = useState(false)
   useEffect(() => {
     setWriteNote(false)
   }, [reference.chapter])
   const addNote = () => {
-    if (!note) {
-      toast.error(t('errorEmptyNote'))
-      return
-    }
     axios
       .post(`/api/checks/${checkId}/notes`, {
         materialId,
+        inspectorId,
         note,
         ...reference,
       })
@@ -30,6 +33,7 @@ const Notes = ({ reference, materialId, checkId }) => {
           toast.success(t('noteSaved'))
           setWriteNote(false)
           setNote('')
+          mutate()
         } else {
           throw new Error(t('errorSavingNote'))
         }
@@ -39,14 +43,46 @@ const Notes = ({ reference, materialId, checkId }) => {
         setError(error.message)
       })
   }
-
+  const deleteNoteById = (noteId) => {
+    axios
+      .delete(`/api/checks/${checkId}/${inspectorId}`, { data: { noteId } })
+      .then((res) => {
+        if (res.status === 200) {
+          // setNotes(updatedNotes)
+          mutate()
+          toast.success(t('noteDeleted'))
+        } else {
+          throw res
+        }
+      })
+      .catch((error) => {
+        toast.error(error.message || t('errorOccurred'))
+        console.error(error)
+        // setNotes(notes)
+      })
+  }
   return (
     <>
+      {notes?.length
+        ? notes.map((note) => (
+            <div key={note.id} className="flex items-center justify-between">
+              <p className="text-gray-700">{note.note}</p>
+              <button onClick={() => deleteNoteById(note.id)} className="text-red-500">
+                {t('delete')}
+              </button>
+            </div>
+          ))
+        : ''}
       {writeNote ? (
         <div className="flex items-center">
           <textarea
             value={note}
             onChange={(e) => {
+              // if (inspectorId) {
+              //   const newNotes = [...notes]
+              //   newNotes[index] = e.target.value
+              //   // setNotes(newNotes)
+              // }
               setNote(e.target.value)
             }}
             className="w-full border rounded p-1"
@@ -75,4 +111,4 @@ const Notes = ({ reference, materialId, checkId }) => {
   )
 }
 
-export default Notes
+export default InspectorNotes

@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
-import axios from 'axios'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { fetcher } from '@/helpers/fetcher'
@@ -17,31 +16,17 @@ const CheckDetail = () => {
   const { checkId, chapterNumber } = router.query
 
   const [chapter, setChapter] = useState([])
-  const [editableVerseIndex, setEditableVerseIndex] = useState(null)
   const [currentChapterIndex, setCurrentChapterIndex] = useState(() => {
     return parseInt(chapterNumber) || 1
   })
-  const [note, setNote] = useState('')
-  const [error, setError] = useState(null)
 
   const [chapterLength, setChapterLength] = useState(0)
-  const [checkName, setCheckName] = useState('')
-  const [bookName, setBookName] = useState('')
 
   const {
     data: material,
     isLoading,
     mutate,
   } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
-
-  const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
-
-  useEffect(() => {
-    if (info) {
-      setCheckName(info.check_name)
-      setBookName(info.book_name)
-    }
-  }, [info])
 
   useEffect(() => {
     if (material?.content) {
@@ -62,36 +47,9 @@ const CheckDetail = () => {
     }
   }, [checkId, mutate])
 
-  const editVerse = (index) => {
-    setEditableVerseIndex(index)
-  }
-
   const navigateToChapter = (index) => {
-    router.push(`/checks/${checkId}/chapter/${index}`)
-  }
-
-  const addNotes = (index) => {
-    const verse = index + 1
-    const materialId = material.id
-    axios
-      .post(`/api/checks/${checkId}/notes`, {
-        materialId,
-        note,
-        chapter: currentChapterIndex,
-        verse,
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          toast.success(t('noteSaved'))
-          mutate()
-        } else {
-          throw new Error(t('errorSavingNote'))
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-        setError(error.message)
-      })
+    router.push(`/checks/${checkId}/${index}`)
+    toast.success(t('noteSaved'))
   }
 
   const handleNextChapter = () => {
@@ -114,7 +72,7 @@ const CheckDetail = () => {
       )}
       {!isLoading && material && (
         <div className="max-w-6xl mx-auto p-4">
-          <CheckInfo error={error} checkName={checkName} bookName={bookName} />
+          <CheckInfo checkId={checkId} />
           {chapter.length > 0 && (
             <div className="mt-4">
               <div className="flex justify-between mb-4">
@@ -134,23 +92,23 @@ const CheckDetail = () => {
                   {t('nextChapter')}
                 </button>
               </div>
-              {chapter.map((verse, index) => (
-                <Notes
-                  key={index}
-                  verse={verse}
-                  index={index}
-                  editableVerseIndex={editableVerseIndex}
-                  setNote={setNote}
-                  addNotes={addNotes}
-                  editVerse={editVerse}
-                  t={t}
-                />
-              ))}
+              {chapter
+                .filter((verse) => verse.text !== '')
+                .map((verse) => (
+                  <div key={verse.verse} className="bg-gray-100 p-2 rounded-md my-2">
+                    <p className="text-lg font-semibold">{verse.verse}</p>
+                    <p className="text-gray-700">{verse.text}</p>
+                    <Notes
+                      checkId={checkId}
+                      materialId={material.id}
+                      reference={{ verse: verse.verse, chapter: currentChapterIndex }}
+                    />
+                  </div>
+                ))}
             </div>
           )}
         </div>
       )}
-      <Toaster />
     </div>
   )
 }

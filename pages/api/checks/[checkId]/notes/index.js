@@ -36,7 +36,7 @@ export default async function handler(req, res) {
 
         const { data, error } = await supabaseService.rpc('insert_note', {
           note,
-          inspector_id: inspectorId ? inspectorId : null,
+          inspector_id: inspectorId ?? null,
           p_check_id: checkId,
           material_id: materialId,
           chapter,

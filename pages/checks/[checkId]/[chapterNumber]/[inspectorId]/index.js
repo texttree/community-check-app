@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
-import axios from 'axios'
-import toast, { Toaster } from 'react-hot-toast'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { fetcher } from '@/helpers/fetcher'
@@ -10,24 +8,20 @@ import { parseChapter } from '@/helpers/usfmHelper'
 import CheckInfo from '@/components/CheckInfo'
 import Loader from '@/components/Loader'
 import Notes from '@/components/Notes'
+import InspectorNotes from '@/components/InspectorNotes'
 
-const CheckDetail = () => {
+const CheckInspectorDetail = () => {
   const { t } = useTranslation()
   const router = useRouter()
   const { checkId, inspectorId, chapterNumber } = router.query
 
   const [chapter, setChapter] = useState([])
-  const [editableVerseIndex, setEditableVerseIndex] = useState(null)
   const [currentChapterIndex, setCurrentChapterIndex] = useState(() => {
     return parseInt(chapterNumber) || 1
   })
   const [notes, setNotes] = useState([])
-  const [note, setNote] = useState('')
-  const [error, setError] = useState(null)
 
   const [chapterLength, setСhapterLength] = useState(0)
-  const [checkName, setCheckName] = useState('')
-  const [bookName, setBookName] = useState('')
 
   const {
     data: material,
@@ -35,24 +29,25 @@ const CheckDetail = () => {
     mutate,
   } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
 
-  const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
-
-  useEffect(() => {
-    if (info) {
-      setCheckName(info.check_name)
-      setBookName(info.book_name)
-    }
-  }, [info])
+  const { data: inspectorNotes, mutate: inspectorMutate } = useSWR(
+    checkId && `/api/checks/${checkId}/${inspectorId}`,
+    fetcher
+  )
 
   useEffect(() => {
     if (material?.content) {
       const chapters = material.content.chapters
       const _chapter = parseChapter(chapters[currentChapterIndex])
       setChapter(_chapter)
-      setNotes(new Array(_chapter.length).fill(''))
       setСhapterLength(Object.keys(chapters).length)
     }
   }, [material, currentChapterIndex])
+
+  useEffect(() => {
+    if (inspectorNotes) {
+      setNotes(inspectorNotes[currentChapterIndex.toString()] ?? [])
+    }
+  }, [inspectorNotes, currentChapterIndex])
 
   useEffect(() => {
     setCurrentChapterIndex((prevIndex) => parseInt(chapterNumber) || prevIndex)
@@ -64,36 +59,8 @@ const CheckDetail = () => {
     }
   }, [checkId, mutate])
 
-  const editVerse = (index) => {
-    setEditableVerseIndex(index)
-  }
-
   const navigateToChapter = (index) => {
-    router.push(`/checks/${checkId}/${inspectorId}/chapter/${index}`)
-  }
-
-  const uploadNotes = () => {
-    const verse = editableVerseIndex + 1
-    const materialId = material.id
-    axios
-      .post(`/api/checks/${checkId}/notes`, {
-        materialId,
-        note,
-        chapter: currentChapterIndex,
-        verse,
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          toast.success(t('noteSaved'))
-          mutate()
-        } else {
-          throw new Error(t('errorSavingNote'))
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-        setError(error.message)
-      })
+    router.push(`/checks/${checkId}/${index}/${inspectorId}`)
   }
 
   const handleNextChapter = () => {
@@ -111,12 +78,12 @@ const CheckDetail = () => {
       )}
       {!isLoading && !material && (
         <div className="max-w-6xl mx-auto p-4 text-center">
-          <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>{' '}
+          <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
       )}
       {!isLoading && material && (
         <div className="max-w-6xl mx-auto p-4">
-          <CheckInfo error={error} checkName={checkName} bookName={bookName} />
+          <CheckInfo checkId={checkId} />
           {chapter.length > 0 && (
             <div className="mt-4">
               <div className="flex justify-between mb-4">
@@ -136,25 +103,34 @@ const CheckDetail = () => {
                   {t('nextChapter')}
                 </button>
               </div>
-              {chapter.map((verse, index) => (
-                <Notes
-                  key={index}
-                  verse={verse}
-                  index={index}
-                  editableVerseIndex={editableVerseIndex}
-                  notes={notes}
-                  setNotes={setNotes}
-                  setNote={setNote}
-                  uploadNotes={uploadNotes}
-                  editVerse={editVerse}
-                  t={t}
-                />
-              ))}
+              {chapter
+                .filter((verse) => verse.text !== '')
+                .map((verse) => (
+                  <div key={verse.verse} className="bg-gray-100 p-2 rounded-md my-2">
+                    <p className="text-lg font-semibold">{verse.verse}</p>
+                    <p className="text-gray-700">{verse.text}</p>
+                    {inspectorId ? (
+                      <InspectorNotes
+                        checkId={checkId}
+                        materialId={material.id}
+                        notes={notes[verse.verse]}
+                        mutate={inspectorMutate}
+                        inspectorId={inspectorId}
+                        reference={{ verse: verse.verse, chapter: currentChapterIndex }}
+                      />
+                    ) : (
+                      <Notes
+                        checkId={checkId}
+                        materialId={material.id}
+                        reference={{ verse: verse.verse, chapter: currentChapterIndex }}
+                      />
+                    )}
+                  </div>
+                ))}
             </div>
           )}
         </div>
       )}
-      <Toaster />
     </div>
   )
 }
@@ -167,4 +143,4 @@ export async function getServerSideProps({ locale }) {
   }
 }
 
-export default CheckDetail
+export default CheckInspectorDetail
