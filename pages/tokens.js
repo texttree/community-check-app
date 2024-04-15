@@ -19,7 +19,6 @@ const TokenGeneration = () => {
     try {
       const { data, error } = await axios.post('/api/tokens', {
         tokenName,
-        status: 'create',
       })
 
       if (error) {
@@ -46,9 +45,8 @@ const TokenGeneration = () => {
         throw new Error('Token name is required')
       }
 
-      await axios.post('/api/tokens', {
-        tokenName: token_name,
-        status: 'delete',
+      await axios.delete('/api/tokens', {
+        data: { tokenName: token_name },
       })
 
       mutateTokens()
