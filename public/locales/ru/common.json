@@ -71,6 +71,7 @@
   "titleInTable": "Заголовок",
   "titleProject": "Название проекта",
   "token": "Токен",
+  "tokenEmpty": "Токен не может быть пустым",
   "tokenErrorCreated": "Ошибка при генерации и сохранении токена",
   "tokenName": "Название токена",
   "tokenSuccessCopy": "Токен успешно скопирован",
