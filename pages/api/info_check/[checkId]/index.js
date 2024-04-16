@@ -17,7 +17,6 @@ export default async function handler(req, res) {
       },
     } = await _supabase.auth.getUser()
     userId = id
-    console.log(id, 16)
   } catch (Error) {
     userId = null
   }
