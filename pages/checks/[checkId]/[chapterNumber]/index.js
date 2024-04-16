@@ -31,7 +31,7 @@ const CheckDetail = () => {
       const checkFinishedDate = new Date(info.check_finished_at)
       setIsCheckExpired(currentDate > checkFinishedDate)
     }
-  }, [info, isCheckExpired, t])
+  }, [info])
 
   const {
     data: material,
