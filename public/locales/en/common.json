@@ -8,6 +8,7 @@
   "bookTitle": "Book title",
   "checkDetails": "Check details",
   "checkEndDate": "Check end date",
+  "checkExpiredMessage": "This check is complete",
   "checkStartDate": "Check start date",
   "contentNotLoaded": "The material for verification has not been uploaded",
   "copied": "Copied!",
