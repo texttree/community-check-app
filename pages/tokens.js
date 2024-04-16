@@ -6,12 +6,12 @@ import axios from 'axios'
 import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
 
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 const TokenGeneration = () => {
   const { t } = useTranslation()
 
-  const [token, setToken] = useState('')
+  const [token, setToken] = useState({ name: '', token: '' })
   const [tokenName, setTokenName] = useState('')
 
   const { data: tokens, mutate: mutateTokens } = useSWR(`/api/tokens`, fetcher)
@@ -21,7 +21,7 @@ const TokenGeneration = () => {
       return
     }
     try {
-      const { data, error } = await axios.post('/api/tokens', {
+      const { data: token, error } = await axios.post('/api/tokens', {
         tokenName: tokenName.trim(),
       })
 
@@ -29,7 +29,7 @@ const TokenGeneration = () => {
         throw new Error(`Failed to store token in the database: ${error.message}`)
       }
 
-      setToken(data)
+      setToken({ name: tokenName.trim(), token })
       mutateTokens()
       toast.success(t('tokenSuccessCreated'))
     } catch (error) {
@@ -39,7 +39,7 @@ const TokenGeneration = () => {
   }
 
   const handleCopyToken = () => {
-    navigator.clipboard.writeText(token)
+    navigator.clipboard.writeText(token.token)
     toast.success(t('tokenSuccessCopy'))
   }
 
@@ -55,6 +55,9 @@ const TokenGeneration = () => {
 
       mutateTokens()
       toast.success(t('tokenSuccessDeleted'))
+      if (token.name === token_name) {
+        setToken({ name: '', token: '' })
+      }
     } catch (error) {
       console.error('Error deleting token:', error.message)
     }
@@ -64,7 +67,6 @@ const TokenGeneration = () => {
 
   return (
     <div className="flex justify-center items-center flex-col mt-4">
-      <Toaster />
       <div className="flex items-center">
         <input
           type="text"
@@ -81,11 +83,11 @@ const TokenGeneration = () => {
         </button>
       </div>
 
-      {token && (
+      {token.token && (
         <div className="flex mt-4 items-center">
           <input
             type="text"
-            value={token}
+            value={token.token}
             className="border border-gray-300 px-8 py-2 rounded-md mr-2 w-96"
             readOnly
           />

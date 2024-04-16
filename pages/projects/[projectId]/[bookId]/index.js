@@ -1,8 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { Toaster } from 'react-hot-toast'
-
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -79,7 +77,6 @@ const BookDetailsPage = () => {
           {t('startNewCheck')}
         </button>
       </div>
-      <Toaster />
     </div>
   )
 }
