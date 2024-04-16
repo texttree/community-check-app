@@ -49,7 +49,6 @@ const CheckDetail = () => {
 
   const navigateToChapter = (index) => {
     router.push(`/checks/${checkId}/${index}`)
-    toast.success(t('noteSaved'))
   }
 
   const handleNextChapter = () => {
