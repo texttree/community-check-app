@@ -9,6 +9,7 @@
   "checkDetails": "Детали проверки",
   "checkEndDate": "Дата завершения проверки",
   "checkStartDate": "Дата начала проверки",
+  "checkExpiredMessage": "Эта проверка завершена",
   "contentNotLoaded": "Материал для проверки не загружен",
   "copied": "Скопировано!",
   "copyError": "Невозможно скопировать текст",

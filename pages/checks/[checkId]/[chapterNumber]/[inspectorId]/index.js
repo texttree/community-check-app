@@ -7,7 +7,6 @@ import { fetcher } from '@/helpers/fetcher'
 import { parseChapter } from '@/helpers/usfmHelper'
 import CheckInfo from '@/components/CheckInfo'
 import Loader from '@/components/Loader'
-import Notes from '@/components/Notes'
 import InspectorNotes from '@/components/InspectorNotes'
 
 const CheckInspectorDetail = () => {
@@ -22,6 +21,18 @@ const CheckInspectorDetail = () => {
   const [notes, setNotes] = useState([])
 
   const [chapterLength, setСhapterLength] = useState(0)
+
+  const [isCheckExpired, setIsCheckExpired] = useState(false)
+
+  const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
+
+  useEffect(() => {
+    if (info?.check_finished_at) {
+      const currentDate = new Date()
+      const checkFinishedDate = new Date(info.check_finished_at)
+      setIsCheckExpired(currentDate > checkFinishedDate)
+    }
+  }, [info])
 
   const {
     data: material,
@@ -84,7 +95,7 @@ const CheckInspectorDetail = () => {
       {!isLoading && material && (
         <div className="max-w-6xl mx-auto p-4">
           <CheckInfo checkId={checkId} />
-          {chapter.length > 0 && (
+          {(!isCheckExpired || info?.is_owner) && chapter.length > 0 && (
             <div className="mt-4">
               <div className="flex justify-between mb-4">
                 <button
