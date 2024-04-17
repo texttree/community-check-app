@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION get_notes_with_inspector_names(p_check_id bigint) 
+CREATE OR REPLACE FUNCTION get_notes_by_check_id(p_check_id bigint) 
 RETURNS JSON AS 
 $$
 DECLARE
