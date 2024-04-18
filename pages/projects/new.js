@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import LeftArrow from 'public/left.svg'
+import LeftArrow from '@/public/left.svg'
 
 const NewProjectPage = () => {
   const { t } = useTranslation()

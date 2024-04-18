@@ -10,7 +10,7 @@ import useSWR from 'swr'
 import CheckList from '@/components/CheckList'
 import { fetcher } from '@/helpers/fetcher'
 
-import LeftArrow from 'public/left.svg'
+import LeftArrow from '@/public/left.svg'
 import Loader from '@/components/Loader'
 
 const BookDetailsPage = () => {

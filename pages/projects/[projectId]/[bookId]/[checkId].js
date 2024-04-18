@@ -15,8 +15,8 @@ import usfm from 'usfm-js'
 
 import { fetcher } from '@/helpers/fetcher'
 
-import LeftArrow from 'public/left.svg'
-import Copy from 'public/copy.svg'
+import LeftArrow from '@/public/left.svg'
+import Copy from '@/public/copy.svg'
 import { parsingWordText } from '@/helpers/usfmHelper'
 
 const CheckId = () => {

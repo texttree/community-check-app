@@ -9,7 +9,7 @@ import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
 
 import downloadNotes from '@/helpers/downloadNotes'
-import Download from 'public/download.svg'
+import Download from '@/public/download.svg'
 
 import toast from 'react-hot-toast'
 import Loader from './Loader'

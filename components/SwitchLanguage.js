@@ -11,9 +11,8 @@ const useChangeLanguage = (locale) => {
 }
 
 const SwitchLanguage = () => {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const router = useRouter()
-
   useChangeLanguage(i18n.language)
 
   const changeLanguage = (lng) => {

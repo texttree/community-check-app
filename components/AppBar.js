@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import SwitchLanguage from './SwitchLanguage'
-import Bar from 'public/bar.svg'
+import Bar from '@/public/bar.svg'
 
 const AppBar = () => {
   const { t } = useTranslation()

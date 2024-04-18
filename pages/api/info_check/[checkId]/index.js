@@ -21,24 +21,24 @@ export default async function handler(req, res) {
     userId = null
   }
 
-  try {
-    switch (method) {
-      case 'GET':
-        const { data, error } = await supabaseService.rpc('get_check_info', {
-          check_id: checkId,
-          user_id: userId,
-        })
-        if (error) {
-          throw error
-        }
+  // try {
+  switch (method) {
+    case 'GET':
+      const { data, error } = await supabaseService.rpc('get_check_info', {
+        check_id: checkId,
+        user_id: userId,
+      })
+      if (error) {
+        throw error
+      }
 
-        return res.status(200).json(data)
+      return res.status(200).json(data)
 
-      default:
-        res.setHeader('Allow', ['GET'])
-        return res.status(405).end(`Method ${method} Not Allowed`)
-    }
-  } catch (error) {
-    return res.status(500).json({ error: 'Internal Server Error' })
+    default:
+      res.setHeader('Allow', ['GET'])
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
+  // } catch (error) {
+  //   return res.status(500).json({ error: 'Internal Server Error' })
+  // }
 }

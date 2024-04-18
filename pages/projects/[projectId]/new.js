@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import LeftArrow from 'public/left.svg'
+import LeftArrow from '@/public/left.svg'
 
 const NewBookPage = () => {
   const { t } = useTranslation()
@@ -22,6 +22,9 @@ const NewBookPage = () => {
       try {
         const response = await fetch(`/api/projects/${projectId}/books`, {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({ name }),
         })
         if (!response.ok) {

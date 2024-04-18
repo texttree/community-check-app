@@ -11,7 +11,7 @@ import axios from 'axios'
 
 import { fetcher } from '@/helpers/fetcher'
 
-import LeftArrow from 'public/left.svg'
+import LeftArrow from '@/public/left.svg'
 import Loader from '@/components/Loader'
 
 const ProjectEditPage = () => {

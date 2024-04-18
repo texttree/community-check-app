@@ -9,7 +9,7 @@ import useSWR from 'swr'
 import BookList from '@/components/BookList'
 import { fetcher } from '@/helpers/fetcher'
 
-import LeftArrow from 'public/left.svg'
+import LeftArrow from '@/public/left.svg'
 import Loader from '@/components/Loader'
 
 const ProjectDetailsPage = () => {
