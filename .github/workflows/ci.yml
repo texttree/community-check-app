@@ -30,4 +30,4 @@ jobs:
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
       - run: supabase db push --include-all
       - run: supabase start
-      - run: supabase db reset 
+      - run: supabase db reset --project $SUPABASE_PROJECT_ID --env $SUPABASE_PROJECT_ID 
