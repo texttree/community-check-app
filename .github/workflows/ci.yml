@@ -7,7 +7,7 @@ on:
       - reopened
       - synchronize
       - closed
-    branches:
+     branches:
       - develop
   workflow_dispatch:
 
