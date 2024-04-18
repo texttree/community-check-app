@@ -28,9 +28,5 @@ jobs:
           version: latest
 
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID    
-      - run: supabase db push --include-all
+      #- run: supabase db push --include-all
       - run: supabase db reset --linked
-
-      - name: Delete all users
-        run: |
-          psql "postgres://postgres.fnctwfmvvvfjctpwkdot:${{ secrets.STAGING_DB_PASSWORD }}@aws-0-us-west-1.pooler.supabase.com:5432/postgres" -c "DELETE FROM auth.users;"
