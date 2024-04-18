@@ -28,5 +28,15 @@ jobs:
           version: latest
 
       - run: supabase link --project-ref $SUPABASE_PROJECT_ID
+
+      - name: Save users data
+        run: |
+          supabase query "SELECT * FROM users" > users_data.sql
+
       - run: supabase db push --include-all
+
       - run: supabase db reset --linked
+
+      - name: Restore users data
+        run: |
+          cat users_data.sql | supabase query "INSERT INTO users SELECT * FROM stdin"
