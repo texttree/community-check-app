@@ -27,16 +27,10 @@ jobs:
         with:
           version: latest
 
-      - run: supabase link --project-ref $SUPABASE_PROJECT_ID
-
-      - name: Save users data
-        run: |
-          psql "postgres://postgres.fnctwfmvvvfjctpwkdot:${{ secrets.STAGING_DB_PASSWORD }}@aws-0-us-west-1.pooler.supabase.com:5432/postgres" -c "SELECT * FROM users" > users_data.sql
-
+      - run: supabase link --project-ref $SUPABASE_PROJECT_ID    
       - run: supabase db push --include-all
-
       - run: supabase db reset --linked
 
-      - name: Restore users data
+      - name: Delete all users
         run: |
-          cat users_data.sql | psql "postgres://postgres.fnctwfmvvvfjctpwkdot:${{ secrets.STAGING_DB_PASSWORD }}@aws-0-us-west-1.pooler.supabase.com:5432/postgres" -c "COPY users FROM stdin"
+          psql "postgres://postgres.fnctwfmvvvfjctpwkdot:${{ secrets.STAGING_DB_PASSWORD }}@aws-0-us-west-1.pooler.supabase.com:5432/postgres" -c "DELETE FROM auth.users;"
