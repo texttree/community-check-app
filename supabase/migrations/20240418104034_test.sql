@@ -4,3 +4,5 @@ CREATE TABLE IF NOT EXISTS
     created_at timestamp with time zone not null default now(),
     constraint TestCI_pkey primary key (id)
   ) tablespace pg_default;
+
+DROP TABLE IF EXISTS public."TestCI";
