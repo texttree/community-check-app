@@ -31,7 +31,7 @@ jobs:
 
       - name: Save users data
         run: |
-          psql "postgres://postgres.fnctwfmvvvfjctpwkdot:123456@aws-0-us-west-1.pooler.supabase.com:5432/postgres" -c "SELECT * FROM users" > users_data.sql
+          psql "postgres://postgres.fnctwfmvvvfjctpwkdot:${{ secrets.STAGING_DB_PASSWORD }}@aws-0-us-west-1.pooler.supabase.com:5432/postgres" -c "SELECT * FROM users" > users_data.sql
 
       - run: supabase db push --include-all
 
@@ -39,4 +39,4 @@ jobs:
 
       - name: Restore users data
         run: |
-          cat users_data.sql | psql "postgres://postgres.fnctwfmvvvfjctpwkdot:123456@aws-0-us-west-1.pooler.supabase.com:5432/postgres" -c "COPY users FROM stdin"
+          cat users_data.sql | psql "postgres://postgres.fnctwfmvvvfjctpwkdot:${{ secrets.STAGING_DB_PASSWORD }}@aws-0-us-west-1.pooler.supabase.com:5432/postgres" -c "COPY users FROM stdin"
