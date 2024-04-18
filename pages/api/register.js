@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   } = req
 
   switch (method) {
-    case 'POST': // создать новый проект
+    case 'POST': // регистрация
       try {
         const { data, error } = await supabase.auth.signUp({
           email,

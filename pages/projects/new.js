@@ -17,7 +17,6 @@ const NewProjectPage = () => {
   const createProject = async () => {
     setErrorMessage('')
     const name = projectName.trim()
-    const tokenLocal = `1ff3d074-a3da-40f1-857e-6ef7e0985c0c`
 
     if (name) {
       try {
@@ -25,7 +24,6 @@ const NewProjectPage = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${tokenLocal}`,
           },
           body: JSON.stringify({ name }),
         })
@@ -37,7 +35,7 @@ const NewProjectPage = () => {
         }
 
         const data = await response.json()
-        router.push('/projects/' + data)
+        router.push('/projects/' + data.id)
       } catch (error) {
         setErrorMessage(error.message)
       }
