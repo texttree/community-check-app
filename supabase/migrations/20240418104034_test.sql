@@ -5,4 +5,3 @@ CREATE TABLE IF NOT EXISTS
     constraint TestCI_pkey primary key (id)
   ) tablespace pg_default;
 
-DROP TABLE IF EXISTS public."TestCI";
