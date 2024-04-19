@@ -13,7 +13,6 @@ export default async function handler(req, res) {
     body: { inspectorName },
     method,
   } = req
-
   switch (method) {
     case 'GET': // получить Инспекторов
       try {
@@ -54,8 +53,24 @@ export default async function handler(req, res) {
       } catch (error) {
         return res.status(404).json({ error })
       }
+    case 'DELETE': // удалить проверяющего
+      try {
+        const { inspectorId } = req.body
+
+        if (!inspectorId) {
+          return res.status(400).json({ error: 'Missing inspectorId parameter' })
+        }
+        const { error } = await supabase.rpc('delete_inspector_and_notes', {
+          p_inspector_id: inspectorId,
+        })
+
+        if (error) throw error
+        return res.status(200).json({ message: 'Inspector deleted successfully' })
+      } catch (error) {
+        return res.status(404).json({ error })
+      }
     default:
-      res.setHeader('Allow', ['GET', 'POST'])
+      res.setHeader('Allow', ['GET', 'POST', 'DELETE'])
       return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
