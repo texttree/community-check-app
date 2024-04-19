@@ -1,5 +1,6 @@
 {
   "accept": "Accept",
+  "actions": "Actions",
   "activeChecks": "Active checks",
   "activity": "Activity (number of notes)",
   "addPersonalLink": "Add personal link",
@@ -39,6 +40,7 @@
   "generateToken": "Generate token",
   "goToProjects": "Go to projects",
   "inspectorCreated": "Inspector created",
+  "inspectorDeleted": "Inspector deleted",
   "invalidInformationNote": "Invalid information for sending a note.",
   "linkResource": "Link to resource",
   "loading": "Loading",

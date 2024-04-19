@@ -1,5 +1,6 @@
 {
   "accept": "Принять",
+  "actions": "Действия",
   "activeChecks": "Активные проверки",
   "activity": "Активность (количество заметок)",
   "addPersonalLink": "Добавить персональную ссылку",
@@ -39,6 +40,7 @@
   "generateToken": "Сгенерировать токен",
   "goToProjects": "Перейти к проектам",
   "inspectorCreated": "Проверяющий создан",
+  "inspectorDeleted": "Проверяющий удален",
   "invalidInformationNote": "Неверные данные для отправки заметки.",
   "linkResource": "Ссылка на ресурс",
   "loading": "Загрузка",
