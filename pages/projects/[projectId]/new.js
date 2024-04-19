@@ -22,6 +22,9 @@ const NewBookPage = () => {
       try {
         const response = await fetch(`/api/projects/${projectId}/books`, {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({ name }),
         })
         if (!response.ok) {
