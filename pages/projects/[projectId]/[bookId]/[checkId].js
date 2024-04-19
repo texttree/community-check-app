@@ -150,6 +150,20 @@ const CheckId = () => {
     }
   }
 
+  const deleteInspector = async (inspectorId) => {
+    try {
+      await axios.delete(
+        `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
+        { data: { inspectorId } }
+      )
+      mutate()
+      toast.success(t('inspectorDeleted'))
+    } catch (error) {
+      console.error(error)
+      toast.error(t('errorDeletingInspector'))
+    }
+  }
+
   const currentDomain =
     typeof window !== 'undefined'
       ? window.location.origin
@@ -243,6 +257,9 @@ const CheckId = () => {
                   <th className=" bg-white border border-gray-300 px-4 py-2">
                     {t('personalLink')}
                   </th>
+                  <th className="bg-white border border-gray-300 px-4 py-2">
+                    {t('actions')}
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -264,6 +281,14 @@ const CheckId = () => {
                           onClick={copyToClipboard}
                         ></Copy>
                       </div>
+                    </td>
+                    <td className="bg-white border border-gray-300 px-4 py-2">
+                      <button
+                        className="text-red-600 hover:text-red-800"
+                        onClick={() => deleteInspector(inspector.id)}
+                      >
+                        {t('delete')}
+                      </button>
                     </td>
                   </tr>
                 ))}
