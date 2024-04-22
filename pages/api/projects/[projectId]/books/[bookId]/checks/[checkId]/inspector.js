@@ -1,4 +1,5 @@
 import serverApi from '@/helpers/serverApi'
+import { supabaseService } from '@/helpers/supabaseService'
 
 export default async function handler(req, res) {
   let supabase
@@ -53,14 +54,14 @@ export default async function handler(req, res) {
       } catch (error) {
         return res.status(404).json({ error })
       }
-    case 'DELETE': // удалить проверяющего
+    case 'DELETE': // удалить проверяющего и его заметки
       try {
         const { inspectorId } = req.body
 
         if (!inspectorId) {
           return res.status(400).json({ error: 'Missing inspectorId parameter' })
         }
-        const { error } = await supabase.rpc('delete_inspector_and_notes', {
+        const { error } = await supabaseService.rpc('delete_inspector_and_notes', {
           p_inspector_id: inspectorId,
         })
 
