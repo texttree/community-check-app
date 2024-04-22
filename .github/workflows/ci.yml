@@ -26,3 +26,6 @@ jobs:
             git diff
             exit 1
           fi
+
+      - name: Reset Supabase remote database
+        run: yes | supabase db reset --linked
