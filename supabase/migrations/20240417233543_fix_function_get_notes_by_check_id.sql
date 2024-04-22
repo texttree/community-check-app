@@ -1,4 +1,6 @@
-CREATE OR REPLACE FUNCTION get_notes_by_check_id(p_check_id bigint) 
+DROP FUNCTION IF EXISTS get_notes_by_check_id(bigint)
+
+CREATE OR REPLACE FUNCTION get_notes_by_check_id(p_check_id uuid) 
 RETURNS JSON AS 
 $$
 DECLARE
