@@ -31,6 +31,9 @@ const CheckId = () => {
   const checkPageRef = useRef(null)
   const chapterNumber = 1
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [selectedInspectorId, setSelectedInspectorId] = useState(null)
+
   const { data: material } = useSWR(
     projectId &&
       bookId &&
@@ -49,6 +52,22 @@ const CheckId = () => {
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
     fetcher
   )
+
+  const openDeleteModal = (inspectorId) => {
+    setSelectedInspectorId(inspectorId)
+    setShowDeleteModal(true)
+  }
+
+  const confirmDeleteInspector = async () => {
+    setShowDeleteModal(false)
+    deleteInspector(selectedInspectorId, true)
+  }
+
+  const cancelDeleteInspector = () => {
+    setShowDeleteModal(false)
+    deleteInspector(selectedInspectorId, false)
+  }
+
   const copyToClipboard = () => {
     const textToCopy = checkPageRef.current.innerText
 
@@ -150,11 +169,11 @@ const CheckId = () => {
     }
   }
 
-  const deleteInspector = async (inspectorId) => {
+  const deleteInspector = async (inspectorId, p_delete_notes) => {
     try {
       await axios.delete(
         `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
-        { data: { inspectorId } }
+        { data: { inspectorId, p_delete_notes } }
       )
       mutate()
       toast.success(t('inspectorDeleted'))
@@ -285,7 +304,7 @@ const CheckId = () => {
                     <td className="bg-white border border-gray-300 px-4 py-2">
                       <button
                         className="text-red-600 hover:text-red-800"
-                        onClick={() => deleteInspector(inspector.id)}
+                        onClick={() => openDeleteModal(inspector.id)}
                       >
                         {t('delete')}
                       </button>
@@ -297,6 +316,27 @@ const CheckId = () => {
           </div>
         )}
       </div>
+      {showDeleteModal && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white rounded p-4">
+            <p className="text-lg font-medium">{t('confirmDeleteInspector')}</p>
+            <div className="flex justify-end mt-4">
+              <button
+                className="text-gray-500 hover:text-gray-700 px-3 py-1"
+                onClick={cancelDeleteInspector}
+              >
+                {t('cancel')}
+              </button>
+              <button
+                className="text-red-600 hover:text-red-800 px-3 py-1 ml-2"
+                onClick={confirmDeleteInspector}
+              >
+                {t('delete')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

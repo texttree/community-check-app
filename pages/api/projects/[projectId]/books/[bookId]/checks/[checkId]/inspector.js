@@ -54,15 +54,16 @@ export default async function handler(req, res) {
       } catch (error) {
         return res.status(404).json({ error })
       }
-    case 'DELETE': // удалить проверяющего и его заметки
+    case 'DELETE': // удалить проверяющего и его заметки при необходимости
       try {
-        const { inspectorId } = req.body
+        const { inspectorId, p_delete_notes } = req.body
 
         if (!inspectorId) {
           return res.status(400).json({ error: 'Missing inspectorId parameter' })
         }
         const { error } = await supabaseService.rpc('delete_inspector_and_notes', {
           p_inspector_id: inspectorId,
+          p_delete_notes,
         })
 
         if (error) throw error
