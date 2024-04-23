@@ -25,7 +25,7 @@ const CheckInspectorDetail = () => {
   const [isCheckExpired, setIsCheckExpired] = useState(false)
 
   const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
-  const { data: existInspector } = useSWR(
+  const { data: existInspector, isLoading: isLoadingInspector } = useSWR(
     checkId && inspectorId && `/api/info_check/${checkId}/${inspectorId}`,
     fetcher
   )
@@ -95,7 +95,7 @@ const CheckInspectorDetail = () => {
           <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
       )}
-      {!existInspector && (
+      {!isLoadingInspector && !existInspector && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('inspectorDeleted')}</p>
         </div>
