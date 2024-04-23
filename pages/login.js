@@ -3,13 +3,10 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 
 export default function Login() {
-  const { t } = useTranslation()
+  const t = (k) => k
   const user = useUser()
   const supabase = useSupabaseClient()
   const router = useRouter()
@@ -124,11 +121,4 @@ export default function Login() {
       )}
     </div>
   )
-}
-export async function getServerSideProps({ locale }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  }
 }

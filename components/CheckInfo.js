@@ -1,11 +1,8 @@
 import { fetcher } from '@/helpers/fetcher'
 import { useEffect, useState } from 'react'
-import { useTranslation } from 'next-i18next'
 import useSWR from 'swr'
 
 const CheckInfo = ({ checkId }) => {
-  const { t } = useTranslation()
-
   const [checkName, setCheckName] = useState('')
   const [bookName, setBookName] = useState('')
   const [isCheckExpired, setIsCheckExpired] = useState(false)
@@ -21,6 +18,7 @@ const CheckInfo = ({ checkId }) => {
   }, [info])
 
   useEffect(() => {
+    const t = (k) => k
     if (info?.check_finished_at) {
       const currentDate = new Date()
       const checkFinishedDate = new Date(info.check_finished_at)
@@ -32,7 +30,7 @@ const CheckInfo = ({ checkId }) => {
         setError(null)
       }
     }
-  }, [info, isCheckExpired, t])
+  }, [info, isCheckExpired])
 
   return (
     <div className="max-w-6xl mx-auto p-4">

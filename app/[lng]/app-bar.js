@@ -1,28 +1,29 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react'
-import { useRouter } from 'next/router'
+// import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react'
+// import { useRouter } from 'next/router'
 import Link from 'next/link'
-import SwitchLanguage from './SwitchLanguage'
 import Bar from '@/public/bar.svg'
+import { useTranslation } from 'react-i18next'
+import SwitchLanguage from '@/components/SwitchLanguage'
 
-const AppBar = () => {
-  const t = (k) => k
-  const user = useUser()
-  const supabase = useSupabaseClient()
-  const router = useRouter()
+const AppBar = ({ lng }) => {
+  const { t } = useTranslation(lng, 'common')
+  // const user = useUser()
+  // const supabase = useSupabaseClient()
+  // const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef(null)
 
   const handleLogout = async () => {
-    try {
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
-      router.push('/login')
-    } catch (error) {
-      console.error('Logout error:', error)
-    }
+    // try {
+    //   const { error } = await supabase.auth.signOut()
+    //   if (error) throw error
+    //   router.push('/login')
+    // } catch (error) {
+    //   console.error('Logout error:', error)
+    // }
   }
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -57,17 +58,17 @@ const AppBar = () => {
             ref={menuRef}
             className="absolute right-0 mt-2 w-56 p-2 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
           >
-            <SwitchLanguage />
-            {user ? (
-              <div
-                className="py-1 text-center px-2 mt-2 bg-gray-200 rounded-md hover:bg-red-500"
-                onClick={handleLogout}
-              >
-                <a href="#" className="text-gray-700 block px-4 py-2 text-sm">
-                  {t('signOut')}
-                </a>
-              </div>
-            ) : null}
+            <SwitchLanguage lng={lng} />
+            {/* {user ? ( */}
+            <div
+              className="py-1 text-center px-2 mt-2 bg-gray-200 rounded-md hover:bg-red-500"
+              onClick={handleLogout}
+            >
+              <a href="#" className="text-gray-700 block px-4 py-2 text-sm">
+                {t('signOut')}
+              </a>
+            </div>
+            {/* ) : null} */}
           </div>
         )}
       </div>

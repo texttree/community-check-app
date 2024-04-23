@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { useTranslation } from 'next-i18next'
-
 import toast from 'react-hot-toast'
 import axios from 'axios'
 
 const Notes = ({ reference, materialId, checkId }) => {
-  const { t } = useTranslation()
+  const t = (k) => k
   const [error, setError] = useState(null)
   const [note, setNote] = useState('')
 

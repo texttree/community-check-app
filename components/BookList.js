@@ -1,11 +1,10 @@
 import Link from 'next/link'
-import { useTranslation } from 'next-i18next'
 import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
 
 const BookList = ({ projectId }) => {
-  const { t } = useTranslation()
+  const t = (k) => k
 
   const { data: books, error: booksError } = useSWR(
     projectId && `/api/projects/${projectId}/books`,

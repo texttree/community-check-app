@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
 import useSWR from 'swr'
@@ -9,7 +7,7 @@ import { fetcher } from '@/helpers/fetcher'
 import toast from 'react-hot-toast'
 
 const TokenGeneration = () => {
-  const { t } = useTranslation()
+  const t = (k) => k
 
   const [token, setToken] = useState({ name: '', token: '' })
   const [tokenName, setTokenName] = useState('')
@@ -135,14 +133,6 @@ const TokenGeneration = () => {
       )}
     </div>
   )
-}
-
-export async function getServerSideProps({ locale }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  }
 }
 
 export default TokenGeneration

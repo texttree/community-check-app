@@ -1,15 +1,12 @@
 import Link from 'next/link'
 
-import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
 import useSWR from 'swr'
 
 import { fetcher } from '@/helpers/fetcher'
 import Loader from '@/components/Loader'
 
 const ProjectsPage = () => {
-  const { t } = useTranslation()
+  const t = (k) => k
   const { data: projects, error } = useSWR('/api/projects', fetcher)
   return (
     <div className="bg-gray-200 py-8">
@@ -47,14 +44,6 @@ const ProjectsPage = () => {
       </div>
     </div>
   )
-}
-
-export async function getServerSideProps({ locale }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  }
 }
 
 export default ProjectsPage

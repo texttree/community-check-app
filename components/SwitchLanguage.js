@@ -1,38 +1,29 @@
-import { useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import { languages } from '@/next-i18next.config' // Импортируйте массив языков
+'use client'
 
-const useChangeLanguage = (locale) => {
-  let { i18n } = useTranslation()
-  useEffect(() => {
-    i18n.changeLanguage(locale)
-  }, [locale, i18n])
-}
+import { usePathname } from 'next/navigation'
+import { languages } from '../app/i18n/settings'
+import Link from 'next/link'
 
-const SwitchLanguage = () => {
-  const { i18n } = useTranslation()
-  const router = useRouter()
-  useChangeLanguage(i18n.language)
-
-  const changeLanguage = (lng) => {
-    router.push(router.asPath, undefined, { locale: lng })
+const SwitchLanguage = ({ lng }) => {
+  const pathName = usePathname()
+  const redirectedPathName = (locale) => {
+    if (!pathName) return '/'
+    const segments = pathName.split('/')
+    segments[1] = locale
+    return segments.join('/')
   }
-
   return (
     <div className="flex items-center justify-center space-x-2">
       {languages.map((language) => (
-        <button
+        <Link
           key={language}
-          onClick={() => changeLanguage(language)}
+          href={redirectedPathName(language)}
           className={`${
-            i18n.language === language
-              ? 'bg-blue-500 text-white'
-              : 'bg-gray-200 text-gray-600'
+            lng === language ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600'
           } hover:bg-blue-600 hover:text-white px-2 py-1 rounded-md`}
         >
           {language}
-        </button>
+        </Link>
       ))}
     </div>
   )

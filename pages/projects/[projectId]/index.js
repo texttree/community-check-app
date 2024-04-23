@@ -1,9 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
 import useSWR from 'swr'
 
 import BookList from '@/components/BookList'
@@ -13,7 +10,7 @@ import LeftArrow from '@/public/left.svg'
 import Loader from '@/components/Loader'
 
 const ProjectDetailsPage = () => {
-  const { t } = useTranslation()
+  const t = (k) => k
   const {
     query: { projectId },
   } = useRouter()
@@ -61,14 +58,6 @@ const ProjectDetailsPage = () => {
       </div>
     </div>
   )
-}
-
-export async function getServerSideProps({ locale }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  }
 }
 
 export default ProjectDetailsPage

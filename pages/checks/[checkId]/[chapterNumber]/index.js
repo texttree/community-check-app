@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
-import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import { fetcher } from '@/helpers/fetcher'
 import { parseChapter } from '@/helpers/usfmHelper'
 import CheckInfo from '@/components/CheckInfo'
@@ -10,7 +9,7 @@ import Loader from '@/components/Loader'
 import Notes from '@/components/Notes'
 
 const CheckDetail = () => {
-  const { t } = useTranslation()
+  const t = (k) => k
   const router = useRouter()
   const { checkId, chapterNumber } = router.query
 
@@ -121,14 +120,6 @@ const CheckDetail = () => {
       )}
     </div>
   )
-}
-
-export async function getServerSideProps({ locale }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  }
 }
 
 export default CheckDetail

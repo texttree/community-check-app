@@ -1,7 +1,5 @@
 import { useState } from 'react'
 
-import { appWithTranslation } from 'next-i18next'
-
 import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
 import { SessionContextProvider } from '@supabase/auth-helpers-react'
 
@@ -24,4 +22,4 @@ function MyApp({ Component, pageProps }) {
   )
 }
 
-export default appWithTranslation(MyApp)
+export default MyApp

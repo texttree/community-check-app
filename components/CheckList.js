@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { useTranslation } from 'next-i18next'
 
 import { useState, useEffect } from 'react'
 
@@ -15,7 +14,7 @@ import toast from 'react-hot-toast'
 import Loader from './Loader'
 
 const CheckList = ({ projectId, bookId }) => {
-  const { t } = useTranslation()
+  const t = (k) => k
   const [notesCounts, setNotesCounts] = useState({})
 
   const { data: checks, error } = useSWR(

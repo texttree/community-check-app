@@ -3,13 +3,10 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
 import axios from 'axios'
 
 export default function Login() {
-  const { t } = useTranslation()
+  const t = (k) => k
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [error, setError] = useState(false)
@@ -83,11 +80,4 @@ export default function Login() {
       </div>
     </div>
   )
-}
-export async function getServerSideProps({ locale }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  }
 }

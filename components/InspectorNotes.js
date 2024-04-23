@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { useTranslation } from 'next-i18next'
-
 import toast from 'react-hot-toast'
 import axios from 'axios'
 
@@ -13,7 +11,7 @@ const InspectorNotes = ({
   mutate,
   inspectorId,
 }) => {
-  const { t } = useTranslation()
+  const t = (k) => k
   const [error, setError] = useState(null)
   const [note, setNote] = useState('')
   const [writeNote, setWriteNote] = useState(false)

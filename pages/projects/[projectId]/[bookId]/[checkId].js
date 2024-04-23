@@ -8,9 +8,6 @@ import toast from 'react-hot-toast'
 import useSWR from 'swr'
 import axios from 'axios'
 
-import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
 import usfm from 'usfm-js'
 
 import { fetcher } from '@/helpers/fetcher'
@@ -20,7 +17,7 @@ import Copy from '@/public/copy.svg'
 import { parsingWordText } from '@/helpers/usfmHelper'
 
 const CheckId = () => {
-  const { t } = useTranslation()
+  const t = (k) => k
   const router = useRouter()
   const { projectId, bookId, checkId } = router.query
   const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 16))
@@ -274,13 +271,6 @@ const CheckId = () => {
       </div>
     </div>
   )
-}
-export async function getServerSideProps({ locale }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  }
 }
 
 export default CheckId
