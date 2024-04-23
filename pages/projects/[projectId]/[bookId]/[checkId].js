@@ -339,7 +339,7 @@ const CheckId = () => {
                 className="text-gray-500 hover:text-gray-700 px-3 py-1"
                 onClick={cancelDeleteInspector}
               >
-                {t('cancel')}
+                {t('keep')}
               </button>
               <button
                 className="text-red-600 hover:text-red-800 px-3 py-1 ml-2"
