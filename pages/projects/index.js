@@ -20,12 +20,10 @@ const ProjectsPage = () => {
             <p className="text-red-600">{t('errorOccurred')}</p>
           ) : projects ? (
             projects.map((project) => (
-              <Link key={project.project_id} href={`/projects/${project.project_id}`}>
+              <Link key={project.id} href={`/projects/${project.id}`}>
                 <div className="block text-center">
                   <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105">
-                    <p className="text-3xl font-semibold text-blue-600">
-                      {project.project_name}
-                    </p>
+                    <p className="text-3xl font-semibold text-blue-600">{project.name}</p>
                   </div>
                 </div>
               </Link>
