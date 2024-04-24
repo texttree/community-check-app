@@ -62,7 +62,7 @@ const CheckId = () => {
       if (response.data) {
         openDeleteModal()
       } else {
-        deleteInspectorApi(inspectorId)
+        deleteInspectorApi(inspectorId, false)
       }
     } catch (error) {
       console.error(error)
