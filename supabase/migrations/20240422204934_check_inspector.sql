@@ -27,6 +27,7 @@ CREATE OR REPLACE FUNCTION has_notes(p_inspector_id uuid)
 $$
 LANGUAGE plpgsql;
 
+DROP FUNCTION IF EXISTS public.delete_inspector_and_notes(uuid);
 
 CREATE OR REPLACE FUNCTION delete_inspector_and_notes(p_inspector_id uuid, p_delete_notes boolean)
 RETURNS void AS
