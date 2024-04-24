@@ -38,7 +38,8 @@ jobs:
             git diff
             exit 1
           fi
-
+          
+      - run: supabase link --project-ref $SUPABASE_PROJECT_ID   
       - name: Reset Supabase remote database
         run: yes | supabase db reset --linked
 
