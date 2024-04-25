@@ -1,9 +1,15 @@
 import serverApi from '@/helpers/serverApi'
 
 export default async function handler(req, res) {
-  let supabase
+  let supabase, userId
   try {
     supabase = await serverApi(req, res)
+    const {
+      data: {
+        user: { id },
+      },
+    } = await supabase.auth.getUser()
+    userId = id
   } catch (error) {
     return res.status(401).json({ error })
   }
@@ -42,8 +48,22 @@ export default async function handler(req, res) {
         return res.status(404).json({ error })
       }
 
+    case 'DELETE': // удалить книгу
+      try {
+        const { error: deleteError } = await supabase.rpc('soft_delete_book', {
+          p_book_id: bookId,
+          p_user_id: userId,
+        })
+        if (deleteError) {
+          throw deleteError
+        }
+        return res.status(204).end()
+      } catch (error) {
+        return res.status(404).json({ error })
+      }
+
     default:
-      res.setHeader('Allow', ['POST', 'GET'])
+      res.setHeader('Allow', ['POST', 'GET', 'DELETE'])
       return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
