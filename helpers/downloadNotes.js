@@ -13,10 +13,11 @@ const downloadNotes = async (check, t) => {
       throw notes.error
     }
 
-    const notesDownload = ['chapter\tverse\tnote']
+    const notesDownload = ['chapter\tverse\tnote\tinspector_name']
     notes.forEach((line) => {
+      const inspectorName = line.inspector_name ?? ''
       if (line.chapter && line.verse && line.note) {
-        const row = `${line.chapter}\t${line.verse}\t${line.note}`
+        const row = `${line.chapter}\t${line.verse}\t${line.note}\t${inspectorName}`
         notesDownload.push(row)
       }
     })
