@@ -51,9 +51,9 @@
   "paths": {
     "/api/projects": {
       "get": {
-        "summary": "Get all projects for the current user",
+        "summary": "Ge a projects for the current user",
         "tags": [
-          "Projects"
+          "Projec"
         ],
         "responses": {
           "200": {

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import SwitchLanguage from './SwitchLanguage'
+import SwitchLanguage from '../app/components/SwitchLanguage'
 import Bar from '@/public/bar.svg'
 
 const AppBar = () => {

@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { languages } from '../app/i18n/settings'
+import { languages } from '../i18n/settings'
 import Link from 'next/link'
 
 const SwitchLanguage = ({ lng }) => {

@@ -11,7 +11,7 @@ import downloadNotes from '@/helpers/downloadNotes'
 import Download from '@/public/download.svg'
 
 import toast from 'react-hot-toast'
-import Loader from './Loader'
+import Loader from '../app/components/Loader'
 
 const CheckList = ({ projectId, bookId }) => {
   const t = (k) => k

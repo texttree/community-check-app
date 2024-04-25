@@ -1,10 +1,10 @@
 import '@/styles/globals.css'
 import { Toaster } from 'react-hot-toast'
-import AppBar from './app-bar'
+import AppBar from '@/app/components/AppBar'
 
 import { dir } from 'i18next'
 
-import { languages } from '../i18n/settings'
+import { languages } from '@/app/i18n/settings'
 
 export async function generateStaticParams() {
   return languages.map((lng) => ({ lng }))
