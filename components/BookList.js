@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
 const BookList = ({ projectId }) => {
   const { t } = useTranslation()
@@ -15,6 +17,17 @@ const BookList = ({ projectId }) => {
   const ErrorMessage = ({ message }) => <span className="text-red-600">{message}</span>
 
   const LoadingMessage = () => <span>{t('loading')}...</span>
+
+  const handleDeleteBook = async (bookId) => {
+    try {
+      await axios.delete(`/api/projects/${projectId}/books/${bookId}`)
+      mutate(`/api/projects/${projectId}/books`)
+      toast.success(t('bookDeleted'))
+    } catch (error) {
+      console.error(error)
+      toast.error(t('errorOccurred'))
+    }
+  }
 
   const BookChecksInfo = ({ projectId, bookId, showLastCheck }) => {
     const { data: checks, error } = useSWR(
@@ -63,6 +76,7 @@ const BookList = ({ projectId }) => {
                 <th className="border p-2 text-center">{t('dateCreation')}</th>
                 <th className="border p-2 text-center">{t('dateLastCheck')}</th>
                 <th className="border p-2 text-center">{t('numberChecks')}</th>
+                <th className="border p-2 text-center">{t('actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -92,6 +106,14 @@ const BookList = ({ projectId }) => {
                       bookId={book.book_id}
                       showLastCheck={false}
                     />
+                  </td>
+                  <td className="border p-2 text-center">
+                    <button
+                      onClick={() => handleDeleteBook(book.book_id)}
+                      className="bg-white hover:text-red-700 text-red-500 px-4 py-2 rounded-md"
+                    >
+                      {t('deleteBook')}
+                    </button>
                   </td>
                 </tr>
               ))}
