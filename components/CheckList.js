@@ -1,7 +1,6 @@
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-
-import { useState, useEffect } from 'react'
 
 import useSWR from 'swr'
 import axios from 'axios'
@@ -14,10 +13,13 @@ import Download from 'public/download.svg'
 
 import toast from 'react-hot-toast'
 import Loader from './Loader'
+import DeleteModal from './DeleteModal'
 
 const CheckList = ({ projectId, bookId }) => {
   const { t } = useTranslation()
   const [notesCounts, setNotesCounts] = useState({})
+  const [checkToDelete, setCheckToDelete] = useState(null)
+  const [confirmationText, setConfirmationText] = useState('')
 
   const {
     data: checks,
@@ -59,15 +61,27 @@ const CheckList = ({ projectId, bookId }) => {
       })
   }
 
-  const handleDeleteCheck = async (checkId) => {
+  const handleConfirmDelete = async () => {
     try {
       await axios.delete(`/api/projects/${projectId}/books/${bookId}/checks`, {
-        data: { checkId },
+        data: { checkId: checkToDelete },
       })
       mutate()
+      setCheckToDelete(null)
+      setConfirmationText('')
     } catch (error) {
       console.error(error)
     }
+  }
+
+  const handleDeleteCheck = (checkId) => {
+    setCheckToDelete(checkId)
+    setConfirmationText(t('confirmDeleteCheck'))
+  }
+
+  const handleCancelDelete = () => {
+    setCheckToDelete(null)
+    setConfirmationText('')
   }
 
   return (
@@ -135,6 +149,13 @@ const CheckList = ({ projectId, bookId }) => {
         </div>
       ) : (
         <Loader />
+      )}
+      {checkToDelete && (
+        <DeleteModal
+          onCancel={handleCancelDelete}
+          onConfirm={handleConfirmDelete}
+          confirmationText={confirmationText}
+        />
       )}
     </>
   )
