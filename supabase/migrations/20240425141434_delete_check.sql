@@ -38,24 +38,6 @@ END;
 $$;
 
 
-CREATE OR REPLACE FUNCTION soft_delete_book(p_book_id bigint, p_user_id uuid)
-RETURNS void AS
-$$
-DECLARE
-    check_id uuid;
-BEGIN
-    UPDATE public.books
-    SET deleted_at = NOW()
-    WHERE id = p_book_id;
-
-    FOR check_id IN SELECT id FROM public.checks WHERE book_id = p_book_id LOOP
-        PERFORM soft_delete_check(check_id, p_user_id);
-    END LOOP;
-
-END;
-$$ LANGUAGE plpgsql;
-
-
 ALTER TABLE ONLY "public"."books"
     DROP CONSTRAINT IF EXISTS "books_project_id_fkey";
 
