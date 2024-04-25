@@ -1,19 +1,25 @@
 import serverApi from '@/helpers/serverApi'
+import { supabaseService } from '@/helpers/supabaseService'
 
 export default async function handler(req, res) {
-  let supabase
+  let supabase, userId
   try {
     supabase = await serverApi(req, res)
+    const {
+      data: {
+        user: { id },
+      },
+    } = await supabase.auth.getUser()
+    userId = id
   } catch (error) {
     return res.status(401).json({ error })
   }
 
   const {
     query: { bookId },
-    body: { name },
+    body: { name, checkId },
     method,
   } = req
-
   switch (method) {
     case 'GET': // получить проверки
       try {
@@ -39,8 +45,19 @@ export default async function handler(req, res) {
       } catch (error) {
         return res.status(404).json({ error })
       }
+    case 'DELETE':
+      try {
+        const { error } = await supabaseService.rpc('soft_delete_check', {
+          p_check_id: checkId,
+          p_user_id: userId,
+        })
+        if (error) throw error
+        return res.status(200).json({ message: 'Check deleted successfully' })
+      } catch (error) {
+        return res.status(404).json({ error })
+      }
     default:
-      res.setHeader('Allow', ['GET', 'POST'])
+      res.setHeader('Allow', ['GET', 'POST', 'DELETE'])
       return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
