@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 
 import useSWR from 'swr'
+import axios from 'axios'
 
 import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
@@ -18,7 +19,11 @@ const CheckList = ({ projectId, bookId }) => {
   const { t } = useTranslation()
   const [notesCounts, setNotesCounts] = useState({})
 
-  const { data: checks, error } = useSWR(
+  const {
+    data: checks,
+    error,
+    mutate,
+  } = useSWR(
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
     fetcher
   )
@@ -54,6 +59,17 @@ const CheckList = ({ projectId, bookId }) => {
       })
   }
 
+  const handleDeleteCheck = async (checkId) => {
+    try {
+      await axios.delete(`/api/projects/${projectId}/books/${bookId}/checks`, {
+        data: { checkId },
+      })
+      mutate()
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <>
       <h2 className="text-2xl font-semibold mb-2">{t('bookChecks')}</h2>
@@ -69,6 +85,7 @@ const CheckList = ({ projectId, bookId }) => {
                 <th className="border p-2 text-center">{t('checkEndDate')}</th>
                 <th className="border p-2 text-center">{t('downloadNotes')}</th>
                 <th className="border p-2 text-center">{t('activity')}</th>
+                <th className="border p-2 text-center">{t('actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -100,9 +117,16 @@ const CheckList = ({ projectId, bookId }) => {
                       <Download className="h-5 w-5 mr-1" />
                     </button>
                   </td>
-
                   <td className="border p-2 text-center">
                     {notesCounts[check.check_id] || 0}
+                  </td>
+                  <td className="border p-2 text-center">
+                    <button
+                      onClick={() => handleDeleteCheck(check.check_id)}
+                      className="bg-white hover:text-red-700 text-red-500 px-4 py-2 rounded-md"
+                    >
+                      {t('deleteCheck')}
+                    </button>
                   </td>
                 </tr>
               ))}
