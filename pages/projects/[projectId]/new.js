@@ -18,14 +18,12 @@ const NewBookPage = () => {
   const handleCreateBook = async () => {
     setErrorMessage('')
     const name = bookName.trim()
-    const tokenLocal = `1ff3d074-a3da-40f1-857e-6ef7e0985c0c`
     if (name) {
       try {
         const response = await fetch(`/api/projects/${projectId}/books`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${tokenLocal}`,
           },
           body: JSON.stringify({ name }),
         })
