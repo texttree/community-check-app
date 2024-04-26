@@ -1,11 +1,11 @@
 'use client'
 
-import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 
 import { useTranslation } from '@/app/i18n/client'
 import { createClient } from '@/app/supabase/client'
+import axios from 'axios'
 
 export default function FormComponent({ lng }) {
   const supabase = createClient()
@@ -40,6 +40,21 @@ export default function FormComponent({ lng }) {
       router.push(redirectedFrom ?? '/' + lng + '/projects')
     } catch (error) {
       setError(error.message)
+    }
+  }
+  const handleRegister = async () => {
+    try {
+      const {
+        data: { error },
+      } = await axios.post('/api/register', { email, password })
+      if (error) {
+        throw error
+      }
+      setError(false)
+      router.push('/' + lng + '/projects')
+    } catch (error) {
+      console.log({ error })
+      setError(error?.response?.data?.error?.message ?? 'Error')
     }
   }
 
@@ -89,12 +104,12 @@ export default function FormComponent({ lng }) {
         >
           {t('signIn')}
         </button>
-        <Link
+        <button
           className="flex mt-6 w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-          href={`/${lng}/register`}
+          onClick={handleRegister}
         >
           {t('register')}
-        </Link>
+        </button>
       </div>
     </div>
   )

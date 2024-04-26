@@ -70,7 +70,10 @@ export async function middleware(req) {
   }
 
   // Доступ к API у нас в двух случаях. Или это аутентифицированный пользователь, или же в заголовке запроса есть токен. Проверим, и в зависимости от этого вернем ответ. Или ошибку доступа, или запрос, в который добавим айди пользователя.
-  if (req.nextUrl.pathname.startsWith('/api')) {
+  if (
+    req.nextUrl.pathname.startsWith('/api') &&
+    !req.nextUrl.pathname.startsWith('/api/register')
+  ) {
     let access_token
     try {
       access_token = req.headers.get('x-comcheck-token')
