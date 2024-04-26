@@ -12,19 +12,9 @@ export default function FormComponent({ lng }) {
   const router = useRouter()
   const redirectedFrom = useSearchParams().get('redirectedFrom')
   const { t } = useTranslation(lng, 'common')
-  const [email, setEmail] = useState('fox@mail.com')
+  const [email, setEmail] = useState('')
   const [error, setError] = useState(false)
-  const [password, setPassword] = useState('123456')
-  const handleLogout = async () => {
-    try {
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
-      setError(false)
-      router.push('/login')
-    } catch (error) {
-      setError(error.message)
-    }
-  }
+  const [password, setPassword] = useState('')
   const handleLogin = async () => {
     try {
       const { error } = await supabase.auth.signInWithPassword({
