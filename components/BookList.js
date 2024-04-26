@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import useSWR, { mutate } from 'swr'
@@ -5,6 +7,7 @@ import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import DeleteModal from './DeleteModal'
 
 const BookList = ({ projectId }) => {
   const { t } = useTranslation()
@@ -60,6 +63,19 @@ const BookList = ({ projectId }) => {
     }
   }
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [bookIdToDelete, setBookIdToDelete] = useState(null)
+
+  const handleOpenDeleteModal = (bookId) => {
+    setBookIdToDelete(bookId)
+    setShowDeleteModal(true)
+  }
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false)
+    setBookIdToDelete(null)
+  }
+
   return (
     <>
       <h1 className="text-2xl font-semibold">{t('projectBooks')}</h1>
@@ -109,7 +125,7 @@ const BookList = ({ projectId }) => {
                   </td>
                   <td className="border p-2 text-center">
                     <button
-                      onClick={() => handleDeleteBook(book.book_id)}
+                      onClick={() => handleOpenDeleteModal(book.book_id)}
                       className="bg-white hover:text-red-700 text-red-500 px-4 py-2 rounded-md"
                     >
                       {t('deleteBook')}
@@ -120,6 +136,16 @@ const BookList = ({ projectId }) => {
             </tbody>
           </table>
         </div>
+      )}
+      {showDeleteModal && (
+        <DeleteModal
+          onCancel={handleCloseDeleteModal}
+          onConfirm={() => {
+            handleDeleteBook(bookIdToDelete)
+            handleCloseDeleteModal()
+          }}
+          confirmationText={t('confirmDeleteBook')}
+        />
       )}
     </>
   )
