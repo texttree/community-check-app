@@ -150,6 +150,8 @@ const BookList = ({ projectId }) => {
           confirmationText={t('confirmDeleteBook')}
           safety={true}
           nameDelete={bookNameToDelete}
+          cancelText={t('cancel')}
+          deleteText={t('delete')}
         />
       )}
     </>

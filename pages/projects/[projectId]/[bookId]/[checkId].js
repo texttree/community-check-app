@@ -329,6 +329,8 @@ const CheckId = () => {
           onCancel={cancelDeleteInspector}
           onConfirm={confirmDeleteInspector}
           confirmationText={t('confirmDeleteInspector')}
+          cancelText={t('keep')}
+          deleteText={t('delete')}
         />
       )}
     </div>

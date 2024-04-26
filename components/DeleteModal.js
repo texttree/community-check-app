@@ -1,7 +1,15 @@
 import { useState } from 'react'
 import { useTranslation } from 'next-i18next'
 
-const DeleteModal = ({ onCancel, onConfirm, confirmationText, safety, nameDelete }) => {
+const DeleteModal = ({
+  onCancel,
+  onConfirm,
+  confirmationText,
+  safety,
+  nameDelete,
+  cancelText,
+  deleteText,
+}) => {
   const { t } = useTranslation()
   const [inputValue, setInputValue] = useState('')
   const [inputError, setInputError] = useState(false)
@@ -39,13 +47,13 @@ const DeleteModal = ({ onCancel, onConfirm, confirmationText, safety, nameDelete
             className="text-gray-500 hover:text-gray-700 px-3 py-1"
             onClick={onCancel}
           >
-            {t('cancel')}
+            {cancelText}
           </button>
           <button
             className="text-red-600 hover:text-red-800 px-3 py-1 ml-2"
             onClick={handleConfirm}
           >
-            {t('delete')}
+            {deleteText}
           </button>
         </div>
         {inputError && <p className="text-red-600 mt-2">{t('incorrectName')}</p>}

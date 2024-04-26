@@ -155,6 +155,8 @@ const CheckList = ({ projectId, bookId }) => {
           onCancel={handleCancelDelete}
           onConfirm={handleConfirmDelete}
           confirmationText={confirmationText}
+          cancelText={t('cancel')}
+          deleteText={t('delete')}
         />
       )}
     </>

@@ -72,6 +72,8 @@ const ProjectsPage = () => {
             confirmationText={t('confirmDeleteProject')}
             safety={true}
             nameDelete={projects.find((p) => p.id === deleteProjectId).name}
+            сancelText={t('cancel')}
+            deleteText={t('delete')}
           />
         )}
       </div>
