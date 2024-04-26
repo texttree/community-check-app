@@ -25,7 +25,6 @@ export default async function handler(req, res) {
         return res.status(200).json(data)
 
       case 'POST': // создать новую книгу
-        console.log({ projectId, name })
         const { data: newBook, error: createError } = await supabase.rpc('create_book', {
           p_project_id: projectId,
           book_name: name,

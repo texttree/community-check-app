@@ -36,7 +36,6 @@ export async function POST(req) {
     if (tokenError) {
       throw tokenError
     }
-    console.log({ tokens, tokenError })
     if (tokens.length > 0) {
       throw new Error('Token already exists')
     }
@@ -44,7 +43,6 @@ export async function POST(req) {
       .from('tokens')
       .insert({ name: tokenName, user_id: userId })
       .select()
-    console.log({ data, error })
     if (error) {
       throw error
     }

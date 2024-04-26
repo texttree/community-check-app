@@ -21,7 +21,6 @@ export async function middleware(req) {
     lng = fallbackLng
   }
 
-  console.log('middleware path', req.nextUrl.pathname)
   if (
     // !['.png', '.jpg', '.ico', '.svg'].includes(req.nextUrl.pathname.slice(-4)) &&
     !req.nextUrl.pathname.startsWith('/api')
@@ -30,7 +29,6 @@ export async function middleware(req) {
       !languages.some((loc) => req.nextUrl.pathname.startsWith(`/${loc}`)) &&
       !req.nextUrl.pathname.startsWith('/_next')
     ) {
-      console.log('redirect to [lng]', req.nextUrl.pathname)
       return NextResponse.redirect(new URL(`/${lng}${req.nextUrl.pathname}`, req.url))
     }
 
@@ -59,7 +57,6 @@ export async function middleware(req) {
       if (error) {
         throw error
       }
-      console.log(data?.user)
       if (!data?.user) {
         throw Error('Unauthorized')
       }
