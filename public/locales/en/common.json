@@ -16,6 +16,7 @@
   "confirmDeleteBook": "Are you sure you want to delete the book? Along with the book, all checks, notes, materials and verifiers will be deleted. Enter the name of the book to confirm.",
   "confirmDeleteCheck": "Are you sure you want to delete the check? Along with the verification, all notes, materials and verifiers will be deleted.",
   "confirmDeleteInspector": "The inspector has notes. Do you want to delete them too or keep them?",
+  "confirmDeleteProject": "Are you sure you want to delete the project? Along with the project, all books, all checks, notes, materials and verifiers will be deleted. Enter the name of the project to confirm.",
   "contentNotLoaded": "The material for verification has not been uploaded",
   "copied": "Copied!",
   "copyError": "Unable to copy text",
