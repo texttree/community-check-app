@@ -51,13 +51,13 @@
   "paths": {
     "/api/projects": {
       "get": {
-        "summary": "Ge a projects for the current user",
+        "summary": "Get projects for the current user",
         "tags": [
-          "Projec"
+          "Projects"
         ],
         "responses": {
           "200": {
-            "description": "An array of projects",
+            "description": "Array of projects",
             "content": {
               "application/json": {
                 "schema": {
@@ -100,7 +100,7 @@
             }
           },
           "400": {
-            "description": "Invalid input, project name is missing or the project already exists"
+            "description": "Invalid input, project name is missing or already exists"
           },
           "500": {
             "description": "Internal server error"

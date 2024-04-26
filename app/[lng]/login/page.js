@@ -1,5 +1,5 @@
 import { login, signup } from './actions'
-import FormComponent from './form-component'
+import FormComponent from './client'
 
 export default async function LoginPage({ params: { lng } }) {
   return (

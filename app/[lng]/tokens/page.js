@@ -1,4 +1,4 @@
-import TokenGeneration from './list'
+import TokenGeneration from './client'
 
 function Page({ params: { lng } }) {
   return <TokenGeneration lng={lng} />

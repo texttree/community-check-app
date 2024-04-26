@@ -46,35 +46,43 @@ export async function middleware(req) {
   }
 
   if (
-    req.nextUrl.pathname.startsWith('/projects') ||
-    req.nextUrl.pathname.startsWith('/tokens')
+    !req.nextUrl.pathname.startsWith('/api') &&
+    (req.nextUrl.pathname.split('/')?.[2] === 'projects' ||
+      req.nextUrl.pathname.split('/')?.[2] === 'tokens')
   ) {
     const { supabase, response } = supabaseMiddleware(req)
-    const { data, error } = await supabase.auth.getUser()
-    if (error || !data?.user) {
+    let data, error
+    try {
+      const userResult = await supabase.auth.getUser()
+      data = userResult.data
+      error = userResult.error
+      if (error) {
+        throw error
+      }
+      console.log(data?.user)
+      if (!data?.user) {
+        throw Error('Unauthorized')
+      }
+    } catch (error) {
       const redirectUrl = req.nextUrl.clone()
       redirectUrl.pathname = '/' + lng + '/login'
       redirectUrl.searchParams.set(`redirectedFrom`, req.nextUrl.pathname)
       return NextResponse.redirect(redirectUrl)
-    } else {
-      return response
     }
+    return response
   }
 
   // Доступ к API у нас в двух случаях. Или это аутентифицированный пользователь, или же в заголовке запроса есть токен. Проверим, и в зависимости от этого вернем ответ. Или ошибку доступа, или запрос, в который добавим айди пользователя.
   if (req.nextUrl.pathname.startsWith('/api')) {
-    console.log('API')
     let access_token
     try {
       access_token = req.headers.get('x-comcheck-token')
-      console.log({ access_token })
       if (!access_token) {
         const { supabase, response } = supabaseMiddleware(req)
         const { data, error } = await supabase.auth.getUser()
         if (error || !data?.user) {
           return NextResponse.status(401).json({ error: 'Unauthorized' })
         }
-        console.log('userId:', data.user?.id)
         response.headers.set('x-user-id', data.user?.id)
         return response
       }

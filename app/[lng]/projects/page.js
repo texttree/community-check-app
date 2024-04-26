@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useTranslation } from '@/app/i18n'
-import Projects from './projects'
+import Projects from './client'
 
 async function Page({ params: { lng } }) {
   const { t } = await useTranslation(lng, 'common')

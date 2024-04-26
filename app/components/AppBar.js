@@ -4,15 +4,29 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Bar from '@/public/bar.svg'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@/app/i18n/client'
 import SwitchLanguage from './SwitchLanguage'
-import { createClient } from '../supabase/client'
+import { createClient } from '@/app/supabase/client'
 
 const AppBar = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
   const supabase = createClient()
-  const { user, error } = supabase.auth.getUser()
-  console.log(user)
+  const [user, setUser] = useState(null)
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const { data, error } = await supabase.auth.getUser()
+        setUser(data?.user ?? null)
+        if (error) {
+          throw error
+        }
+      } catch (error) {
+        setUser(null)
+      }
+    }
+    getUser()
+  }, [supabase.auth])
+
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef(null)
@@ -21,7 +35,7 @@ const AppBar = ({ lng }) => {
     try {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
-      router.push(lng + '/login')
+      router.push('/' + lng + '/login')
     } catch (error) {
       console.error('Logout error:', error)
     }
@@ -41,7 +55,7 @@ const AppBar = ({ lng }) => {
 
   return (
     <header className="bg-blue-500 p-4 flex justify-between items-center rounded-t-lg">
-      <Link href={'/'} className="text-white cursor-pointer text-2xl font-bold">
+      <Link href={'/' + lng} className="text-white cursor-pointer text-2xl font-bold">
         Community Check
       </Link>
 
