@@ -50,7 +50,6 @@ export default async function handler(req, res) {
         return res.status(200).json(project)
 
       case 'DELETE': // удалить проект
-        console.log(projectId, userId)
         const { error: deleteError } = await supabaseService.rpc('delete_project', {
           p_project_id: projectId,
           p_user_id: userId,

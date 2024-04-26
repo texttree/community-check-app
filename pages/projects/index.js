@@ -9,15 +9,18 @@ import useSWR, { mutate } from 'swr'
 
 import { fetcher } from '@/helpers/fetcher'
 import Loader from '@/components/Loader'
+import DeleteModal from '@/components/DeleteModal'
 
 const ProjectsPage = () => {
   const { t } = useTranslation()
   const { data: projects, error } = useSWR('/api/projects', fetcher)
+  const [deleteProjectId, setDeleteProjectId] = useState(null)
 
-  const handleDelete = async (projectId) => {
+  const handleDelete = async () => {
     try {
-      await axios.delete(`/api/projects/${projectId}`)
+      await axios.delete(`/api/projects/${deleteProjectId}`)
       mutate('/api/projects')
+      setDeleteProjectId(null)
     } catch (error) {
       console.error('Failed to delete project:', error)
     }
@@ -38,7 +41,7 @@ const ProjectsPage = () => {
                   <div className="mt-4">
                     <button
                       className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
-                      onClick={() => handleDelete(project.id)}
+                      onClick={() => setDeleteProjectId(project.id)}
                     >
                       {t('delete')}
                     </button>
@@ -62,6 +65,15 @@ const ProjectsPage = () => {
         >
           {t('tokens')}
         </Link>
+        {deleteProjectId && (
+          <DeleteModal
+            onCancel={() => setDeleteProjectId(null)}
+            onConfirm={handleDelete}
+            confirmationText={t('confirmDeleteProject')}
+            safety={true}
+            nameDelete={projects.find((p) => p.id === deleteProjectId).name}
+          />
+        )}
       </div>
     </div>
   )
