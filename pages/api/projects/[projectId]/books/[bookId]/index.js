@@ -50,7 +50,7 @@ export default async function handler(req, res) {
 
     case 'DELETE': // удалить книгу
       try {
-        const { error: deleteError } = await supabase.rpc('soft_delete_book', {
+        const { error: deleteError } = await supabase.rpc('delete_book', {
           p_book_id: bookId,
           p_user_id: userId,
         })
