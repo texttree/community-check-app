@@ -27,7 +27,7 @@ const BookList = ({ projectId }) => {
       mutate(`/api/projects/${projectId}/books`)
       toast.success(t('bookDeleted'))
     } catch (error) {
-      console.error(error)
+      console.error(error, 30)
       toast.error(t('errorOccurred'))
     }
   }
@@ -65,9 +65,12 @@ const BookList = ({ projectId }) => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [bookIdToDelete, setBookIdToDelete] = useState(null)
+  const [bookNameToDelete, setBookNameToDelete] = useState(null)
 
-  const handleOpenDeleteModal = (bookId) => {
-    setBookIdToDelete(bookId)
+  const handleOpenDeleteModal = (book) => {
+    setBookIdToDelete(book.book_id)
+    setBookNameToDelete(book.book_name)
+
     setShowDeleteModal(true)
   }
 
@@ -125,7 +128,7 @@ const BookList = ({ projectId }) => {
                   </td>
                   <td className="border p-2 text-center">
                     <button
-                      onClick={() => handleOpenDeleteModal(book.book_id)}
+                      onClick={() => handleOpenDeleteModal(book)}
                       className="bg-white hover:text-red-700 text-red-500 px-4 py-2 rounded-md"
                     >
                       {t('deleteBook')}
@@ -145,6 +148,8 @@ const BookList = ({ projectId }) => {
             handleCloseDeleteModal()
           }}
           confirmationText={t('confirmDeleteBook')}
+          safety={true}
+          nameDelete={bookNameToDelete}
         />
       )}
     </>
