@@ -1,23 +1,17 @@
 import { useState, useEffect, useRef } from 'react'
-
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
 import toast from 'react-hot-toast'
-
 import useSWR from 'swr'
 import axios from 'axios'
-
 import usfm from 'usfm-js'
-
 import { fetcher } from '@/helpers/fetcher'
 import { parsingWordText } from '@/helpers/usfmHelper'
-
 import LeftArrow from 'public/left.svg'
 import Copy from 'public/copy.svg'
+import DeleteModal from '@/components/DeleteModal'
 
 const CheckId = () => {
   const { t } = useTranslation()
@@ -331,25 +325,11 @@ const CheckId = () => {
         )}
       </div>
       {showDeleteModal && existNotesData && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white rounded p-4">
-            <p className="text-lg font-medium">{t('confirmDeleteInspector')}</p>
-            <div className="flex justify-end mt-4">
-              <button
-                className="text-gray-500 hover:text-gray-700 px-3 py-1"
-                onClick={cancelDeleteInspector}
-              >
-                {t('keep')}
-              </button>
-              <button
-                className="text-red-600 hover:text-red-800 px-3 py-1 ml-2"
-                onClick={confirmDeleteInspector}
-              >
-                {t('delete')}
-              </button>
-            </div>
-          </div>
-        </div>
+        <DeleteModal
+          onCancel={cancelDeleteInspector}
+          onConfirm={confirmDeleteInspector}
+          confirmationText={t('confirmDeleteInspector')}
+        />
       )}
     </div>
   )
