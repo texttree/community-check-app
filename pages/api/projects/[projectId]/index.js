@@ -1,9 +1,16 @@
 import serverApi from '@/helpers/serverApi'
+import { supabaseService } from '@/helpers/supabaseService'
 
 export default async function handler(req, res) {
-  let supabase
+  let supabase, userId
   try {
     supabase = await serverApi(req, res)
+    const {
+      data: {
+        user: { id },
+      },
+    } = await supabase.auth.getUser()
+    userId = id
   } catch (error) {
     return res.status(401).json({ error })
   }
@@ -42,8 +49,21 @@ export default async function handler(req, res) {
 
         return res.status(200).json(project)
 
+      case 'DELETE': // удалить проект
+        console.log(projectId, userId)
+        const { error: deleteError } = await supabaseService.rpc('delete_project', {
+          p_project_id: projectId,
+          p_user_id: userId,
+        })
+
+        if (deleteError) {
+          return res.status(400).json()
+        }
+
+        return res.status(204).end()
+
       default:
-        res.setHeader('Allow', ['POST', 'GET'])
+        res.setHeader('Allow', ['POST', 'GET', 'DELETE'])
         return res.status(405).end(`Method ${method} Not Allowed`)
     }
   } catch (error) {
