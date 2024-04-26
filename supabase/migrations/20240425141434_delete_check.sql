@@ -114,3 +114,20 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION delete_project(
+    p_project_id bigint,
+    p_user_id uuid
+)
+RETURNS void AS
+$$
+BEGIN
+    DELETE FROM public.projects
+    WHERE id = p_project_id
+    AND user_id = p_user_id;
+END;
+$$
+LANGUAGE plpgsql;
+
