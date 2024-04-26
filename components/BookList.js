@@ -27,7 +27,7 @@ const BookList = ({ projectId }) => {
       mutate(`/api/projects/${projectId}/books`)
       toast.success(t('bookDeleted'))
     } catch (error) {
-      console.error(error, 30)
+      console.error(error)
       toast.error(t('errorOccurred'))
     }
   }
