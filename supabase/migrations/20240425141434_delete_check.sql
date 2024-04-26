@@ -56,21 +56,79 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE FUNCTION "public"."get_books_by_project"("p_project_id" bigint) 
-RETURNS TABLE("book_id" bigint, "book_name" "text", "book_created_at" timestamp with time zone, "book_deleted_at" timestamp with time zone)
-LANGUAGE "plpgsql"
-AS $$
+ALTER TABLE ONLY "public"."books"
+    DROP CONSTRAINT IF EXISTS "books_project_id_fkey";
+
+ALTER TABLE ONLY "public"."books"
+    ADD CONSTRAINT "books_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON DELETE CASCADE;
+
+
+ALTER TABLE ONLY "public"."checks"
+    DROP CONSTRAINT IF EXISTS "checks_book_id_fkey";
+
+ALTER TABLE ONLY "public"."checks"
+    ADD CONSTRAINT "checks_book_id_fkey" FOREIGN KEY ("book_id") REFERENCES "public"."books"("id") ON DELETE CASCADE;
+
+ALTER TABLE ONLY "public"."inspectors"
+    DROP CONSTRAINT IF EXISTS "inspectors_check_id_fkey";
+
+ALTER TABLE ONLY "public"."inspectors"
+    ADD CONSTRAINT "inspectors_check_id_fkey" FOREIGN KEY ("check_id") REFERENCES "public"."checks"("id") ON DELETE CASCADE;
+
+ALTER TABLE ONLY "public"."materials"
+    DROP CONSTRAINT IF EXISTS "materials_check_id_fkey";
+
+ALTER TABLE ONLY "public"."materials"
+    ADD CONSTRAINT "materials_check_id_fkey" FOREIGN KEY ("check_id") REFERENCES "public"."checks"("id") ON DELETE CASCADE;
+
+ALTER TABLE ONLY "public"."notes"
+    DROP CONSTRAINT IF EXISTS "notes_inspector_id_fkey";
+
+ALTER TABLE ONLY "public"."notes"
+    ADD CONSTRAINT "notes_inspector_id_fkey" FOREIGN KEY ("inspector_id") REFERENCES "public"."inspectors"("id") ON DELETE CASCADE;
+
+ALTER TABLE ONLY "public"."notes"
+    DROP CONSTRAINT IF EXISTS "notes_material_id_fkey";
+
+ALTER TABLE ONLY "public"."notes"
+    ADD CONSTRAINT "notes_material_id_fkey" FOREIGN KEY ("material_id") REFERENCES "public"."materials"("id") ON DELETE CASCADE;
+
+ALTER TABLE ONLY "public"."projects"
+    DROP CONSTRAINT IF EXISTS "projects_user_id_fkey";
+
+ALTER TABLE ONLY "public"."projects"
+    ADD CONSTRAINT "projects_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
+
+ALTER TABLE ONLY "public"."tokens"
+    DROP CONSTRAINT IF EXISTS "tokens_user_id_fkey";
+
+ALTER TABLE ONLY "public"."tokens"
+    ADD CONSTRAINT "tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
+
+ALTER TABLE ONLY "public"."users"
+    DROP CONSTRAINT IF EXISTS "users_id_fkey";
+
+ALTER TABLE ONLY "public"."users"
+    ADD CONSTRAINT "users_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+
+
+
+CREATE OR REPLACE FUNCTION delete_book(p_user_id uuid, p_book_id bigint) RETURNS void AS $$
+DECLARE
+    user_exists boolean;
 BEGIN
-    RETURN QUERY
-    SELECT
-        id as book_id,
-        name as book_name,
-        created_at as book_created_at, 
-        deleted_at as book_deleted_at
-    FROM
-        public.books
-    WHERE
-        project_id = p_project_id
-        AND deleted_at IS NULL;
+    SELECT EXISTS (
+        SELECT 1 
+        FROM public.books b
+        JOIN public.projects p ON b.project_id = p.id
+        WHERE b.id = p_book_id AND p.user_id = p_user_id 
+    ) INTO user_exists;
+
+    IF user_exists THEN
+        DELETE FROM public.books
+        WHERE id = p_book_id;
+    ELSE
+        RAISE EXCEPTION 'Permission denied. You are not the owner of this book.';
+    END IF;
 END;
-$$;
+$$ LANGUAGE plpgsql;
