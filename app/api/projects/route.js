@@ -55,7 +55,13 @@ import { createClient } from '@/app/supabase/service'
 export async function GET(req) {
   const userId = req.headers.get('x-user-id')
   if (!userId) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    return Response.json(
+      {
+        error: 'Unauthorized',
+        data: { a: req.headers.get('x-user-id'), b: req.headers['x-user-id'] },
+      },
+      { status: 401 }
+    )
   }
   const supabaseService = createClient()
   try {

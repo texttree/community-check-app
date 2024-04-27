@@ -10,7 +10,6 @@ import axios from 'axios'
 export default function FormComponent({ lng, redirectedFrom }) {
   const supabase = createClient()
   const router = useRouter()
-  // const redirectedFrom = useSearchParams().get('redirectedFrom')
   const { t } = useTranslation(lng, 'common')
   const [email, setEmail] = useState('')
   const [error, setError] = useState(false)
