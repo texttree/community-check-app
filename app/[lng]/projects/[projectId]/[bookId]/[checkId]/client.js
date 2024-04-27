@@ -13,7 +13,6 @@ import axios from 'axios'
 import usfm from 'usfm-js'
 
 import { fetcher } from '@/helpers/fetcher'
-
 import LeftArrow from '@/public/left.svg'
 import Copy from '@/public/copy.svg'
 import { parsingWordText } from '@/helpers/usfmHelper'
@@ -29,6 +28,10 @@ const CheckId = ({ lng }) => {
   const [inspectorName, setInspectorName] = useState('')
   const checkPageRef = useRef(null)
   const chapterNumber = 1
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [selectedInspectorId, setSelectedInspectorId] = useState(null)
+  const [existNotesData, setExistNotes] = useState(null)
 
   const { data: material } = useSWR(
     projectId &&
@@ -48,6 +51,36 @@ const CheckId = ({ lng }) => {
       `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
     fetcher
   )
+
+  const deleteInspector = async (inspectorId) => {
+    setSelectedInspectorId(inspectorId)
+    try {
+      const response = await axios.get(`/api/info_notes/${inspectorId}`)
+      setExistNotes(response.data)
+      if (response.data) {
+        openDeleteModal()
+      } else {
+        deleteInspectorApi(inspectorId, false)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const openDeleteModal = () => {
+    setShowDeleteModal(true)
+  }
+
+  const confirmDeleteInspector = async () => {
+    setShowDeleteModal(false)
+    deleteInspectorApi(selectedInspectorId, true)
+  }
+
+  const cancelDeleteInspector = () => {
+    setShowDeleteModal(false)
+    deleteInspectorApi(selectedInspectorId, false)
+  }
+
   const copyToClipboard = () => {
     const textToCopy = checkPageRef.current.innerText
 
@@ -80,65 +113,63 @@ const CheckId = ({ lng }) => {
 
   const updateResourse = async () => {
     if (materialLink) {
-      await axios
-        .get(materialLink)
-        .then((res) => {
-          const jsonData = parsingWordText(usfm.toJSON(res.data))
-          if (Object.keys(jsonData?.chapters).length > 0) {
-            upsertMaterial(jsonData)
-              .then(() => {
-                updateCheck()
-                toast.success(t('save'))
-              })
-              .catch((error) => {
-                console.error(error)
-                toast.error(error.message)
-              })
-          } else {
-            toast.error(t('enterCorrectLink'))
-          }
-        })
-        .catch((error) => {
-          console.error(error)
-          toast.error(error.message)
-        })
+      try {
+        const res = await axios.get(materialLink)
+        const jsonData = parsingWordText(usfm.toJSON(res.data))
+        if (Object.keys(jsonData?.chapters).length > 0) {
+          await upsertMaterial(jsonData)
+          await updateCheck()
+          toast.success(t('save'))
+        } else {
+          toast.error(t('enterCorrectLink'))
+        }
+      } catch (error) {
+        console.error(error)
+        toast.error(error.message)
+      }
     } else {
       toast.error(t('provideLink'))
     }
   }
 
   const updateCheck = async () => {
-    return await axios.post(
-      `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
-      {
+    try {
+      await axios.post(`/api/projects/${projectId}/books/${bookId}/checks/${checkId}`, {
         started_at: startDate,
         finished_at: endDate,
         name: checkName,
         material_link: materialLink,
-      }
-    )
-  }
-  const upsertMaterial = async (jsonData) => {
-    const postData = { content: jsonData }
-    if (material?.id) {
-      postData.id = material.id
+      })
+    } catch (error) {
+      console.error(error)
+      toast.error(error.message)
     }
-    const res = await axios.post(
-      `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
-      postData
-    )
-    return res.data.id
   }
+
+  const upsertMaterial = async (jsonData) => {
+    try {
+      const postData = { content: jsonData }
+      if (material?.id) {
+        postData.id = material.id
+      }
+      const res = await axios.post(
+        `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
+        postData
+      )
+      return res.data.id
+    } catch (error) {
+      console.error(error)
+      toast.error(error.message)
+    }
+  }
+
   const createPersonalLink = async () => {
     try {
       if (inspectorName) {
         await axios.post(
           `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
-          {
-            inspectorName,
-          }
+          { inspectorName }
         )
-
         mutate()
         toast.success(t('inspectorCreated'))
       } else {
@@ -146,6 +177,21 @@ const CheckId = ({ lng }) => {
       }
     } catch (error) {
       console.error(error)
+      toast.error(t('errorCreatingInspector'))
+    }
+  }
+
+  const deleteInspectorApi = async (inspectorId, p_delete_notes) => {
+    try {
+      await axios.delete(
+        `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
+        { data: { inspectorId, p_delete_notes } }
+      )
+      mutate()
+      toast.success(t('inspectorDeleted'))
+    } catch (error) {
+      console.error(error)
+      toast.error(t('errorDeletingInspector'))
     }
   }
 
@@ -242,6 +288,9 @@ const CheckId = ({ lng }) => {
                   <th className=" bg-white border border-gray-300 px-4 py-2">
                     {t('personalLink')}
                   </th>
+                  <th className="bg-white border border-gray-300 px-4 py-2">
+                    {t('actions')}
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -264,6 +313,14 @@ const CheckId = ({ lng }) => {
                         ></Copy>
                       </div>
                     </td>
+                    <td className="bg-white border border-gray-300 px-4 py-2">
+                      <button
+                        className="text-red-600 hover:text-red-800"
+                        onClick={() => deleteInspector(inspector.id)}
+                      >
+                        {t('delete')}
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -271,6 +328,27 @@ const CheckId = ({ lng }) => {
           </div>
         )}
       </div>
+      {showDeleteModal && existNotesData && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white rounded p-4">
+            <p className="text-lg font-medium">{t('confirmDeleteInspector')}</p>
+            <div className="flex justify-end mt-4">
+              <button
+                className="text-gray-500 hover:text-gray-700 px-3 py-1"
+                onClick={cancelDeleteInspector}
+              >
+                {t('keep')}
+              </button>
+              <button
+                className="text-red-600 hover:text-red-800 px-3 py-1 ml-2"
+                onClick={confirmDeleteInspector}
+              >
+                {t('delete')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

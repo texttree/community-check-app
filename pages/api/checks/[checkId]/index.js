@@ -13,11 +13,11 @@ export default async function handler(req, res) {
           .from('materials')
           .select('id, content')
           .eq('check_id', checkId)
-          .single()
+        //        .single()
         if (error) {
           throw error
         }
-        return res.status(200).json(data)
+        return res.status(200).json(data[0])
       } catch (error) {
         return res.status(404).json({ error })
       }

@@ -27,7 +27,10 @@ const CheckInspectorDetail = ({ lng }) => {
   const [isCheckExpired, setIsCheckExpired] = useState(false)
 
   const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
-
+  const { data: existInspector, isLoading: isLoadingInspector } = useSWR(
+    checkId && inspectorId && `/api/info_check/${checkId}/${inspectorId}`,
+    fetcher
+  )
   useEffect(() => {
     if (info?.check_finished_at) {
       const currentDate = new Date()
@@ -94,7 +97,12 @@ const CheckInspectorDetail = ({ lng }) => {
           <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
       )}
-      {!isLoading && material && (
+      {!isLoadingInspector && !existInspector && (
+        <div className="max-w-6xl mx-auto p-4 text-center">
+          <p className="text-2xl text-red-500">{t('inspectorDeleted')}</p>
+        </div>
+      )}
+      {!isLoading && material && existInspector && (
         <div className="max-w-6xl mx-auto p-4">
           <CheckInfo checkId={checkId} lng={lng} />
           {(!isCheckExpired || info?.is_owner) && chapter.length > 0 && (

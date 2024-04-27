@@ -29,12 +29,11 @@ export default async function handler(req, res) {
           .from('materials')
           .select()
           .eq('check_id', checkId)
-          .single()
 
         if (error) {
           throw error
         }
-        return res.status(200).json(data)
+        return res.status(200).json(data?.[0] || null)
       } catch (error) {
         return res.status(404).json({ error })
       }
