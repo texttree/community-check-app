@@ -37,7 +37,12 @@ const ProjectsPage = () => {
             projects.map((project) => (
               <div key={project.id} className="block text-center">
                 <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105">
-                  <p className="text-3xl font-semibold text-blue-600">{project.name}</p>
+                  <Link
+                    className="text-3xl font-semibold text-blue-600"
+                    href={'/projects/' + project.id}
+                  >
+                    {project.name}
+                  </Link>
                   <div className="mt-4">
                     <button
                       className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
