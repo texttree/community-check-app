@@ -1,5 +1,5 @@
 import { createClient } from '@/app/supabase/service'
-
+import { headers } from 'next/headers'
 /**
  * @swagger
  * components:
@@ -53,12 +53,17 @@ import { createClient } from '@/app/supabase/service'
  *         description: Internal server error
  */
 export async function GET(req) {
-  const userId = req.headers.get('x-user-id')
+  const headersList = headers()
+  const userId = headersList.get('x-user-id2')
   if (!userId) {
     return Response.json(
       {
         error: 'Unauthorized',
-        data: { a: req.headers.get('x-user-id'), b: req.headers['x-user-id'] },
+        data: {
+          a: req.headers.get('x-user-id'),
+          b: headersList.get('x-user-id'),
+          c: req.headers['x-user-id'],
+        },
       },
       { status: 401 }
     )
