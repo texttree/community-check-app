@@ -63,6 +63,10 @@ export async function GET(req) {
           a: req.headers.get('x-user-id'),
           b: headersList.get('x-user-id'),
           c: req.headers['x-user-id'],
+          d: req.headers.entries(),
+          e: headersList.entries(),
+          d1: req.headers.values(),
+          e2: headersList.values(),
         },
       },
       { status: 401 }

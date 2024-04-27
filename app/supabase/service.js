@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 
 export function createClient() {
