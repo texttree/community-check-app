@@ -23,7 +23,8 @@ export async function middleware(req) {
 
   if (
     // !['.png', '.jpg', '.ico', '.svg'].includes(req.nextUrl.pathname.slice(-4)) &&
-    !req.nextUrl.pathname.startsWith('/api')
+    !req.nextUrl.pathname.startsWith('/api') &&
+    !req.nextUrl.pathname.startsWith('/doc')
   ) {
     if (
       !languages.some((loc) => req.nextUrl.pathname.startsWith(`/${loc}`)) &&
