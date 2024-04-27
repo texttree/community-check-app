@@ -1,5 +1,8 @@
 import FormComponent from './client'
 
-export default async function LoginPage({ params: { lng } }) {
-  return <FormComponent lng={lng} />
+export default async function LoginPage({
+  params: { lng },
+  searchParams: { redirectedFrom },
+}) {
+  return <FormComponent lng={lng} redirectedFrom={redirectedFrom} />
 }
