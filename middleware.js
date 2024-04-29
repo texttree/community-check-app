@@ -81,9 +81,14 @@ export async function middleware(req) {
       if (!access_token) {
         const { supabase, response } = supabaseMiddleware(req)
         const { data, error } = await supabase.auth.getUser()
-        if (error || !data?.user) {
-          return NextResponse.status(401).json({ error: 'Unauthorized' })
+        if (error) {
+          return NextResponse.status(401).json({ error: 'Unauthorized:unknown error' })
         }
+
+        if (!data?.user) {
+          return NextResponse.status(401).json({ error: 'Unauthorized:unknown user' })
+        }
+
         response.headers.set('x-user-id', data.user?.id)
         return response
       }
