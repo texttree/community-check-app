@@ -53,7 +53,7 @@ import { headers } from 'next/headers'
  *         description: Internal server error
  */
 export async function GET(req) {
-  const headersList = headers()
+  const headersList = req.headers
   const userId = headersList.get('x-user-id')
   if (!userId) {
     return Response.json(
