@@ -58,7 +58,7 @@ export async function GET(req) {
   if (!userId) {
     return Response.json(
       {
-        error: 'Unauthorized',
+        error: 'Unauthorized:x-user-id ',
       },
       { status: 401 }
     )
