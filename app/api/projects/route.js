@@ -55,6 +55,7 @@ import { headers } from 'next/headers'
 export async function GET(req) {
   const headersList = req.headers
   const userId = headersList.get('x-user-id')
+  console.log(headersList, 58)
   if (!userId) {
     return Response.json(
       {
