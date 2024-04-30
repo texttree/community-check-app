@@ -1,3 +1,2 @@
-for = "/*"
-[headers.values]
-X-User-Id = "*"
+/*
+  X-User-Id: 4686d99d-32f7-4fe7-8df1-aa7bce0b5079
