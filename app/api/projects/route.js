@@ -55,14 +55,21 @@ import { headers } from 'next/headers'
 export async function GET(req) {
   const headersList = req.headers
   const userId = headersList.get('x-user-id')
-  console.log(headersList, 58)
   if (!userId) {
-    return Response.json(
+    const headers = req.headers
+    const headersObject = {}
+
+    for (const [key, value] of headers.entries()) {
+      headersObject[key] = value
+    }
+    return new Response(
+      JSON.stringify({
+        headers: headersObject,
+      }),
       {
-        headersList: headersList,
-        error: 'Unauthorized:x-user-id ',
-      },
-      { status: 401 }
+        headers: { 'Content-Type': 'application/json' },
+        status: 401,
+      }
     )
   }
   const supabaseService = createClient()
