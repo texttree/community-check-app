@@ -91,8 +91,7 @@ export async function middleware(req) {
 
         response.headers.set('x-user-id', data.user?.id)
 
-        return NextResponse.status(402).json(response)
-        // return response
+        return response
       }
     } catch (error) {
       return Response.json(
