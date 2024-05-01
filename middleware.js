@@ -5,6 +5,7 @@ import acceptLanguage from 'accept-language'
 import { supabaseMiddleware } from '@/app/supabase/middleware'
 import { fallbackLng, languages, cookieName } from '@/app/i18n/settings'
 import { createClient } from './app/supabase/service'
+import { Cookies } from 'react-cookie'
 
 acceptLanguage.languages(languages)
 
@@ -59,7 +60,7 @@ export async function middleware(req) {
         throw error
       }
       if (!data?.user) {
-        throw Error('Unauthorized')
+        throw Error('Middleware error: Unauthorized user')
       }
     } catch (error) {
       const redirectUrl = req.nextUrl.clone()
@@ -82,20 +83,32 @@ export async function middleware(req) {
         const { supabase, response } = supabaseMiddleware(req)
         const { data, error } = await supabase.auth.getUser()
         if (error) {
-          return NextResponse.status(401).json({ error: 'Unauthorized:unknown error' })
+          return NextResponse.status(401).json({
+            error: 'Middleware unauthorized: unknown error',
+          })
         }
 
         if (!data?.user) {
-          return NextResponse.status(401).json({ error: 'Unauthorized:unknown user' })
+          return NextResponse.status(401).json({
+            error: 'Middleware unauthorized: unknown user',
+          })
         }
 
-        response.headers.set('x-user-id', data.user?.id)
+        const headers = new Headers(response.headers)
+        headers.set('x-user-id', data.user?.id)
+        return NextResponse.next({
+          request: {
+            headers,
+            cookies: new Cookies(response.cookies),
+          },
+        })
+        // response.headers.set('x-user-id', data.user?.id)
 
-        return response
+        // return response
       }
     } catch (error) {
       return Response.json(
-        { success: false, message: 'Password authentication failed' },
+        { success: false, error, message: 'Password authentication failed' },
         { status: 401 }
       )
     }

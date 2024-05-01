@@ -49,6 +49,99 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/projects/{projectId}": {
+      "get": {
+        "summary": "Returns a project by ID.",
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Project ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User is not authorized"
+          },
+          "500": {
+            "description": "An error occurred"
+          }
+        }
+      },
+      "post": {
+        "summary": "Updates the project name.",
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Project ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "New project name"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error in request"
+          },
+          "401": {
+            "description": "User is not authorized"
+          },
+          "500": {
+            "description": "An error occurred"
+          }
+        }
+      }
+    },
     "/api/projects": {
       "get": {
         "summary": "Get projects for the current user",
