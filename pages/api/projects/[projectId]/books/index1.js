@@ -2,11 +2,11 @@ import { createClient } from '@/app/supabase/server'
 
 export default async function handler(req, res) {
   let supabase
-  // try {
-  supabase = createClient()
-  // } catch (error) {
-  //   return res.status(401).json({ error })
-  // }
+  try {
+    supabase = createClient()
+  } catch (error) {
+    return res.status(401).json({ error })
+  }
 
   const {
     query: { projectId },
