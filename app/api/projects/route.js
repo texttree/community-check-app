@@ -56,20 +56,11 @@ export async function GET(req) {
   const headersList = req.headers
   const userId = headersList.get('x-user-id')
   if (!userId) {
-    const headers = req.headers
-    const headersObject = {}
-
-    for (const [key, value] of headers.entries()) {
-      headersObject[key] = value
-    }
-    return new Response(
-      JSON.stringify({
-        headers: headersObject,
-      }),
+    return Response.json(
       {
-        headers: { 'Content-Type': 'application/json' },
-        status: 401,
-      }
+        error: 'Unauthorized:x-user-id ',
+      },
+      { status: 401 }
     )
   }
   const supabaseService = createClient()
