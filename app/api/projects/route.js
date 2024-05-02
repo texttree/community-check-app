@@ -1,5 +1,4 @@
 import { createClient } from '@/app/supabase/service'
-import { headers } from 'next/headers'
 /**
  * @swagger
  * components:
@@ -51,6 +50,32 @@ import { headers } from 'next/headers'
  *         description: Invalid input, project name is missing or already exists
  *       500:
  *         description: Internal server error
+ * delete:
+    summary: Delete a project by ID
+    tags:
+      - Projects
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              projectId:
+                type: number
+                description: Project ID to delete
+                example: 1
+    responses:
+      200:
+        description: Project deleted successfully
+      400:
+        description: Bad request, project ID is required or unauthorized
+      401:
+        description: Unauthorized
+      404:
+        description: Project not found
+      500:
+        description: Internal server error
  */
 export async function GET(req) {
   const headersList = req.headers
@@ -114,5 +139,45 @@ export async function POST(req) {
     return Response.json(newProject?.[0], { status: 201 })
   } catch (error) {
     return Response.json({ error }, { status: 500 })
+  }
+}
+
+export async function DELETE(req) {
+  const userId = req.headers.get('x-user-id')
+
+  if (!userId) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  let requestData
+  try {
+    requestData = await req.json()
+  } catch (jsonError) {
+    return Response.json({ error: 'Invalid request data' }, { status: 400 })
+  }
+
+  const { projectId } = requestData
+
+  if (!projectId) {
+    return Response.json({ error: 'Project ID is required' }, { status: 400 })
+  }
+
+  const supabaseService = createClient()
+
+  try {
+    const { error } = await supabaseService
+      .from('projects')
+      .delete()
+      .eq('id', projectId)
+      .eq('user_id', userId)
+
+    if (error) {
+      return Response.json({ error: error.message }, { status: 500 })
+    }
+
+    return Response.json(null, { status: 200 })
+  } catch (catchError) {
+    console.error('Unexpected error:', catchError)
+    return Response.json({ error: catchError.message }, { status: 500 })
   }
 }
