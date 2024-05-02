@@ -1,13 +1,10 @@
 import { createClient } from '@/app/supabase/service'
-import { headers } from 'next/headers'
-
 /**
  * @swagger
  */
 
 export async function GET(req, { params: { checkId } }) {
-  const headersList = headers()
-  const userId = headersList.get('x-user-id')
+  const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -20,6 +17,7 @@ export async function GET(req, { params: { checkId } }) {
       .from('inspectors')
       .select('*')
       .eq('check_id', checkId)
+      .is('deleted_at', null)
 
     if (error) {
       throw error
@@ -65,7 +63,7 @@ export async function POST(req, { params: { checkId } }) {
   }
 }
 
-export async function DELETE(req, { params: { checkId } }) {
+export async function DELETE(req) {
   const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
