@@ -79,12 +79,15 @@ const CheckId = ({ lng }) => {
   }
 
   const cancelDeleteInspector = () => {
+    setShowDeleteModal(false)
+  }
+
+  const keepInspector = () => {
     if (selectedInspectorId) {
       deleteInspectorApi(selectedInspectorId, false)
     }
     setShowDeleteModal(false)
   }
-
   const copyToClipboard = () => {
     const textToCopy = checkPageRef.current.innerText
 
@@ -339,8 +342,8 @@ const CheckId = ({ lng }) => {
           message={t('confirmDeleteInspector')}
           onConfirm={confirmDeleteInspector}
           onCancel={cancelDeleteInspector}
-          confirmText={t('delete')}
-          cancelText={t('keep')}
+          onKeep={keepInspector}
+          showKeepButton={true}
         />
       )}
     </div>
