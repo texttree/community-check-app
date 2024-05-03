@@ -64,3 +64,27 @@ export async function POST(req, { params: { checkId } }) {
     return Response.json({ error }, { status: 500 })
   }
 }
+
+export async function DELETE(req, { params: { checkId } }) {
+  const headersList = headers()
+  const userId = headersList.get('x-user-id')
+  if (!userId) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const supabase = createClient()
+  try {
+    const { error } = await supabase.rpc('soft_delete_check', {
+      p_check_id: checkId,
+      p_user_id: userId,
+    })
+
+    if (error) {
+      return Response.json({ error: error.message }, { status: 400 })
+    }
+
+    return Response.json({ message: 'Check deleted successfully' }, { status: 200 })
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 })
+  }
+}
