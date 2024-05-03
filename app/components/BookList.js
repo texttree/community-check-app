@@ -1,13 +1,19 @@
 'use client'
 
 import Link from 'next/link'
-import useSWR from 'swr'
+import { useState } from 'react'
+import useSWR, { mutate } from 'swr'
+import toast from 'react-hot-toast'
+import DeleteModal from '@/app/components/DeleteModal' // Импортируем модальное окно
 import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
 import { useTranslation } from '@/app/i18n/client'
 
 const BookList = ({ projectId, lng }) => {
   const { t } = useTranslation(lng, 'common')
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [bookToDelete, setBookToDelete] = useState(null)
 
   const { data: books, error: booksError } = useSWR(
     projectId && `/api/projects/${projectId}/books`,
@@ -49,6 +55,30 @@ const BookList = ({ projectId, lng }) => {
     }
   }
 
+  const openDeleteModal = (book) => {
+    setBookToDelete(book)
+    setShowDeleteModal(true)
+  }
+
+  const confirmDeleteBook = async () => {
+    if (bookToDelete) {
+      try {
+        await fetch(`/api/projects/${projectId}/books/${bookToDelete.book_id}`, {
+          method: 'DELETE',
+        })
+        mutate(`/api/projects/${projectId}/books`) // Обновляем данные после удаления
+        toast.success(t('bookDeleted'))
+      } catch (error) {
+        toast.error(t('errorDeletingBook'))
+      }
+    }
+    setShowDeleteModal(false)
+  }
+
+  const cancelDeleteBook = () => {
+    setShowDeleteModal(false) // Просто закрываем модальное окно
+  }
+
   return (
     <>
       <h1 className="text-2xl font-semibold">{t('projectBooks')}</h1>
@@ -65,6 +95,7 @@ const BookList = ({ projectId, lng }) => {
                 <th className="border p-2 text-center">{t('dateCreation')}</th>
                 <th className="border p-2 text-center">{t('dateLastCheck')}</th>
                 <th className="border p-2 text-center">{t('numberChecks')}</th>
+                <th className="border p-2 text-center">{t('actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -82,6 +113,7 @@ const BookList = ({ projectId, lng }) => {
                     {formatDate(book.book_created_at)}
                   </td>
                   <td className="border p-2 text-center">
+                    {/* Используем BookChecksInfo для отображения последней проверки */}
                     <BookChecksInfo
                       projectId={projectId}
                       bookId={book.book_id}
@@ -89,17 +121,36 @@ const BookList = ({ projectId, lng }) => {
                     />
                   </td>
                   <td className="border p-2 text-center">
+                    {/* Используем BookChecksInfo для отображения количества проверок */}
                     <BookChecksInfo
                       projectId={projectId}
                       bookId={book.book_id}
                       showLastCheck={false}
                     />
                   </td>
+                  <td className="border p-2 text-center">
+                    <button
+                      className="text-red-600 hover:text-red-800"
+                      onClick={() => openDeleteModal(book)} // Открываем модальное окно
+                    >
+                      {t('delete')}
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      )}
+
+      {showDeleteModal && (
+        <DeleteModal
+          lng={lng}
+          isVisible={showDeleteModal}
+          message={t('confirmDeleteBook')}
+          onConfirm={confirmDeleteBook} // Обработчик подтверждения удаления
+          onCancel={cancelDeleteBook} // Обработчик отмены действия
+        />
       )}
     </>
   )
