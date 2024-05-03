@@ -5,13 +5,17 @@ const DeleteModal = ({
   isVisible,
   onConfirm,
   onCancel,
+  onKeep,
   message,
   confirmText,
   cancelText,
+  showKeepButton = false,
 }) => {
   const { t } = useTranslation(lng, 'common')
   const defaultConfirmText = confirmText || t('delete')
   const defaultCancelText = cancelText || t('cancel')
+  const defaultKeepText = t('keep')
+
   if (!isVisible) {
     return null
   }
@@ -27,6 +31,14 @@ const DeleteModal = ({
           >
             {defaultCancelText}
           </button>
+          {showKeepButton && (
+            <button
+              className="text-orange-600 hover:text-orange-800 px-3 py-1"
+              onClick={onKeep}
+            >
+              {defaultKeepText}
+            </button>
+          )}
           <button
             className="text-red-600 hover:text-red-800 px-3 py-1 ml-2"
             onClick={onConfirm}
