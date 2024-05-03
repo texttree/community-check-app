@@ -2,10 +2,12 @@
 
 import Link from 'next/link'
 import axios from 'axios'
+import { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import { useTranslation } from '@/app/i18n/client'
 import { fetcher } from '@/helpers/fetcher'
 import Loader from '@/app/components/Loader'
+import DeleteModal from '@/app/components/DeleteModal'
 
 export async function getProjects() {
   const res = await fetch('/api/projects')
@@ -17,16 +19,31 @@ const Projects = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
   const { data: projects, error } = useSWR('/api/projects', fetcher)
 
-  const handleDelete = async (projectId) => {
-    try {
-      await axios.delete('/api/projects', {
-        data: { projectId },
-      })
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [projectToDelete, setProjectToDelete] = useState(null)
 
-      mutate('/api/projects', (data) => data.filter((p) => p.id !== projectId))
-    } catch (error) {
-      console.error('Failed to delete project:', error)
+  const openDeleteModal = (project) => {
+    setProjectToDelete(project)
+    setShowDeleteModal(true)
+  }
+
+  const confirmDeleteProject = async () => {
+    if (projectToDelete) {
+      try {
+        await axios.delete('/api/projects', {
+          data: { projectId: projectToDelete.id },
+        })
+
+        mutate('/api/projects', (data) => data.filter((p) => p.id !== projectToDelete.id))
+        setShowDeleteModal(false)
+      } catch (error) {
+        console.error('Failed to delete project:', error)
+      }
     }
+  }
+
+  const cancelDeleteProject = () => {
+    setShowDeleteModal(false)
   }
 
   return (
@@ -42,7 +59,7 @@ const Projects = ({ lng }) => {
               </Link>
               <button
                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
-                onClick={() => handleDelete(project.id)}
+                onClick={() => openDeleteModal(project)}
               >
                 {t('delete')}
               </button>
@@ -51,6 +68,18 @@ const Projects = ({ lng }) => {
         ))
       ) : (
         <Loader />
+      )}
+
+      {showDeleteModal && (
+        <DeleteModal
+          lng={lng}
+          isVisible={showDeleteModal}
+          message={`${t('confirmDeleteProject')}`}
+          onConfirm={confirmDeleteProject}
+          onCancel={cancelDeleteProject}
+          expectedText={projectToDelete?.name}
+          requireTextMatch={true}
+        />
       )}
     </>
   )
