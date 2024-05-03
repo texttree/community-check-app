@@ -334,6 +334,7 @@ const CheckId = ({ lng }) => {
       </div>
       {showDeleteModal && (
         <DeleteModal
+          lng={lng}
           isVisible={showDeleteModal}
           message={t('confirmDeleteInspector')}
           onConfirm={confirmDeleteInspector}
