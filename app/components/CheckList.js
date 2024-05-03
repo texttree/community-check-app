@@ -3,8 +3,7 @@
 import Link from 'next/link'
 
 import { useState, useEffect } from 'react'
-
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 
 import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
@@ -41,7 +40,6 @@ const CheckList = ({ projectId, bookId, lng }) => {
     downloadNotes(check, t)
       .then((notes) => {
         const blob = new Blob([notes])
-
         const link = document.createElement('a')
         link.href = window.URL.createObjectURL(blob)
         link.download = `${check.check_name}.tsv`
@@ -54,6 +52,26 @@ const CheckList = ({ projectId, bookId, lng }) => {
         const message = t('errorDownloadNotes') + ' ' + error
         toast.error(message)
       })
+  }
+
+  const handleDeleteCheck = async (checkId) => {
+    try {
+      const response = await fetch(
+        `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
+        {
+          method: 'DELETE',
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error(t('errorDeletingCheck'))
+      }
+
+      toast.success(t('checkDeleted'))
+      mutate(`/api/projects/${projectId}/books/${bookId}/checks`)
+    } catch (error) {
+      toast.error(t('errorOccurred'))
+    }
   }
 
   return (
@@ -71,6 +89,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
                 <th className="border p-2 text-center">{t('checkEndDate')}</th>
                 <th className="border p-2 text-center">{t('downloadNotes')}</th>
                 <th className="border p-2 text-center">{t('activity')}</th>
+                <th className="border p-2 text-center">{t('actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -102,9 +121,16 @@ const CheckList = ({ projectId, bookId, lng }) => {
                       <Download className="h-5 w-5 mr-1" />
                     </button>
                   </td>
-
                   <td className="border p-2 text-center">
                     {notesCounts[check.check_id] || 0}
+                  </td>
+                  <td className="border p-2 text-center">
+                    <button
+                      onClick={() => handleDeleteCheck(check.check_id)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      {t('delete')}
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -117,4 +143,5 @@ const CheckList = ({ projectId, bookId, lng }) => {
     </>
   )
 }
+
 export default CheckList
