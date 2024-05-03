@@ -82,7 +82,7 @@ export async function DELETE(req) {
     })
 
     if (error) {
-      return Response.json({ error }, { status: 400 })
+      return Response.json({ error }, { status: 402 })
     }
 
     return Response.json({ message: 'Inspector deleted successfully' }, { status: 200 })
