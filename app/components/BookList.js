@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import toast from 'react-hot-toast'
-import DeleteModal from '@/app/components/DeleteModal' // Импортируем модальное окно
+import DeleteModal from '@/app/components/DeleteModal'
 import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
 import { useTranslation } from '@/app/i18n/client'
@@ -113,15 +113,13 @@ const BookList = ({ projectId, lng }) => {
                     {formatDate(book.book_created_at)}
                   </td>
                   <td className="border p-2 text-center">
-                    {/* Используем BookChecksInfo для отображения последней проверки */}
                     <BookChecksInfo
                       projectId={projectId}
                       bookId={book.book_id}
-                      showLastCheck={true}
+                      showLastCheck
                     />
                   </td>
                   <td className="border p-2 text-center">
-                    {/* Используем BookChecksInfo для отображения количества проверок */}
                     <BookChecksInfo
                       projectId={projectId}
                       bookId={book.book_id}
@@ -131,7 +129,7 @@ const BookList = ({ projectId, lng }) => {
                   <td className="border p-2 text-center">
                     <button
                       className="text-red-600 hover:text-red-800"
-                      onClick={() => openDeleteModal(book)} // Открываем модальное окно
+                      onClick={() => openDeleteModal(book)}
                     >
                       {t('delete')}
                     </button>
@@ -148,8 +146,10 @@ const BookList = ({ projectId, lng }) => {
           lng={lng}
           isVisible={showDeleteModal}
           message={t('confirmDeleteBook')}
-          onConfirm={confirmDeleteBook} // Обработчик подтверждения удаления
-          onCancel={cancelDeleteBook} // Обработчик отмены действия
+          onConfirm={confirmDeleteBook}
+          onCancel={cancelDeleteBook}
+          expectedText={bookToDelete?.book_name}
+          requireTextMatch={true}
         />
       )}
     </>
