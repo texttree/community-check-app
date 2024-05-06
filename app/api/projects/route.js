@@ -1,7 +1,9 @@
 import { createClient } from '@/app/supabase/service'
-import { headers } from 'next/headers'
+
 /**
  * @swagger
+ * tags:
+ *   - Books
  * components:
  *   schemas:
  *     Project:
@@ -40,6 +42,10 @@ import { headers } from 'next/headers'
  *             properties:
  *               name:
  *                 type: string
+ *                 description: Name of the project
+ *                 example: RLOB
+ *             required:
+ *               - name
  *     responses:
  *       201:
  *         description: The newly created project
@@ -49,12 +55,13 @@ import { headers } from 'next/headers'
  *               $ref: '#/components/schemas/Project'
  *       400:
  *         description: Invalid input, project name is missing or already exists
+ *       401:
+ *         description: Unauthorized
  *       500:
  *         description: Internal server error
  */
 export async function GET(req) {
-  const headersList = req.headers
-  const userId = headersList.get('x-user-id')
+  const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json(
       {

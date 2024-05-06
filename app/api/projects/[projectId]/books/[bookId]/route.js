@@ -1,13 +1,98 @@
 import { createClient } from '@/app/supabase/service'
-import { headers } from 'next/headers'
 
 /**
  * @swagger
+ * tags:
+ *   name: Books
+ *   description: Operations about books
+ *
+ * components:
+ *   schemas:
+ *     Book:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Book identifier
+ *         name:
+ *           type: string
+ *           description: Book name
+ *
+ * paths:
+ *   /api/projects/{projectId}/books/{bookId}:
+ *     get:
+ *       summary: Get a book by ID
+ *       tags:
+ *         - Books
+ *       parameters:
+ *         - in: path
+ *           name: projectId
+ *           description: Project identifier
+ *           required: true
+ *           schema:
+ *             type: string
+ *         - in: path
+ *           name: bookId
+ *           description: Book identifier
+ *           required: true
+ *           schema:
+ *             type: string
+ *       responses:
+ *         '200':
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Book'
+ *         '401':
+ *           description: Unauthorized
+ *         '500':
+ *           description: Internal Server Error
+ *     post:
+ *       summary: Update book name
+ *       tags:
+ *         - Books
+ *       parameters:
+ *         - in: path
+ *           name: projectId
+ *           description: Project identifier
+ *           required: true
+ *           schema:
+ *             type: string
+ *         - in: path
+ *           name: bookId
+ *           description: Book identifier
+ *           required: true
+ *           schema:
+ *             type: string
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 name:
+ *                   type: string
+ *                   description: New book name
+ *                   example: Book name
+ *       responses:
+ *         '200':
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Book'
+ *         '400':
+ *           description: Bad Request
+ *         '401':
+ *           description: Unauthorized
+ *         '500':
+ *           description: Internal Server Error
  */
 
 export async function GET(req, { params: { bookId } }) {
-  const headersList = headers()
-  const userId = headersList.get('x-user-id')
+  const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }

@@ -1,13 +1,7 @@
 import { createClient } from '@/app/supabase/service'
-import { headers } from 'next/headers'
-
-/**
- * @swagger
- */
 
 export async function GET(req, { params: { inspectorId } }) {
-  const headersList = headers()
-  const userId = headersList.get('x-user-id')
+  const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }

@@ -143,7 +143,7 @@ const CheckId = ({ lng }) => {
       if (inspectorName) {
         await axios.post(
           `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
-          { inspectorName }
+          { name: inspectorName }
         )
         mutate()
         setInspectorName('')
@@ -157,11 +157,11 @@ const CheckId = ({ lng }) => {
     }
   }
 
-  const deleteInspectorApi = async (inspectorId, p_delete_notes) => {
+  const deleteInspectorApi = async (inspectorId, delete_all_notes) => {
     try {
       await axios.delete(
         `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
-        { data: { inspectorId, p_delete_notes } }
+        { data: { id: inspectorId, delete_all_notes } }
       )
       mutate()
       toast.success(t('inspectorDeleted'))
