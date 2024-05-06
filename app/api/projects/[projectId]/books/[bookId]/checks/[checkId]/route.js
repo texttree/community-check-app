@@ -13,17 +13,20 @@ export async function GET(req, { params: { checkId } }) {
   }
   const supabase = createClient()
   try {
-    const { data, error } = await supabase
-      .from('checks')
-      .select('*')
-      .eq('id', checkId)
-      .single()
+    const { data, error } = await supabase.rpc('get_check_by_id', {
+      check_id: checkId,
+      user_id: userId,
+    })
+    // .from('checks')
+    // .select('*')
+    // .eq('id', checkId)
+    // .single()
 
     if (error) {
       throw error
     }
 
-    return Response.json(data, { status: 200 })
+    return Response.json(data?.[0] ?? null, { status: 200 })
   } catch (error) {
     return Response.json({ error }, { status: 500 })
   }

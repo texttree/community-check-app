@@ -18,6 +18,7 @@ export async function GET(req, { params: { bookId } }) {
   try {
     const { data, error } = await supabase.rpc('get_notes_count_for_book', {
       book_id: bookId,
+      user_id: userId,
     })
 
     if (error) {

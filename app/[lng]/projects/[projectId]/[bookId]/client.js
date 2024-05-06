@@ -32,7 +32,7 @@ const BookDetailsPage = ({ lng }) => {
     axios
       .post(`/api/projects/${projectId}/books/${bookId}/checks`, { name })
       .then((res) => {
-        if (res.status === 200) {
+        if (res.status === 201) {
           const checkId = res.data
           router.push(`/${lng}/projects/${projectId}/${bookId}/${checkId}`)
         }

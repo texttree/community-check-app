@@ -113,7 +113,7 @@ export async function POST(req, { params: { projectId } }) {
       return Response.json({ error: updateError }, { status: 400 })
     }
 
-    return Response.json(project, { status: 201 })
+    return Response.json(project, { status: 200 })
   } catch (error) {
     return Response.json({ error }, { status: 500 })
   }

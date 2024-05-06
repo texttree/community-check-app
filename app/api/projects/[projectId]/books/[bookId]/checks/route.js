@@ -15,6 +15,7 @@ export async function GET(req, { params: { bookId } }) {
   try {
     const { data, error } = await supabase.rpc('get_checks_for_book', {
       book_id_param: bookId,
+      user_id: userId,
     })
 
     if (error) {
@@ -41,6 +42,7 @@ export async function POST(req, { params: { bookId } }) {
     const { data: check, error } = await supabase.rpc('create_check', {
       p_name: name,
       p_book_id: parseInt(bookId),
+      user_id: userId,
     })
 
     if (error) {
