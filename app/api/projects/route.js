@@ -3,17 +3,19 @@ import { createClient } from '@/app/supabase/service'
 /**
  * @swagger
  * tags:
- *   - Books
+ *   - Projects
  * components:
  *   schemas:
  *     Project:
  *       type: object
  *       properties:
- *         name:
- *           type: string
  *         id:
  *           type: number
- *     ProjectList:
+ *           example: 1
+ *         name:
+ *           type: string
+ *           example: RLOB
+ *     Projects:
  *       type: array
  *       items:
  *         $ref: '#/components/schemas/Project'
@@ -28,7 +30,7 @@ import { createClient } from '@/app/supabase/service'
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ProjectList'
+ *               $ref: '#/components/schemas/Projects'
  *   post:
  *     summary: Create a new project
  *     tags:
@@ -113,7 +115,7 @@ export async function POST(req) {
     const { data: newProject, error: createError } = await supabaseService
       .from('projects')
       .insert({ name, user_id: userId })
-      .select('name, id')
+      .select('id, name')
     if (createError) {
       return Response.json({ error: createError }, { status: 400 })
     }

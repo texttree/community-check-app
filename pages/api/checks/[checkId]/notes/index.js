@@ -4,7 +4,7 @@ import { supabaseService } from '@/helpers/supabaseService'
 export default async function handler(req, res) {
   const {
     query: { checkId },
-    body: { note, chapter, verse, materialId, inspectorId },
+    body: { note, chapter, verse, inspectorId },
     method,
   } = req
 
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
           return res.status(401).json({ error })
         }
         const { data: material, error } = await supabase.rpc('get_notes_by_check_id', {
-          p_check_id: checkId,
+          check_id: checkId,
         })
 
         if (error) {
@@ -30,15 +30,14 @@ export default async function handler(req, res) {
       }
     case 'POST': // создать новую заметку
       try {
-        if (!note || !materialId || !chapter || !verse) {
+        if (!note || !chapter || !verse) {
           return res.status(400).json({ error: 'Missing required parameters' })
         }
 
         const { data, error } = await supabaseService.rpc('insert_note', {
           note,
           inspector_id: inspectorId ?? null,
-          p_check_id: checkId,
-          material_id: materialId,
+          check_id: checkId,
           chapter,
           verse,
         })

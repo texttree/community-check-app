@@ -52,6 +52,19 @@ alter table "public"."notes" add constraint "notes_check_id_fkey" FOREIGN KEY (c
 
 alter table "public"."notes" validate constraint "notes_check_id_fkey";
 
+drop function if exists "public"."get_checks_for_book"(book_id_param bigint);
+
+drop function if exists "public"."get_notes_count_for_book"(book_id bigint);
+
+drop function if exists "public"."insert_note"(note text, inspector_id uuid, p_check_id uuid, material_id bigint, chapter text, verse text);
+
+drop function if exists "public"."check_user_notes"(material_id bigint);
+
+drop function if exists "public"."get_notes_by_check_id"(p_check_id uuid);
+
+drop function if exists "public"."update_note"(note_id bigint, note text, inspector_id uuid, check_id uuid, material_id bigint);
+
+
 set check_function_bodies = off;
 
 CREATE OR REPLACE FUNCTION public.create_check(p_name text, p_book_id bigint, user_id uuid)
@@ -166,4 +179,155 @@ BEGIN
 END;
 $function$
 ;
+
+CREATE OR REPLACE FUNCTION public.insert_note(note text, inspector_id uuid, check_id uuid, chapter text, verse text)
+ RETURNS boolean
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+AS $function$DECLARE
+    current_check boolean;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.checks AS c
+        LEFT JOIN public.inspectors AS i ON i.check_id = c.id
+        WHERE c.id = insert_note.check_id
+            AND c.finished_at > now()
+            AND (insert_note.inspector_id IS NULL OR i.id = insert_note.inspector_id)
+    )
+    INTO current_check;
+
+    IF current_check THEN
+    -- Вставляем заметку
+        INSERT INTO public.notes (note, inspector_id, check_id, chapter, verse)
+        VALUES (note, inspector_id, check_id, chapter, verse);
+
+        RETURN true;
+    ELSE
+        RAISE EXCEPTION 'Check not found';
+    END IF;
+END;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.check_user_notes(check_id uuid)
+ RETURNS boolean
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+AS $function$
+  declare
+    access int;
+  begin
+    select
+      count(c.id) into access
+    from
+      public.checks as c
+      inner join public.books as b on (b.id = c.book_id)
+      inner join public.projects as p on (p.id = b.project_id)
+      inner join public.users as u on (u.id = p.user_id)
+    where
+      c.id = check_user_notes.check_id
+      and p.deleted_at is null
+      and u.id = auth.uid()
+      and u.is_blocked is not true;
+    return access > 0;
+  end;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.get_notes_by_check_id(check_id uuid)
+ RETURNS json
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+    notes_data JSON;
+BEGIN
+    -- Получаем заметки по check_id
+    SELECT json_agg(json_build_object(
+                        'chapter', n.chapter,
+                        'verse', n.verse,
+                        'note', n.note,
+                        'inspector_name', i.name
+                    ))
+    INTO notes_data
+    FROM notes n
+    LEFT JOIN inspectors i ON n.inspector_id = i.id
+    WHERE n.check_id = get_notes_by_check_id.check_id;
+
+    RETURN notes_data;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+END;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.update_note(note_id bigint, note text, inspector_id uuid, check_id uuid)
+ RETURNS boolean
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+AS $function$
+  declare
+    current_check uuid;
+    note_in_table int8;
+  begin
+    -- проверить now() так как с учетом часового пояса может не сработать
+    select c.id as check_id
+    from public.checks as c
+      inner join public.inspectors as i
+        on (i.check_id = c.id)
+    where c.id = update_note.check_id
+      and c.finished_at > now()
+      and i.id = update_note.inspector_id
+      and i.deleted_at is null
+    into current_check;
+    if current_check is null then
+      raise exception 'Check not found';
+    end if;
+
+    select n.id
+    from public.notes as n
+    where n.id = update_note.note_id
+      and n.deleted_at is null
+      and n.inspector_id = update_note.inspector_id
+      and n.check_id = update_note.check_id
+    into note_in_table;
+    if note_in_table is null then
+      raise exception 'Check not found';
+    end if;
+
+    update public.notes
+    set note = update_note.note
+    where id = update_note.note_id;
+    return true;
+  end;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.admin_or_user(check_id uuid)
+ RETURNS boolean
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+AS $function$
+  declare
+    access int;
+  begin
+    select
+      count(c.id) into access
+    from
+      public.checks as c
+      inner join public.books as b on (b.id = c.book_id)
+      inner join public.projects as p on (p.id = b.project_id)
+      inner join public.users as u on (u.id = p.user_id)
+    where
+      c.id = admin_or_user.check_id
+      and b.deleted_at is null
+      and p.deleted_at is null
+      and u.id = auth.uid()
+      and u.is_blocked is not true;
+    return access > 0;
+  end;
+$function$
+;
+
 

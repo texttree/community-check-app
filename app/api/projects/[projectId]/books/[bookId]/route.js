@@ -100,6 +100,7 @@ export async function GET(req, { params: { bookId } }) {
   try {
     const { data, error } = await supabase.rpc('get_book_by_id', {
       book_id: bookId,
+      user_id: userId,
     })
 
     if (error) {

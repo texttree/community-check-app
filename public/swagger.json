@@ -121,15 +121,17 @@
       "Project": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string"
-          },
           "id": {
-            "type": "number"
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "RLOB"
           }
         }
       },
-      "ProjectList": {
+      "Projects": {
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/Project"
@@ -987,7 +989,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProjectList"
+                  "$ref": "#/components/schemas/Projects"
                 }
               }
             }
