@@ -1,8 +1,9 @@
 import { createClient } from '@/app/supabase/service'
-import { headers } from 'next/headers'
 
 /**
  * @swagger
+ * tags:
+ *   - Books
  * /api/projects/{projectId}:
  *   get:
  *     summary: Returns a project by ID.
@@ -48,8 +49,9 @@ import { headers } from 'next/headers'
  *               name:
  *                 type: string
  *                 description: New project name
+ *                 example: RSOB
  *     responses:
- *       201:
+ *       200:
  *         description: Project
  *         content:
  *           application/json:
@@ -64,8 +66,7 @@ import { headers } from 'next/headers'
  */
 
 export async function GET(req, { params: { projectId } }) {
-  const headersList = headers()
-  const userId = headersList.get('x-user-id')
+  const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json(
       {
@@ -113,7 +114,7 @@ export async function POST(req, { params: { projectId } }) {
       return Response.json({ error: updateError }, { status: 400 })
     }
 
-    return Response.json(project, { status: 201 })
+    return Response.json(project, { status: 200 })
   } catch (error) {
     return Response.json({ error }, { status: 500 })
   }

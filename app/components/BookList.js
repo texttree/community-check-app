@@ -33,8 +33,8 @@ const BookList = ({ projectId, lng }) => {
     const getLatestCheckDate = (checks) => {
       if (checks && checks.length > 0) {
         const validDates = checks
-          .filter((check) => check.check_started_time !== null)
-          .map((check) => new Date(check.check_started_time))
+          .filter((check) => check.started_at !== null)
+          .map((check) => new Date(check.started_at))
 
         if (validDates.length > 0) {
           const latestDate = new Date(Math.max(...validDates))
@@ -63,7 +63,7 @@ const BookList = ({ projectId, lng }) => {
   const confirmDeleteBook = async () => {
     if (bookToDelete) {
       try {
-        await fetch(`/api/projects/${projectId}/books/${bookToDelete.book_id}`, {
+        await fetch(`/api/projects/${projectId}/books/${bookToDelete.id}`, {
           method: 'DELETE',
         })
         mutate(`/api/projects/${projectId}/books`) // Обновляем данные после удаления
@@ -100,29 +100,29 @@ const BookList = ({ projectId, lng }) => {
             </thead>
             <tbody>
               {books.map((book) => (
-                <tr key={book.book_id}>
+                <tr key={book.id}>
                   <td className="border p-2 text-center">
                     <Link
-                      href={`/projects/${projectId}/${book.book_id}`}
+                      href={`/projects/${projectId}/${book.id}`}
                       className="text-blue-600 hover:underline"
                     >
-                      {book.book_name}
+                      {book.name}
                     </Link>
                   </td>
                   <td className="border p-2 text-center">
-                    {formatDate(book.book_created_at)}
+                    {formatDate(book.created_at)}
                   </td>
                   <td className="border p-2 text-center">
                     <BookChecksInfo
                       projectId={projectId}
-                      bookId={book.book_id}
-                      showLastCheck
+                      bookId={book.id}
+                      showLastCheck={true}
                     />
                   </td>
                   <td className="border p-2 text-center">
                     <BookChecksInfo
                       projectId={projectId}
-                      bookId={book.book_id}
+                      bookId={book.id}
                       showLastCheck={false}
                     />
                   </td>
@@ -148,7 +148,7 @@ const BookList = ({ projectId, lng }) => {
           message={t('confirmDeleteBook')}
           onConfirm={confirmDeleteBook}
           onCancel={cancelDeleteBook}
-          expectedText={bookToDelete?.book_name}
+          expectedText={bookToDelete?.name}
           requireTextMatch={true}
         />
       )}

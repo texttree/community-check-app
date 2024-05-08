@@ -56,7 +56,7 @@ const BookDetailsPage = ({ lng }) => {
           <p className="text-red-600">{t('errorOccurred')}</p>
         ) : book ? (
           <>
-            <h1 className="text-3xl font-bold mb-4">{book?.book_name}</h1>
+            <h1 className="text-3xl font-bold mb-4">{book?.name}</h1>
             <Link
               href={`/${lng}/projects/${projectId}/${bookId}/edit`}
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block mb-4"

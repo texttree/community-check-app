@@ -35,7 +35,7 @@ const NewProjectPage = ({ lng }) => {
         }
 
         const data = await response.json()
-        router.push('/projects/' + data.id)
+        router.push('/projects/' + data)
       } catch (error) {
         setErrorMessage(error.message)
       }

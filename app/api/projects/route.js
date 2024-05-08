@@ -1,16 +1,21 @@
 import { createClient } from '@/app/supabase/service'
+
 /**
  * @swagger
+ * tags:
+ *   - Projects
  * components:
  *   schemas:
  *     Project:
  *       type: object
  *       properties:
- *         name:
- *           type: string
  *         id:
  *           type: number
- *     ProjectList:
+ *           example: 1
+ *         name:
+ *           type: string
+ *           example: RLOB
+ *     Projects:
  *       type: array
  *       items:
  *         $ref: '#/components/schemas/Project'
@@ -25,7 +30,7 @@ import { createClient } from '@/app/supabase/service'
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ProjectList'
+ *               $ref: '#/components/schemas/Projects'
  *   post:
  *     summary: Create a new project
  *     tags:
@@ -39,15 +44,25 @@ import { createClient } from '@/app/supabase/service'
  *             properties:
  *               name:
  *                 type: string
+ *                 description: Name of the project
+ *                 example: RLOB
+ *             required:
+ *               - name
  *     responses:
  *       201:
  *         description: The newly created project
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Project'
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: number
+ *                   description: The ID of the newly created project
  *       400:
  *         description: Invalid input, project name is missing or already exists
+ *       401:
+ *         description: Unauthorized
  *       500:
  *         description: Internal server error
  * delete:
@@ -78,8 +93,7 @@ import { createClient } from '@/app/supabase/service'
         description: Internal server error
  */
 export async function GET(req) {
-  const headersList = req.headers
-  const userId = headersList.get('x-user-id')
+  const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json(
       {
@@ -94,7 +108,6 @@ export async function GET(req) {
       .from('projects')
       .select('id, name')
       .eq('user_id', userId)
-      .is('deleted_at', null)
 
     if (error) {
       throw error
@@ -116,27 +129,15 @@ export async function POST(req) {
   }
   const supabaseService = createClient()
   try {
-    const { count, error: projectError } = await supabaseService
-      .from('projects')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', userId)
-      .eq('name', name)
-      .is('deleted_at', null)
-    if (projectError) {
-      return Response.json({ error: projectError }, { status: 400 })
-    }
-    if (count > 0) {
-      return Response.json({ error: 'Project already exists' }, { status: 400 })
-    }
-    const { data: newProject, error: createError } = await supabaseService
-      .from('projects')
-      .insert({ name, user_id: userId })
-      .select('name, id')
-    if (createError) {
-      return Response.json({ error: createError }, { status: 400 })
+    const { data, error } = await supabaseService.rpc('create_project', {
+      name,
+      user_id: userId,
+    })
+    if (error) {
+      return Response.json({ error }, { status: 400 })
     }
 
-    return Response.json(newProject?.[0], { status: 201 })
+    return Response.json(data, { status: 201 })
   } catch (error) {
     return Response.json({ error }, { status: 500 })
   }

@@ -1,8 +1,27 @@
 import { createClient } from '@/app/supabase/service'
-import { headers } from 'next/headers'
 
 /**
  * @swagger
+ * tags:
+ *   - Books
+ * components:
+ *   schemas:
+ *     Book:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         project_id:
+ *           type: string
+ *         created_at:
+ *           type: string
+ *           format: date-time
+ *         updated_at:
+ *           type: string
+ *           format: date-time
+ *
  * /api/projects/{projectId}/books:
  *   get:
  *     summary: Get books
@@ -50,10 +69,12 @@ import { headers } from 'next/headers'
  *             properties:
  *               name:
  *                 type: string
+ *                 description: Name of the book
+ *                 example: Titus
  *             required:
- *             - name
+ *               - name
  *     responses:
- *       200:
+ *       201:
  *         description: Book created
  *         content:
  *           application/json:
@@ -68,15 +89,15 @@ import { headers } from 'next/headers'
  */
 
 export async function GET(req, { params: { projectId } }) {
-  const headersList = headers()
-  const userId = headersList.get('x-user-id')
+  const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
   const supabase = createClient()
   try {
     const { data, error } = await supabase.rpc('get_books_by_project', {
-      p_project_id: projectId,
+      project_id: projectId,
+      user_id: userId,
     })
 
     if (error) {
@@ -101,8 +122,9 @@ export async function POST(req, { params: { projectId } }) {
   const supabase = createClient()
   try {
     const { data: project, error } = await supabase.rpc('create_book', {
-      p_project_id: projectId,
-      book_name: name,
+      project_id: projectId,
+      name,
+      user_id: userId,
     })
 
     if (error) {

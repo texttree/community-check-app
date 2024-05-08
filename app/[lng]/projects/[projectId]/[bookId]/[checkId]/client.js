@@ -33,14 +33,6 @@ const CheckId = ({ lng }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [selectedInspectorId, setSelectedInspectorId] = useState(null)
 
-  const { data: material } = useSWR(
-    projectId &&
-      bookId &&
-      checkId &&
-      materialLink &&
-      `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
-    fetcher
-  )
   const { data: check } = useSWR(
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
     fetcher
@@ -124,8 +116,7 @@ const CheckId = ({ lng }) => {
         const res = await axios.get(materialLink)
         const jsonData = parsingWordText(usfm.toJSON(res.data))
         if (Object.keys(jsonData?.chapters).length > 0) {
-          await upsertMaterial(jsonData)
-          await updateCheck()
+          await updateCheck(jsonData)
           toast.success(t('save'))
         } else {
           toast.error(t('enterCorrectLink'))
@@ -139,31 +130,15 @@ const CheckId = ({ lng }) => {
     }
   }
 
-  const updateCheck = async () => {
+  const updateCheck = async (jsonData) => {
     try {
       await axios.post(`/api/projects/${projectId}/books/${bookId}/checks/${checkId}`, {
         started_at: startDate,
         finished_at: endDate,
         name: checkName,
         material_link: materialLink,
+        content: jsonData,
       })
-    } catch (error) {
-      console.error(error)
-      toast.error(error.message)
-    }
-  }
-
-  const upsertMaterial = async (jsonData) => {
-    try {
-      const postData = { content: jsonData }
-      if (material?.id) {
-        postData.id = material.id
-      }
-      const res = await axios.post(
-        `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/material`,
-        postData
-      )
-      return res.data.id
     } catch (error) {
       console.error(error)
       toast.error(error.message)
@@ -175,9 +150,10 @@ const CheckId = ({ lng }) => {
       if (inspectorName) {
         await axios.post(
           `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
-          { inspectorName }
+          { name: inspectorName }
         )
         mutate()
+        setInspectorName('')
         toast.success(t('inspectorCreated'))
       } else {
         toast.error(t('enterInspectorName'))
@@ -188,11 +164,11 @@ const CheckId = ({ lng }) => {
     }
   }
 
-  const deleteInspectorApi = async (inspectorId, p_delete_notes) => {
+  const deleteInspectorApi = async (inspectorId, delete_all_notes) => {
     try {
       await axios.delete(
         `/api/projects/${projectId}/books/${bookId}/checks/${checkId}/inspector`,
-        { data: { inspectorId, p_delete_notes } }
+        { data: { id: inspectorId, delete_all_notes } }
       )
       mutate()
       toast.success(t('inspectorDeleted'))

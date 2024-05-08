@@ -1,23 +1,13 @@
 import { createClient } from '@/app/supabase/service'
-import { headers } from 'next/headers'
 
-/**
- * @swagger
- */
-
-export async function GET(req, { params: { inspectorId } }) {
-  const headersList = headers()
-  const userId = headersList.get('x-user-id')
-  if (!userId) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+export async function GET(req, { params: { checkId, inspectorId } }) {
   const supabase = createClient()
-  if (!inspectorId) {
-    return Response.json({ error: 'Missing inspectorId parameter' }, { status: 400 })
+  if (!inspectorId || !checkId) {
+    return Response.json({ error: 'Missing required parameters' }, { status: 400 })
   }
   try {
-    const { data, error } = await supabase.rpc('is_deleted_null', {
-      p_id: inspectorId,
+    const { data, error } = await supabase.rpc('is_inspector_deleted', {
+      inspector_id: inspectorId,
     })
 
     if (error) {

@@ -27,10 +27,11 @@ const Notes = ({ reference, materialId, checkId, lng }) => {
         ...reference,
       })
       .then((res) => {
-        if (res.status === 200) {
+        if (res.status === 201) {
           toast.success(t('noteSaved'))
           setWriteNote(false)
           setNote('')
+          setError(null)
         } else {
           throw new Error(t('errorSavingNote'))
         }

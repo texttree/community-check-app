@@ -27,7 +27,7 @@ const CheckInspectorDetail = ({ lng }) => {
   const [isCheckExpired, setIsCheckExpired] = useState(false)
 
   const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
-  const { data: existInspector, isLoading: isLoadingInspector } = useSWR(
+  const { data: isInspectorDeleted, isLoading: isInspectorDeletedLoading } = useSWR(
     checkId && inspectorId && `/api/info_check/${checkId}/${inspectorId}`,
     fetcher
   )
@@ -97,12 +97,12 @@ const CheckInspectorDetail = ({ lng }) => {
           <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
       )}
-      {!isLoadingInspector && !existInspector && (
+      {!isInspectorDeletedLoading && isInspectorDeleted && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('inspectorDeleted')}</p>
         </div>
       )}
-      {!isLoading && material && existInspector && (
+      {!isLoading && material && !isInspectorDeleted && (
         <div className="max-w-6xl mx-auto p-4">
           <CheckInfo checkId={checkId} lng={lng} />
           {(!isCheckExpired || info?.is_owner) && chapter.length > 0 && (

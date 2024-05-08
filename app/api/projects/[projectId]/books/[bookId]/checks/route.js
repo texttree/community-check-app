@@ -1,20 +1,91 @@
 import { createClient } from '@/app/supabase/service'
-import { headers } from 'next/headers'
 
 /**
  * @swagger
+ * /api/projects/{projectId}/books/{bookId}/checks:
+ *   get:
+ *     summary: Returns a list of checks for a book
+ *     tags:
+ *       - Checks
+ *     parameters:
+ *       - in: path
+ *         name: projectId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the project
+ *       - in: path
+ *         name: bookId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the book
+ *     responses:
+ *       '200':
+ *         description: A successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Check'
+ *       '400':
+ *         description: Unauthorized
+ *       '500':
+ *         description: Internal server error
+ *   post:
+ *     summary: Creates a new check for a book
+ *     tags:
+ *       - Checks
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The name of the check
+ *                 example: Community Check
+ *             required:
+ *               - name
+ *     parameters:
+ *       - in: path
+ *         name: projectId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the project
+ *       - in: path
+ *         name: bookId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the book
+ *     responses:
+ *       '201':
+ *         description: A successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Check'
+ *       '400':
+ *         description: Unauthorized
+ *       '500':
+ *         description: Internal server error
  */
 
 export async function GET(req, { params: { bookId } }) {
-  const headersList = headers()
-  const userId = headersList.get('x-user-id')
+  const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
   const supabase = createClient()
   try {
     const { data, error } = await supabase.rpc('get_checks_for_book', {
-      book_id_param: bookId,
+      book_id: bookId,
+      user_id: userId,
     })
 
     if (error) {
@@ -39,8 +110,9 @@ export async function POST(req, { params: { bookId } }) {
   const supabase = createClient()
   try {
     const { data: check, error } = await supabase.rpc('create_check', {
-      p_name: name,
-      p_book_id: parseInt(bookId),
+      name,
+      book_id: parseInt(bookId),
+      user_id: userId,
     })
 
     if (error) {
