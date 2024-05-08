@@ -84,7 +84,7 @@ export async function GET(req, { params: { bookId } }) {
   const supabase = createClient()
   try {
     const { data, error } = await supabase.rpc('get_checks_for_book', {
-      book_id_param: bookId,
+      book_id: bookId,
       user_id: userId,
     })
 
@@ -110,8 +110,8 @@ export async function POST(req, { params: { bookId } }) {
   const supabase = createClient()
   try {
     const { data: check, error } = await supabase.rpc('create_check', {
-      p_name: name,
-      p_book_id: parseInt(bookId),
+      name,
+      book_id: parseInt(bookId),
       user_id: userId,
     })
 

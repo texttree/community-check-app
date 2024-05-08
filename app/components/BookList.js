@@ -69,29 +69,29 @@ const BookList = ({ projectId, lng }) => {
             </thead>
             <tbody>
               {books.map((book) => (
-                <tr key={book.book_id}>
+                <tr key={book.id}>
                   <td className="border p-2 text-center">
                     <Link
-                      href={`/projects/${projectId}/${book.book_id}`}
+                      href={`/projects/${projectId}/${book.id}`}
                       className="text-blue-600 hover:underline"
                     >
-                      {book.book_name}
+                      {book.name}
                     </Link>
                   </td>
                   <td className="border p-2 text-center">
-                    {formatDate(book.book_created_at)}
+                    {formatDate(book.created_at)}
                   </td>
                   <td className="border p-2 text-center">
                     <BookChecksInfo
                       projectId={projectId}
-                      bookId={book.book_id}
+                      bookId={book.id}
                       showLastCheck={true}
                     />
                   </td>
                   <td className="border p-2 text-center">
                     <BookChecksInfo
                       projectId={projectId}
-                      bookId={book.book_id}
+                      bookId={book.id}
                       showLastCheck={false}
                     />
                   </td>

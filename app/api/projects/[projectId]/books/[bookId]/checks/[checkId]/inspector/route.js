@@ -142,6 +142,7 @@ export async function GET(req, { params: { checkId } }) {
       .from('inspectors')
       .select('*')
       .eq('check_id', checkId)
+      .is('deleted_at', null)
 
     if (error) {
       throw error
@@ -200,9 +201,9 @@ export async function DELETE(req, { params: { checkId } }) {
   const supabase = createClient()
   try {
     const { error } = await supabase.rpc('delete_inspector_and_notes', {
-      p_user_id: userId,
-      p_inspector_id: id,
-      p_delete_notes: !!delete_all_notes,
+      user_id: userId,
+      inspector_id: id,
+      delete_all_notes: !!delete_all_notes,
     })
 
     if (error) {

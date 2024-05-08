@@ -25,11 +25,11 @@ INSERT INTO "public"."books" ("name","project_id") VALUES
 ('Tit','3'),
 ('Tit','4');
 
-INSERT INTO "public"."checks" ("id","name","book_id","finished_at") VALUES
-('11111111-1111-1111-1111-111111111111','Community','1','2025-05-02 12:21:55.090001+00'),
-('11111111-1111-1111-1111-111111111112','Community','2','2025-05-02 12:21:55.090001+00'),
-('11111111-1111-1111-1111-111111111113','Community','3','2025-05-02 12:21:55.090001+00'),
-('11111111-1111-1111-1111-111111111114','Community','4','2025-05-02 12:21:55.090001+00');
+INSERT INTO "public"."checks" ("id","name","book_id","material_link","finished_at") VALUES
+('11111111-1111-1111-1111-111111111111','Community','1','https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/57-TIT.usfm','2025-05-02 12:21:00+00'),
+('11111111-1111-1111-1111-111111111112','Community','2','https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/57-TIT.usfm','2025-05-02 12:21:00+00'),
+('11111111-1111-1111-1111-111111111113','Community','3','https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/57-TIT.usfm','2025-05-02 12:21:00+00'),
+('11111111-1111-1111-1111-111111111114','Community','4','https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/57-TIT.usfm','2025-05-02 12:21:00+00');
 
 INSERT INTO "public"."inspectors" ("id","name","check_id") VALUES
 ('11111111-1111-1111-1111-111111111111','Abraham','11111111-1111-1111-1111-111111111111'),

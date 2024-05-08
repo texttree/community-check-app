@@ -38,6 +38,7 @@
   "errorEditNameBook": "Error editing the book: there is already a book with that name",
   "errorEditNameProject": "Error editing the project: there is already a project with that name",
   "errorOccurred": "An error occurred",
+  "errorSavingNote": "Error saving note",
   "expirationDate": "Expiration date:",
   "generateToken": "Generate token",
   "goToProjects": "Go to projects",

@@ -2,6 +2,25 @@ import { createClient } from '@/app/supabase/service'
 
 /**
  * @swagger
+ * tags:
+ *   name: Material
+ *   description: Material operations
+ * components:
+ *   schemas:
+ *     Material:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           description: Check ID
+ *         content:
+ *           type: string
+ *           description: Material content
+ */
+
+/**
+ * @swagger
  * /api/projects/{projectId}/books/{bookId}/checks/{checkId}/material:
  *   get:
  *     summary: Get material by check id
@@ -89,9 +108,9 @@ export async function GET(req, { params: { checkId } }) {
   const supabase = createClient()
   try {
     const { data, error } = await supabase
-      .from('materials')
-      .select()
-      .eq('check_id', checkId)
+      .from('checks')
+      .select('content')
+      .eq('id', checkId)
 
     if (error) {
       throw error
@@ -108,20 +127,14 @@ export async function POST(req, { params: { checkId } }) {
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const { id, content } = await req.json()
-  // TODO validate id and content
+  const { content } = await req.json()
+  // TODO validate content
   const supabase = createClient()
   try {
-    const postData = {
-      content,
-      check_id: checkId,
-    }
-    if (id) {
-      postData.id = id
-    }
     const { data: material, error } = await supabase
-      .from('materials')
-      .upsert([postData])
+      .from('checks')
+      .update([content])
+      .eq('id', checkId)
       .single()
       .select('id')
 

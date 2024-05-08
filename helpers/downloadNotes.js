@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const downloadNotes = async (check, t) => {
   try {
-    const responseMaterials = await axios.get(`/api/checks/${check.check_id}/notes`)
+    const responseMaterials = await axios.get(`/api/checks/${check.id}/notes`)
     const notes = responseMaterials.data
 
     if (!notes) {

@@ -33,8 +33,8 @@ const BookEditPage = ({ lng }) => {
   }, [bookError])
 
   useEffect(() => {
-    if (book?.book_name) {
-      setBookName(book.book_name)
+    if (book?.name) {
+      setBookName(book.name)
     }
   }, [book])
 

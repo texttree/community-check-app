@@ -163,7 +163,7 @@ export async function POST(req, { params: { checkId } }) {
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const { name, material_link, started_at, finished_at } = await req.json()
+  const { name, material_link, started_at, finished_at, content } = await req.json()
   if (!name) {
     return Response.json({ error: 'Check name is required' }, { status: 400 })
   }
@@ -178,6 +178,7 @@ export async function POST(req, { params: { checkId } }) {
           material_link,
           started_at,
           finished_at,
+          content,
         },
       ])
       .eq('id', checkId)

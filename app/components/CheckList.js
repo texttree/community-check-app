@@ -44,7 +44,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
 
         const link = document.createElement('a')
         link.href = window.URL.createObjectURL(blob)
-        link.download = `${check.check_name}.tsv`
+        link.download = `${check.name}.tsv`
 
         document.body.appendChild(link)
         link.click()
@@ -75,27 +75,26 @@ const CheckList = ({ projectId, bookId, lng }) => {
             </thead>
             <tbody>
               {checks.map((check) => (
-                <tr key={check.check_id}>
+                <tr key={check.id}>
                   <td className="border p-2 text-center">
                     <Link
-                      href={`/${lng}/projects/${projectId}/${bookId}/${check.check_id}`}
+                      href={`/${lng}/projects/${projectId}/${bookId}/${check.id}`}
                       className="text-blue-600 hover:underline"
                     >
-                      {check.check_name}
+                      {check.name}
                     </Link>
                   </td>
                   <td className="border p-2 text-center">
-                    {formatDate(check.check_started_time)}
+                    {formatDate(check.started_at)}
                   </td>
                   <td className="border p-2 text-center">
-                    {formatDate(check.check_finished_time)}
+                    {formatDate(check.finished_at)}
                   </td>
                   <td className="border p-2 text-center">
                     <button
                       onClick={() => handleDownloadNotes(check)}
                       disabled={
-                        notesCounts[check.check_id] === undefined ||
-                        notesCounts[check.check_id] === 0
+                        notesCounts[check.id] === undefined || notesCounts[check.id] === 0
                       }
                       className="disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -103,9 +102,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
                     </button>
                   </td>
 
-                  <td className="border p-2 text-center">
-                    {notesCounts[check.check_id] || 0}
-                  </td>
+                  <td className="border p-2 text-center">{notesCounts[check.id] || 0}</td>
                 </tr>
               ))}
             </tbody>
