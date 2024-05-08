@@ -196,8 +196,7 @@ export async function POST(req, { params: { checkId } }) {
 }
 
 export async function DELETE(req, { params: { checkId } }) {
-  const headersList = headers()
-  const userId = headersList.get('x-user-id')
+  const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }

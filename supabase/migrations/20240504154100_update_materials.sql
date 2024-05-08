@@ -109,9 +109,24 @@ DROP FUNCTION IF EXISTS "public"."delete_inspector_and_notes"(p_user_id uuid, p_
 
 drop function if exists "public"."get_notes_by_check_id"(check_id uuid);
 
+drop function if exists "public"."is_deleted_null"(p_id uuid);
+
 CREATE UNIQUE INDEX projects_user_id_name_idx ON public.projects USING btree (user_id, name);
 
 set check_function_bodies = off;
+
+CREATE OR REPLACE FUNCTION is_inspector_deleted(inspector_id uuid)
+RETURNS BOOLEAN AS $$
+DECLARE
+    deleted_time timestamp with time zone;
+BEGIN
+    SELECT deleted_at INTO deleted_time
+    FROM public.inspectors
+    WHERE inspectors.id = is_inspector_deleted.inspector_id;
+
+    RETURN deleted_time IS NOT NULL;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION public.create_check(name text, book_id bigint, user_id uuid)
  RETURNS uuid

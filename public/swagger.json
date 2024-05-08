@@ -131,25 +131,6 @@
             "format": "date-time"
           }
         }
-      },
-      "Project": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "example": 1
-          },
-          "name": {
-            "type": "string",
-            "example": "RLOB"
-          }
-        }
-      },
-      "Projects": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/Project"
-        }
       }
     }
   },
@@ -993,79 +974,6 @@
           },
           "500": {
             "description": "An error occurred"
-          }
-        }
-      }
-    },
-    "/api/projects": {
-      "get": {
-        "summary": "Get projects for the current user",
-        "tags": [
-          "Projects"
-        ],
-        "responses": {
-          "200": {
-            "description": "Array of projects",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Projects"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Create a new project",
-        "tags": [
-          "Projects"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Name of the project",
-                    "example": "RLOB"
-                  }
-                },
-                "required": [
-                  "name"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "The newly created project",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "number",
-                      "description": "The ID of the newly created project"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input, project name is missing or already exists"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal server error"
           }
         }
       }

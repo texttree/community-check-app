@@ -66,7 +66,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
     if (checkToDelete) {
       try {
         const response = await fetch(
-          `/api/projects/${projectId}/books/${bookId}/checks/${checkToDelete.check_id}`,
+          `/api/projects/${projectId}/books/${bookId}/checks/${checkToDelete.id}`,
           {
             method: 'DELETE',
           }

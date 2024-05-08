@@ -38,6 +38,7 @@
   "email": "Email",
   "enterCorrectLink": "Enter the correct resource link",
   "enterInspectorName": "Enter the inspector name",
+  "enterName": "Enter the name",
   "errorCreateBook": "Error creating the book: there is already a book with that name",
   "errorCreateProject": "Error creating the project: there is already a project with that name",
   "errorCreatingInspector": "Error сreating the inspector",

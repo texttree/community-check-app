@@ -33,8 +33,8 @@ const BookList = ({ projectId, lng }) => {
     const getLatestCheckDate = (checks) => {
       if (checks && checks.length > 0) {
         const validDates = checks
-          .filter((check) => check.check_started_time !== null)
-          .map((check) => new Date(check.check_started_time))
+          .filter((check) => check.started_at !== null)
+          .map((check) => new Date(check.started_at))
 
         if (validDates.length > 0) {
           const latestDate = new Date(Math.max(...validDates))
@@ -63,7 +63,7 @@ const BookList = ({ projectId, lng }) => {
   const confirmDeleteBook = async () => {
     if (bookToDelete) {
       try {
-        await fetch(`/api/projects/${projectId}/books/${bookToDelete.book_id}`, {
+        await fetch(`/api/projects/${projectId}/books/${bookToDelete.id}`, {
           method: 'DELETE',
         })
         mutate(`/api/projects/${projectId}/books`) // Обновляем данные после удаления
@@ -148,7 +148,7 @@ const BookList = ({ projectId, lng }) => {
           message={t('confirmDeleteBook')}
           onConfirm={confirmDeleteBook}
           onCancel={cancelDeleteBook}
-          expectedText={bookToDelete?.book_name}
+          expectedText={bookToDelete?.name}
           requireTextMatch={true}
         />
       )}
