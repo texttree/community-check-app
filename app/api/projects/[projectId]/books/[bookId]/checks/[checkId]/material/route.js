@@ -84,7 +84,11 @@ import { createClient } from '@/app/supabase/service'
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Material'
+ *             type: object
+ *             properties:
+ *               content:
+ *                 type: string
+ *                 description: Material content
  *     responses:
  *       201:
  *         description: The material

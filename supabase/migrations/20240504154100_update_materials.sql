@@ -43,7 +43,6 @@ alter table "public"."materials" drop constraint "materials_pkey";
 drop index if exists "public"."materials_pkey";
 drop table "public"."materials";
 
-alter table "public"."checks" drop column "deleted_at";
 alter table "public"."checks" add column "content" jsonb;
 
 alter table "public"."notes" drop column "material_id";
@@ -148,12 +147,13 @@ AS $function$
 BEGIN
     return query SELECT c.id as id, c.name as name, c.material_link as material_link, c.content as content, c.book_id as book_id, c.started_at as started_at, c.finished_at as finished_at, c.created_at as created_at
         from public.checks as c, public.books as b, public.projects as p, public.users as u
-        WHERE c.id = get_check_by_id.check_id AND
-          b.id = c.book_id AND
-          b.project_id = p.id AND
-          p.user_id = u.id AND
-          u.id = get_check_by_id.user_id AND
-          u.is_blocked = false;
+        WHERE c.id = get_check_by_id.check_id
+          AND c.deleted_at is null
+          AND b.id = c.book_id
+          AND b.project_id = p.id
+          AND p.user_id = u.id
+          AND u.id = get_check_by_id.user_id
+          AND u.is_blocked = false;
 END;
 $function$
 ;
@@ -183,7 +183,7 @@ BEGIN
       FROM
           public.checks as c
       WHERE
-          c.book_id = get_checks_for_book.book_id;
+          c.book_id = get_checks_for_book.book_id AND c.deleted_at is null;
     ELSE
         RAISE EXCEPTION 'User not found';
     END IF;
@@ -213,9 +213,11 @@ BEGIN
       INTO result
       FROM (
           SELECT c.id, COUNT(n.id) AS notes_count
-          FROM checks c
-          LEFT JOIN notes n ON c.id = n.check_id
+          FROM checks as c
+          LEFT JOIN notes as n ON c.id = n.check_id
           WHERE c.book_id = get_notes_count_for_book.book_id
+            AND c.deleted_at is null
+            AND n.deleted_at is null
           GROUP BY c.id
       ) AS subquery;
 
@@ -240,6 +242,7 @@ BEGIN
         FROM public.checks AS c
         LEFT JOIN public.inspectors AS i ON i.check_id = c.id
         WHERE c.id = insert_note.check_id
+            AND c.deleted_at IS NULL
             AND c.finished_at > now()
             AND (insert_note.inspector_id IS NULL OR i.id = insert_note.inspector_id)
     )
@@ -269,7 +272,14 @@ BEGIN
     SELECT EXISTS (
         select 1
         from public.checks as c, public.books as b, public.projects as p, public.users as u
-        WHERE c.id = get_notes_by_check_id.check_id AND c.book_id = b.id AND b.project_id = p.id AND p.user_id = u.id AND u.id = get_notes_by_check_id.user_id AND u.is_blocked = false)
+        WHERE c.id = get_notes_by_check_id.check_id
+          AND c.book_id = b.id
+          AND c.deleted_at is null
+          AND b.project_id = p.id
+          AND p.user_id = u.id
+          AND u.id = get_notes_by_check_id.user_id
+          AND u.is_blocked = false
+        )
       INTO user_exists;
 
     if user_exists then
@@ -283,7 +293,7 @@ BEGIN
       INTO notes_data
       FROM notes as n
       LEFT JOIN inspectors as i ON n.inspector_id = i.id
-      WHERE n.check_id = get_notes_by_check_id.check_id;
+      WHERE n.check_id = get_notes_by_check_id.check_id AND n.deleted_at is null;
 
       RETURN notes_data;
     ELSE
@@ -311,6 +321,7 @@ AS $function$
       inner join public.inspectors as i
         on (i.check_id = c.id)
     where c.id = update_note.check_id
+      and c.deleted_at is null
       and c.finished_at > now()
       and i.id = update_note.inspector_id
       and i.deleted_at is null
@@ -471,6 +482,7 @@ AS $function$
       inner join public.users as u on (u.id = p.user_id)
     where
       c.id = admin_or_user.check_id
+      and c.deleted_at is null
       and u.id = auth.uid()
       and u.is_blocked is not true;
     return access > 0;
@@ -495,6 +507,7 @@ AS $function$
       inner join public.users as u on (u.id = p.user_id)
     where
       c.id = check_user_notes.check_id
+      and c.deleted_at is null
       and u.id = auth.uid()
       and u.is_blocked is not true;
     return access > 0;
@@ -502,7 +515,7 @@ AS $function$
 $function$
 ;
 
-CREATE OR REPLACE FUNCTION delete_inspector_and_notes(user_id uuid, inspector_id uuid, delete_all_notes boolean)
+CREATE OR REPLACE FUNCTION public.delete_inspector_and_notes(user_id uuid, inspector_id uuid, delete_all_notes boolean)
 RETURNS void AS
 $$
 BEGIN
@@ -533,8 +546,9 @@ BEGIN
         JOIN public.checks as c ON b.id = c.book_id
         JOIN public.inspectors i ON c.id = i.check_id
         WHERE p.user_id = check_inspector_user_relation.user_id
+          AND c.deleted_at IS NULL
           AND i.id = check_inspector_user_relation.inspector_id
+          AND i.deleted_at IS NULL
     );
 END;
 $$ LANGUAGE plpgsql;
-
