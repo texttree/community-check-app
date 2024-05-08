@@ -63,8 +63,8 @@ export async function DELETE(req, { params: { bookId } }) {
   const supabase = createClient()
   try {
     const { error } = await supabase.rpc('delete_book', {
-      p_user_id: userId,
-      p_book_id: bookId,
+      user_id: userId,
+      book_id: bookId,
     })
 
     if (error) {

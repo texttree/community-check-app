@@ -75,8 +75,8 @@ export async function DELETE(req, { params: { checkId } }) {
   const supabase = createClient()
   try {
     const { error } = await supabase.rpc('soft_delete_check', {
-      p_check_id: checkId,
-      p_user_id: userId,
+      check_id: checkId,
+      user_id: userId,
     })
 
     if (error) {
