@@ -188,7 +188,7 @@ export async function POST(req, { params: { checkId } }) {
   }
 }
 
-export async function DELETE(req, { params: { checkId } }) {
+export async function DELETE(req) {
   const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
@@ -207,7 +207,7 @@ export async function DELETE(req, { params: { checkId } }) {
     })
 
     if (error) {
-      return Response.json({ error }, { status: 400 })
+      return Response.json({ error }, { status: 402 })
     }
 
     return Response.json({ message: 'Inspector deleted successfully' }, { status: 200 })

@@ -17,6 +17,7 @@ import LeftArrow from '@/public/left.svg'
 import Copy from '@/public/copy.svg'
 import { parsingWordText } from '@/helpers/usfmHelper'
 import { useTranslation } from '@/app/i18n/client'
+import DeleteModal from '@/app/components/DeleteModal'
 
 const CheckId = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -31,7 +32,6 @@ const CheckId = ({ lng }) => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [selectedInspectorId, setSelectedInspectorId] = useState(null)
-  const [existNotesData, setExistNotes] = useState(null)
 
   const { data: check } = useSWR(
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
@@ -48,9 +48,8 @@ const CheckId = ({ lng }) => {
     setSelectedInspectorId(inspectorId)
     try {
       const response = await axios.get(`/api/info_notes/${inspectorId}`)
-      setExistNotes(response.data)
       if (response.data) {
-        openDeleteModal()
+        openDeleteModal(inspectorId)
       } else {
         deleteInspectorApi(inspectorId, false)
       }
@@ -59,20 +58,28 @@ const CheckId = ({ lng }) => {
     }
   }
 
-  const openDeleteModal = () => {
+  const openDeleteModal = (inspectorId) => {
+    setSelectedInspectorId(inspectorId)
     setShowDeleteModal(true)
   }
 
   const confirmDeleteInspector = async () => {
+    if (selectedInspectorId) {
+      deleteInspectorApi(selectedInspectorId, true)
+    }
     setShowDeleteModal(false)
-    deleteInspectorApi(selectedInspectorId, true)
   }
 
   const cancelDeleteInspector = () => {
     setShowDeleteModal(false)
-    deleteInspectorApi(selectedInspectorId, false)
   }
 
+  const keepInspector = () => {
+    if (selectedInspectorId) {
+      deleteInspectorApi(selectedInspectorId, false)
+    }
+    setShowDeleteModal(false)
+  }
   const copyToClipboard = () => {
     const textToCopy = checkPageRef.current.innerText
 
@@ -304,26 +311,16 @@ const CheckId = ({ lng }) => {
           </div>
         )}
       </div>
-      {showDeleteModal && existNotesData && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white rounded p-4">
-            <p className="text-lg font-medium">{t('confirmDeleteInspector')}</p>
-            <div className="flex justify-end mt-4">
-              <button
-                className="text-gray-500 hover:text-gray-700 px-3 py-1"
-                onClick={cancelDeleteInspector}
-              >
-                {t('keep')}
-              </button>
-              <button
-                className="text-red-600 hover:text-red-800 px-3 py-1 ml-2"
-                onClick={confirmDeleteInspector}
-              >
-                {t('delete')}
-              </button>
-            </div>
-          </div>
-        </div>
+      {showDeleteModal && (
+        <DeleteModal
+          lng={lng}
+          isVisible={showDeleteModal}
+          message={t('confirmDeleteInspector')}
+          onConfirm={confirmDeleteInspector}
+          onCancel={cancelDeleteInspector}
+          onKeep={keepInspector}
+          showKeepButton={true}
+        />
       )}
     </div>
   )

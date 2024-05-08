@@ -1,10 +1,9 @@
 'use client'
 
-import Link from 'next/link'
-
 import { useState, useEffect } from 'react'
-
-import useSWR from 'swr'
+import Link from 'next/link'
+import useSWR, { mutate } from 'swr'
+import toast from 'react-hot-toast'
 
 import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
@@ -12,13 +11,16 @@ import { formatDate } from '@/helpers/formatDate'
 import downloadNotes from '@/helpers/downloadNotes'
 import Download from '@/public/download.svg'
 
-import toast from 'react-hot-toast'
 import Loader from '@/app/components/Loader'
-import { useTranslation } from '../i18n/client'
+import { useTranslation } from '@/app/i18n/client'
+import DeleteModal from '@/app/components/DeleteModal'
 
 const CheckList = ({ projectId, bookId, lng }) => {
   const { t } = useTranslation(lng, 'common')
+
   const [notesCounts, setNotesCounts] = useState({})
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [checkToDelete, setCheckToDelete] = useState(null)
 
   const { data: checks, error } = useSWR(
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
@@ -41,7 +43,6 @@ const CheckList = ({ projectId, bookId, lng }) => {
     downloadNotes(check, t)
       .then((notes) => {
         const blob = new Blob([notes])
-
         const link = document.createElement('a')
         link.href = window.URL.createObjectURL(blob)
         link.download = `${check.name}.tsv`
@@ -51,9 +52,41 @@ const CheckList = ({ projectId, bookId, lng }) => {
         document.body.removeChild(link)
       })
       .catch((error) => {
-        const message = t('errorDownloadNotes') + ' ' + error
+        const message = `${t('errorDownloadNotes')} ${error}`
         toast.error(message)
       })
+  }
+
+  const openDeleteModal = (check) => {
+    setCheckToDelete(check)
+    setShowDeleteModal(true)
+  }
+
+  const confirmDeleteCheck = async () => {
+    if (checkToDelete) {
+      try {
+        const response = await fetch(
+          `/api/projects/${projectId}/books/${bookId}/checks/${checkToDelete.check_id}`,
+          {
+            method: 'DELETE',
+          }
+        )
+
+        if (!response.ok) {
+          throw new Error(t('errorDeletingCheck'))
+        }
+
+        toast.success(t('checkDeleted'))
+        mutate(`/api/projects/${projectId}/books/${bookId}/checks`) // Обновляем данные после удаления
+      } catch (error) {
+        toast.error(t('errorOccurred'))
+      }
+    }
+    setShowDeleteModal(false)
+  }
+
+  const cancelDeleteCheck = () => {
+    setShowDeleteModal(false)
   }
 
   return (
@@ -71,6 +104,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
                 <th className="border p-2 text-center">{t('checkEndDate')}</th>
                 <th className="border p-2 text-center">{t('downloadNotes')}</th>
                 <th className="border p-2 text-center">{t('activity')}</th>
+                <th className="border p-2 text-center">{t('actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -101,8 +135,15 @@ const CheckList = ({ projectId, bookId, lng }) => {
                       <Download className="h-5 w-5 mr-1" />
                     </button>
                   </td>
-
                   <td className="border p-2 text-center">{notesCounts[check.id] || 0}</td>
+                  <td className="border p-2 text-center">
+                    <button
+                      className="text-red-600 hover:text-red-800"
+                      onClick={() => openDeleteModal(check)}
+                    >
+                      {t('delete')}
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -111,7 +152,18 @@ const CheckList = ({ projectId, bookId, lng }) => {
       ) : (
         <Loader />
       )}
+
+      {showDeleteModal && (
+        <DeleteModal
+          lng={lng}
+          isVisible={showDeleteModal}
+          message={t('confirmDeleteCheck')}
+          onConfirm={confirmDeleteCheck}
+          onCancel={cancelDeleteCheck}
+        />
+      )}
     </>
   )
 }
+
 export default CheckList
