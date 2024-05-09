@@ -13,7 +13,7 @@ const Index = ({ lng, user }) => {
           <>
             <p className="text-lg mb-4">{t('youLoggedIn')}</p>
             <Link
-              href="/projects"
+              href={`/${lng}/projects`}
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-flex items-center"
             >
               {t('goToProjects')}

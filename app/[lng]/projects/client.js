@@ -52,13 +52,16 @@ const Projects = ({ lng }) => {
         <p className="text-red-600">{t('errorOccurred')}</p>
       ) : projects ? (
         projects.map((project) => (
-          <div key={project.id} className="block text-center">
-            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105">
-              <Link href={`projects/${project.id}`}>
-                <p className="text-3xl font-semibold text-blue-600">{project.name}</p>
+          <div key={project.id} className="block">
+            <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105">
+              <Link
+                className="text-3xl font-semibold text-blue-600"
+                href={`projects/${project.id}`}
+              >
+                {project.name}
               </Link>
               <button
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+                className="bg-red-500 block hover:bg-red-600 text-white px-4 py-2 rounded-md"
                 onClick={() => openDeleteModal(project)}
               >
                 {t('delete')}

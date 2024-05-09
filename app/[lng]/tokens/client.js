@@ -9,6 +9,9 @@ import { useTranslation } from '@/app/i18n/client'
 
 import toast from 'react-hot-toast'
 
+import LeftArrow from '@/public/left.svg'
+import Link from 'next/link'
+
 const TokenGeneration = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
 
@@ -68,6 +71,15 @@ const TokenGeneration = ({ lng }) => {
 
   return (
     <div className="flex justify-center items-center flex-col mt-4">
+      <div className="flex items-center mb-4">
+        <Link
+          href={`/${lng}/projects`}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md inline-flex items-center"
+        >
+          <LeftArrow className="h-5 w-5 mr-1" />
+          {t('personalArea')}
+        </Link>
+      </div>
       <div className="flex items-center">
         <input
           type="text"

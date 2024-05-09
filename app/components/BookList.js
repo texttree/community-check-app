@@ -8,6 +8,7 @@ import DeleteModal from '@/app/components/DeleteModal'
 import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
 import { useTranslation } from '@/app/i18n/client'
+import axios from 'axios'
 
 const BookList = ({ projectId, lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -63,9 +64,7 @@ const BookList = ({ projectId, lng }) => {
   const confirmDeleteBook = async () => {
     if (bookToDelete) {
       try {
-        await fetch(`/api/projects/${projectId}/books/${bookToDelete.id}`, {
-          method: 'DELETE',
-        })
+        await axios.delete(`/api/projects/${projectId}/books/${bookToDelete.id}`)
         mutate(`/api/projects/${projectId}/books`) // Обновляем данные после удаления
         toast.success(t('bookDeleted'))
       } catch (error) {

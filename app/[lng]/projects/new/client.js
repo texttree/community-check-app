@@ -35,7 +35,7 @@ const NewProjectPage = ({ lng }) => {
         }
 
         const data = await response.json()
-        router.push('/projects/' + data)
+        router.push('/' + lng + '/projects/' + data)
       } catch (error) {
         setErrorMessage(error.message)
       }
@@ -49,7 +49,7 @@ const NewProjectPage = ({ lng }) => {
       <div className="max-w-6xl mx-auto p-4">
         <div className="flex items-center mb-4">
           <Link
-            href="/projects"
+            href={`/${lng}/projects`}
             className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md inline-flex items-center"
           >
             <LeftArrow className="h-5 w-5 mr-1" />
