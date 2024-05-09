@@ -65,32 +65,32 @@ import { createClient } from '@/app/supabase/service'
  *         description: Unauthorized
  *       500:
  *         description: Internal server error
- * delete:
-    summary: Delete a project by ID
-    tags:
-      - Projects
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              projectId:
-                type: number
-                description: Project ID to delete
-                example: 1
-    responses:
-      200:
-        description: Project deleted successfully
-      400:
-        description: Bad request, project ID is required or unauthorized
-      401:
-        description: Unauthorized
-      404:
-        description: Project not found
-      500:
-        description: Internal server error
+ *   delete:
+ *     summary: Delete a project by ID
+ *     tags:
+ *       - Projects
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               projectId:
+ *                 type: number
+ *                 description: Project ID to delete
+ *                 example: 1
+ *     responses:
+ *       200:
+ *         description: Project deleted successfully
+ *       400:
+ *         description: Bad request, project ID is required or unauthorized
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Project not found
+ *       500:
+ *         description: Internal server error
  */
 export async function GET(req) {
   const userId = req.headers.get('x-user-id')

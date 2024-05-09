@@ -26,9 +26,9 @@ const CheckInspectorDetail = ({ lng }) => {
 
   const [isCheckExpired, setIsCheckExpired] = useState(false)
 
-  const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
+  const { data: info } = useSWR(checkId && `/api/checks/${checkId}/info`, fetcher)
   const { data: isInspectorDeleted, isLoading: isInspectorDeletedLoading } = useSWR(
-    checkId && inspectorId && `/api/info_check/${checkId}/${inspectorId}`,
+    checkId && inspectorId && `/api/checks/${checkId}/${inspectorId}/info`,
     fetcher
   )
   useEffect(() => {

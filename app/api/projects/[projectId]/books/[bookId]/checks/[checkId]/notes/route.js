@@ -2,36 +2,31 @@ import { createClient } from '@/app/supabase/service'
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Note:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *         note:
- *           type: string
- *         chapter:
- *           type: string
- *         verse:
- *           type: string
- *         created_at:
- *           type: string
- *           format: date-time
- *         check_id:
- *           type: string
- *           format: uuid
- *         inspector_id:
- *           type: string
- *           format: uuid
- * /api/checks/{checkId}/notes:
+ * /api/projects/{projectId}/books/{bookId}/checks/{checkId}/notes:
  *   get:
  *     tags:
  *       - Checks
  *     summary: Get notes by check id
+ *     description: Returns an array of notes for a given check id
+ *     parameters:
+ *       - in: path
+ *         name: projectId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: bookId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: checkId
+ *         required: true
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description: Successful response
+ *         description: OK
  *         content:
  *           application/json:
  *             schema:
@@ -47,7 +42,8 @@ import { createClient } from '@/app/supabase/service'
  *   post:
  *     tags:
  *       - Checks
- *     summary: Insert note
+ *     summary: Create a new note
+ *     description: Creates a new note for a given check id
  *     requestBody:
  *       required: true
  *       content:
@@ -63,10 +59,25 @@ import { createClient } from '@/app/supabase/service'
  *                 type: integer
  *               inspectorId:
  *                 type: integer
- *                 default: null
+ *     parameters:
+ *       - in: path
+ *         name: projectId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: bookId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: checkId
+ *         required: true
+ *         schema:
+ *           type: string
  *     responses:
  *       201:
- *         description: Successful response
+ *         description: Created
  *         content:
  *           application/json:
  *             schema:
@@ -80,9 +91,7 @@ import { createClient } from '@/app/supabase/service'
  *                   type: integer
  *                 verse:
  *                   type: integer
- *                 inspectorId:
- *                   type: integer
- *                 checkId:
+ *                 inspector_id:
  *                   type: integer
  *       400:
  *         description: Bad request

@@ -15,6 +15,35 @@
       }
     },
     "schemas": {
+      "Note": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "chapter": {
+            "type": "string"
+          },
+          "verse": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "check_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "inspector_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
       "Inspector": {
         "type": "object",
         "properties": {
@@ -131,6 +160,25 @@
             "format": "date-time"
           }
         }
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "RLOB"
+          }
+        }
+      },
+      "Projects": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Project"
+        }
       }
     }
   },
@@ -149,6 +197,188 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/checks/{checkId}/notes": {
+      "get": {
+        "tags": [
+          "Checks"
+        ],
+        "summary": "Get notes by check id",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Note"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Checks"
+        ],
+        "summary": "Insert note",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "note": {
+                    "type": "string"
+                  },
+                  "chapter": {
+                    "type": "integer"
+                  },
+                  "verse": {
+                    "type": "integer"
+                  },
+                  "inspectorId": {
+                    "type": "integer",
+                    "default": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "note": {
+                      "type": "string"
+                    },
+                    "chapter": {
+                      "type": "integer"
+                    },
+                    "verse": {
+                      "type": "integer"
+                    },
+                    "inspectorId": {
+                      "type": "integer"
+                    },
+                    "checkId": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/inspectors/{inspectorId}": {
+      "get": {
+        "tags": [
+          "Inspector"
+        ],
+        "summary": "Returns true if there are notes for the inspector",
+        "description": "Returns true if there are notes for the inspector",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "inspectorId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns true if there are notes for the inspector",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "has_notes": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/projects/{projectId}/books/{bookId}/checks/{checkId}/inspector": {
       "get": {
         "summary": "Returns the list of inspectors for the check",
@@ -435,6 +665,157 @@
         }
       }
     },
+    "/api/projects/{projectId}/books/{bookId}/checks/{checkId}/notes": {
+      "get": {
+        "tags": [
+          "Checks"
+        ],
+        "summary": "Get notes by check id",
+        "description": "Returns an array of notes for a given check id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "bookId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "checkId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Note"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Checks"
+        ],
+        "summary": "Create a new note",
+        "description": "Creates a new note for a given check id",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "note": {
+                    "type": "string"
+                  },
+                  "chapter": {
+                    "type": "integer"
+                  },
+                  "verse": {
+                    "type": "integer"
+                  },
+                  "inspectorId": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "bookId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "checkId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "note": {
+                      "type": "string"
+                    },
+                    "chapter": {
+                      "type": "integer"
+                    },
+                    "verse": {
+                      "type": "integer"
+                    },
+                    "inspector_id": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/projects/{projectId}/books/{bookId}/checks/{checkId}": {
       "get": {
         "summary": "Get check by ID",
@@ -670,6 +1051,98 @@
           },
           "500": {
             "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/projects/{projectId}/books/{bookId}/info": {
+      "get": {
+        "summary": "Get count of notes for book",
+        "tags": [
+          "Books"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "bookId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notes count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notes_count": {
+                      "type": "integer",
+                      "description": "Notes count for book"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Invalid request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Internal Server Error"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -974,6 +1447,119 @@
           },
           "500": {
             "description": "An error occurred"
+          }
+        }
+      }
+    },
+    "/api/projects": {
+      "get": {
+        "summary": "Get projects for the current user",
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of projects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Projects"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new project",
+        "tags": [
+          "Projects"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the project",
+                    "example": "RLOB"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The newly created project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number",
+                      "description": "The ID of the newly created project"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, project name is missing or already exists"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a project by ID",
+        "tags": [
+          "Projects"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "projectId": {
+                    "type": "number",
+                    "description": "Project ID to delete",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project deleted successfully"
+          },
+          "400": {
+            "description": "Bad request, project ID is required or unauthorized"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Project not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }

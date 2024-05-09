@@ -47,7 +47,7 @@ const CheckId = ({ lng }) => {
   const deleteInspector = async (inspectorId) => {
     setSelectedInspectorId(inspectorId)
     try {
-      const response = await axios.get(`/api/info_notes/${inspectorId}`)
+      const response = await axios.get(`/api/inspectors/${inspectorId}`)
       if (response.data) {
         openDeleteModal(inspectorId)
       } else {

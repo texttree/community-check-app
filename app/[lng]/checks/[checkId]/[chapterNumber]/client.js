@@ -25,7 +25,7 @@ const CheckDetail = ({ lng }) => {
 
   const [chapterLength, setChapterLength] = useState(0)
 
-  const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
+  const { data: info } = useSWR(checkId && `/api/checks/${checkId}/info`, fetcher)
 
   useEffect(() => {
     if (info?.check_finished_at) {

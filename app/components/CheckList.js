@@ -27,7 +27,10 @@ const CheckList = ({ projectId, bookId, lng }) => {
     fetcher
   )
 
-  const { data: info } = useSWR(bookId && `/api/info_check/books/${bookId}`, fetcher)
+  const { data: info } = useSWR(
+    bookId && `/api/projects/${projectId}/books/${bookId}/info`,
+    fetcher
+  )
 
   useEffect(() => {
     if (info) {
@@ -40,7 +43,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
   }, [info])
 
   const handleDownloadNotes = (check) => {
-    downloadNotes(check, t)
+    downloadNotes(check, t, projectId, bookId)
       .then((notes) => {
         const blob = new Blob([notes])
         const link = document.createElement('a')
