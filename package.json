@@ -13,10 +13,12 @@
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/auth-helpers-react": "^0.5.0",
     "@supabase/ssr": "^0.3.0",
-    "@supabase/supabase-js": "^2.43.1",
+    "@supabase/supabase-js": "^2.42.5",
+    "@texttree/obs-format-convert-rcl": "^0.4.2",
     "accept-language": "^3.0.18",
     "axios": "^1.6.8",
-    "i18next": "^23.11.3",
+    "fs": "^0.0.1-security",
+    "i18next": "^23.11.2",
     "i18next-browser-languagedetector": "^7.2.1",
     "i18next-resources-to-backend": "^1.2.1",
     "jsonwebtoken": "^9.0.2",
@@ -29,6 +31,7 @@
     "react-i18next": "^14.1.1",
     "swagger-ui-react": "^5.17.4",
     "swr": "^2.2.5",
+    "unzipper": "^0.11.5",
     "usfm-js": "^3.4.2"
   },
   "devDependencies": {
