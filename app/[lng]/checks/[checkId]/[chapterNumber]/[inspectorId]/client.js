@@ -92,7 +92,7 @@ const CheckInspectorDetail = ({ lng }) => {
           <Loader />
         </div>
       )}
-      {!isLoading && !material && (
+      {!isLoading && !material?.content && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
@@ -102,7 +102,7 @@ const CheckInspectorDetail = ({ lng }) => {
           <p className="text-2xl text-red-500">{t('inspectorDeleted')}</p>
         </div>
       )}
-      {!isLoading && material && !isInspectorDeleted && (
+      {!isLoading && material?.content && !isInspectorDeleted && (
         <div className="max-w-6xl mx-auto p-4">
           <CheckInfo checkId={checkId} lng={lng} />
           {(!isCheckExpired || info?.is_owner) && chapter.length > 0 && (
