@@ -113,16 +113,3 @@ ALTER TABLE ONLY "public"."users"
 ALTER TABLE ONLY "public"."users"
     ADD CONSTRAINT "users_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
-CREATE OR REPLACE FUNCTION delete_project(
-    p_project_id bigint,
-    p_user_id uuid
-)
-RETURNS void AS
-$$
-BEGIN
-    DELETE FROM public.projects
-    WHERE id = p_project_id
-    AND user_id = p_user_id;
-END;
-$$
-LANGUAGE plpgsql;
