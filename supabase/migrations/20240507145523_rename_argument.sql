@@ -5,6 +5,14 @@ DROP FUNCTION IF EXISTS delete_project;
 DROP FUNCTION IF EXISTS find_token;
 DROP FUNCTION IF EXISTS get_user_project_info;
 DROP FUNCTION IF EXISTS has_notes;
+DROP FUNCTION IF EXISTS create_book;
+DROP FUNCTION IF EXISTS get_book_by_id;
+-- DROP FUNCTION IF EXISTS get_books_by_project;
+
+DROP FUNCTION IF EXISTS create_check;
+DROP FUNCTION IF EXISTS get_checks_for_book;
+DROP FUNCTION IF EXISTS get_notes_count_for_book;
+DROP FUNCTION IF EXISTS get_notes_by_check_id;
 
 
 
@@ -46,27 +54,6 @@ $$;
 DROP FUNCTION IF EXISTS delete_book(user_id uuid, book_id bigint);
 
 DROP FUNCTION IF EXISTS delete_book(p_user_id uuid, p_book_id bigint);
-
-CREATE OR REPLACE FUNCTION delete_book(user_id uuid, book_id bigint) RETURNS void AS $$
-DECLARE
-    user_exists boolean;
-BEGIN
-    SELECT EXISTS (
-        SELECT 1
-        FROM public.books b
-        JOIN public.projects p ON b.project_id = p.id
-        WHERE b.id = delete_book.book_id AND p.user_id = delete_book.user_id
-    ) INTO user_exists;
-
-    IF user_exists THEN
-        DELETE FROM public.books
-        WHERE books.id = delete_book.book_id;
-    ELSE
-        RAISE EXCEPTION 'Permission denied. You are not the owner of this book.';
-    END IF;
-END;
-$$ LANGUAGE plpgsql;
-
 
 ALTER TABLE ONLY "public"."books"
     DROP CONSTRAINT IF EXISTS "books_project_id_fkey";
@@ -134,3 +121,270 @@ CREATE OR REPLACE FUNCTION has_notes(inspector_id uuid)
   END;
 $$
 LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION public.is_user_valid_for_check(
+    check_id UUID,
+    user_id UUID
+) RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1
+        FROM public.checks c
+        JOIN public.books b ON c.book_id = b.id
+        JOIN public.projects p ON b.project_id = p.id
+        JOIN public.users u ON p.user_id = u.id
+        WHERE c.id = is_user_valid_for_check.check_id
+          AND u.id = is_user_valid_for_check.user_id  
+          AND c.deleted_at IS NULL
+          AND u.is_blocked = FALSE
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION public.is_user_valid_for_book(
+    book_id BIGINT,
+    user_id UUID
+)
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1
+        FROM public.books b
+        JOIN public.projects p ON b.project_id = p.id
+        WHERE b.id = is_user_valid_for_book.book_id  
+          AND p.user_id = is_user_valid_for_book.user_id 
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION delete_book(user_id UUID, book_id BIGINT) RETURNS VOID AS $$
+BEGIN
+    IF is_user_valid_for_book(book_id, user_id) THEN
+        DELETE FROM public.books
+        WHERE books.id = delete_book.book_id;
+    ELSE
+        RAISE EXCEPTION 'Permission denied. You are not the owner of this book.';
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+CREATE OR REPLACE FUNCTION public.get_checks_for_book(
+    book_id BIGINT,
+    user_id UUID
+)
+RETURNS TABLE(
+    id UUID,
+    name TEXT,
+    material_link TEXT,
+    created_at TIMESTAMP WITH TIME ZONE,
+    started_at TIMESTAMP WITH TIME ZONE,
+    finished_at TIMESTAMP WITH TIME ZONE
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF is_user_valid_for_book(book_id, user_id) THEN
+        RETURN QUERY
+        SELECT
+            c.id,
+            c.name,
+            c.material_link,
+            c.created_at,
+            c.started_at,
+            c.finished_at
+        FROM
+            public.checks c
+        WHERE
+            c.book_id = get_checks_for_book.book_id
+          AND c.deleted_at IS NULL;
+    ELSE
+        RAISE EXCEPTION 'User not found or permission denied';
+    END IF;
+END;
+$$;
+
+
+
+CREATE OR REPLACE FUNCTION public.get_notes_count_for_book(
+    book_id BIGINT,
+    user_id UUID
+)
+RETURNS JSON
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    result JSON;
+BEGIN
+    IF is_user_valid_for_book(book_id, user_id) THEN
+        SELECT json_agg(json_build_object(
+            'check_id', subquery.id,
+            'notes_count', subquery.notes_count
+        ))
+        INTO result
+        FROM (
+            SELECT c.id, COUNT(n.id) AS notes_count
+            FROM public.checks c
+            LEFT JOIN public.notes n ON c.id = n.check_id
+            WHERE c.book_id = get_notes_count_for_book.book_id
+              AND c.deleted_at IS NULL
+              AND n.deleted_at IS NULL
+            GROUP BY c.id
+        ) AS subquery;
+
+        RETURN result;
+    ELSE
+        RAISE EXCEPTION 'User not found or permission denied';
+    END IF;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION public.get_notes_by_check_id(
+    check_id UUID,
+    user_id UUID
+)
+RETURNS JSON
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    notes_data JSON;
+BEGIN
+    IF is_user_valid_for_check(check_id, user_id) THEN
+        SELECT json_agg(
+            json_build_object(
+                'chapter', n.chapter,
+                'verse', n.verse,
+                'note', n.note,
+                'inspector_name', i.name
+            )
+        )
+        INTO notes_data
+        FROM public.notes n
+        LEFT JOIN public.inspectors i ON n.inspector_id = i.id
+        WHERE n.check_id = get_notes_by_check_id.check_id
+          AND n.deleted_at IS NULL;
+
+        RETURN notes_data;
+    ELSE
+        RAISE EXCEPTION 'Permission denied. You do not have access to this check.';
+    END IF;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION public.is_user_valid_for_project(
+    project_id BIGINT,
+    user_id UUID
+) 
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1
+        FROM public.projects p
+        WHERE p.id = is_user_valid_for_project.project_id
+          AND p.user_id = is_user_valid_for_project.user_id
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION public.create_book(
+    project_id BIGINT,
+    name TEXT,
+    user_id UUID
+) 
+RETURNS JSONB
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    book_id BIGINT;
+    book_exists BOOLEAN;
+    result JSONB;
+BEGIN
+    IF NOT is_user_valid_for_project(project_id, user_id) THEN
+        RAISE EXCEPTION 'Permission denied. User does not have access to the project';
+    END IF;
+
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.books b
+        WHERE b.project_id = create_book.project_id
+          AND b.name = create_book.name
+    ) INTO book_exists;
+
+    IF book_exists THEN
+        RAISE EXCEPTION 'A book with the name % already exists for this project', name;
+    ELSE
+        INSERT INTO public.books (name, project_id)
+        VALUES (name, project_id)
+        RETURNING id INTO book_id;
+
+        result := jsonb_build_object('book_id', book_id);
+
+        RETURN result;
+    END IF;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION public.get_book_by_id(
+    book_id BIGINT,
+    user_id UUID
+)
+RETURNS TABLE(
+    name TEXT,
+    project_id BIGINT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF is_user_valid_for_book(book_id, user_id) THEN
+        RETURN QUERY
+        SELECT
+            b.name,
+            b.project_id
+        FROM
+            public.books b
+        WHERE
+            b.id = book_id;
+    ELSE
+        RAISE EXCEPTION 'Permission denied. User does not have access to this book';
+    END IF;
+END;
+$$;
+
+
+
+CREATE OR REPLACE FUNCTION public.get_books_by_project(
+    project_id BIGINT,
+    user_id UUID
+)
+RETURNS TABLE(
+    id BIGINT,
+    name TEXT,
+    created_at TIMESTAMP WITH TIME ZONE
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF is_user_valid_for_project(project_id, user_id) THEN
+        RETURN QUERY
+        SELECT
+            b.id,
+            b.name,
+            b.created_at
+        FROM
+            public.books b
+        WHERE
+            b.project_id = get_books_by_project.project_id;
+    ELSE
+        RAISE EXCEPTION 'Permission denied. User does not have access to this project';
+    END IF;
+END;
+$$;
