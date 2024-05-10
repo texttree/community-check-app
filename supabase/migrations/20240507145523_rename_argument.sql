@@ -2,6 +2,13 @@ DROP FUNCTION IF EXISTS soft_delete_check(p_check_id uuid, p_user_id uuid);
 DROP FUNCTION IF EXISTS soft_delete_check(check_id uuid, user_id uuid);
 
 DROP FUNCTION IF EXISTS delete_project;
+DROP FUNCTION IF EXISTS find_token;
+DROP FUNCTION IF EXISTS get_user_project_info;
+DROP FUNCTION IF EXISTS has_notes;
+
+
+
+
 
 CREATE OR REPLACE FUNCTION soft_delete_check(check_id uuid, user_id uuid)
     RETURNS void
@@ -113,3 +120,17 @@ ALTER TABLE ONLY "public"."users"
 ALTER TABLE ONLY "public"."users"
     ADD CONSTRAINT "users_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
+CREATE OR REPLACE FUNCTION has_notes(inspector_id uuid) 
+  RETURNS BOOLEAN 
+  AS $$ 
+  DECLARE 
+    note_count INTEGER;
+  BEGIN 
+    SELECT COUNT(*) INTO note_count 
+    FROM public.notes 
+    WHERE notes.inspector_id = has_notes.inspector_id;
+    
+    RETURN note_count > 0;
+  END;
+$$
+LANGUAGE plpgsql;

@@ -64,7 +64,7 @@ export async function GET(req, { params: { inspectorId } }) {
   }
   try {
     const { data, error } = await supabase.rpc('has_notes', {
-      p_inspector_id: inspectorId,
+      inspector_id: inspectorId,
     })
 
     if (error) {
