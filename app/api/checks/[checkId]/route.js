@@ -8,7 +8,7 @@ export async function GET(req, { params: { checkId } }) {
   try {
     const { data, error } = await supabase
       .from('checks')
-      .select('id, content')
+      .select('id, name, content')
       .eq('id', checkId)
 
     if (error) {
