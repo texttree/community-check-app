@@ -7,15 +7,10 @@ DROP FUNCTION IF EXISTS get_user_project_info;
 DROP FUNCTION IF EXISTS has_notes;
 DROP FUNCTION IF EXISTS create_book;
 DROP FUNCTION IF EXISTS get_book_by_id;
--- DROP FUNCTION IF EXISTS get_books_by_project;
 
-DROP FUNCTION IF EXISTS create_check;
 DROP FUNCTION IF EXISTS get_checks_for_book;
 DROP FUNCTION IF EXISTS get_notes_count_for_book;
 DROP FUNCTION IF EXISTS get_notes_by_check_id;
-
-
-
 
 
 CREATE OR REPLACE FUNCTION soft_delete_check(check_id uuid, user_id uuid)
