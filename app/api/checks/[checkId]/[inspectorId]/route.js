@@ -51,6 +51,7 @@ export async function DELETE(req, { params: { checkId, inspectorId } }) {
       .from('notes')
       .update({ deleted_at: new Date() })
       .eq('id', noteId)
+      .eq('check_id', checkId)
       .eq('inspector_id', inspectorId)
     if (error) {
       return Response.json({ error }, { status: 400 })
