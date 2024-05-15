@@ -6,10 +6,7 @@ export async function GET(req, { params: { checkId } }) {
     return Response.json({ error: 'Missing checkId parameter' }, { status: 400 })
   }
   try {
-    const { data, error } = await supabase
-      .from('checks')
-      .select('id, name, content')
-      .eq('id', checkId)
+    const { data, error } = await supabase.from('checks').select('*').eq('id', checkId)
 
     if (error) {
       throw error
