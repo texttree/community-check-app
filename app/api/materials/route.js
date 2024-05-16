@@ -4,8 +4,10 @@ import { MdToJson } from '@texttree/obs-format-convert-rcl'
 const axios = require('axios')
 
 const fs = require('fs')
-
+const path = require('path')
 const yauzl = require('yauzl')
+const { promisify } = require('util')
+const rimraf = promisify(require('rimraf'))
 
 export async function GET(req) {
   const url = new URL(req.url)
@@ -109,7 +111,6 @@ async function downloadZipFile(materialLink, tempZip) {
       responseType: 'arraybuffer',
     })
     fs.writeFileSync(tempZip, Buffer.from(response.data))
-    console.log('Download completed successfully')
   } catch (error) {
     console.error('Error downloading ZIP file:', error)
     throw error
@@ -145,7 +146,6 @@ async function extractZipFile(tempZip) {
       })
 
       zipfile.on('end', () => {
-        console.log('Extraction completed successfully')
         resolve()
       })
 
@@ -158,12 +158,29 @@ async function extractZipFile(tempZip) {
   })
 }
 
-async function removeTempFile(tempZip) {
+async function convertMdToJson(directory) {
   try {
-    fs.unlinkSync(tempZip)
-    console.log('Temporary file removed successfully')
+    const files = fs.readdirSync(directory)
+    const jsonDataArray = []
+
+    for (const file of files) {
+      const filePath = path.join(directory, file)
+      const stat = fs.statSync(filePath)
+      if (stat.isFile()) {
+        if (file === 'intro.md' || file === 'title.md') {
+          continue
+        }
+
+        const fileContent = fs.readFileSync(filePath, 'utf8')
+        if (fileContent.trim().length > 0) {
+          const jsonData = MdToJson(fileContent)
+          jsonDataArray.push(jsonData)
+        }
+      }
+    }
+    return jsonDataArray
   } catch (error) {
-    console.error('Error removing temporary file:', error)
+    console.error('Error converting MD to JSON:', error)
     throw error
   }
 }
@@ -173,6 +190,18 @@ async function getDataMd(materialLink) {
   try {
     await downloadZipFile(materialLink, tempZip)
     await extractZipFile(tempZip)
+
+    const directory = 'ru_obs/content'
+    const jsonDataArray = await convertMdToJson(directory)
+
+    await removeDirectoryRecursive(`ru_obs`)
+
+    return new Response(JSON.stringify(jsonDataArray), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
@@ -182,5 +211,21 @@ async function getDataMd(materialLink) {
     })
   } finally {
     await removeTempFile(tempZip)
+  }
+}
+
+async function removeTempFile(tempZip) {
+  try {
+    fs.unlinkSync(tempZip)
+  } catch (error) {
+    throw error
+  }
+}
+
+async function removeDirectoryRecursive(directory) {
+  try {
+    await rimraf(directory)
+  } catch (error) {
+    throw error
   }
 }
