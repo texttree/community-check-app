@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import useSWR, { mutate } from 'swr'
 import toast from 'react-hot-toast'
+import axios from 'axios' // Импортируем Axios
 
 import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
@@ -68,14 +69,11 @@ const CheckList = ({ projectId, bookId, lng }) => {
   const confirmDeleteCheck = async () => {
     if (checkToDelete) {
       try {
-        const response = await fetch(
-          `/api/projects/${projectId}/books/${bookId}/checks/${checkToDelete.id}`,
-          {
-            method: 'DELETE',
-          }
+        const response = await axios.delete(
+          `/api/projects/${projectId}/books/${bookId}/checks/${checkToDelete.id}` // Используем Axios для DELETE запроса
         )
 
-        if (!response.ok) {
+        if (!response.data) {
           throw new Error(t('errorDeletingCheck'))
         }
 
