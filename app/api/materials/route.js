@@ -1,15 +1,17 @@
 import { parsingWordText } from '@/helpers/usfmHelper'
 import usfm from 'usfm-js'
 import { MdToJson } from '@texttree/obs-format-convert-rcl'
-
 const axios = require('axios')
+
 const fs = require('fs')
-const unzipper = require('unzipper')
+
+const yauzl = require('yauzl')
 
 export async function GET(req) {
   const url = new URL(req.url)
   const materialLink = url.searchParams.get('materialLink')
   const userId = req.headers.get('x-user-id')
+
   if (!userId) {
     return new Response(
       JSON.stringify({
@@ -39,7 +41,37 @@ export async function GET(req) {
   }
 
   try {
-    getDataMd()
+    // Проверяем тип ссылки: файл USFM или архив
+    if (materialLink.endsWith('.usfm')) {
+      return await getDataUsfm(materialLink)
+    } else if (materialLink.endsWith('.zip')) {
+      return await getDataMd(materialLink)
+    } else {
+      return new Response(
+        JSON.stringify({
+          error: 'Incorrect material link: unsupported format',
+        }),
+        {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+    }
+  } catch (error) {
+    console.error(error)
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  }
+}
+
+async function getDataUsfm(materialLink) {
+  try {
     const res = await axios.get(materialLink)
     const jsonData = parsingWordText(usfm.toJSON(res.data))
 
@@ -69,76 +101,74 @@ export async function GET(req) {
   }
 }
 
-async function getDataMd() {
-  const url = 'https://git.door43.org/ru_gl/ru_obs/archive/master.zip'
-  const tempZip = 'ru_obs-master.zip'
-  const tempDir = 'ru_obs-master'
-
+async function getDataMd(materialLink) {
+  const tempZip = 'temp.zip'
   try {
     const response = await axios({
-      url,
+      url: materialLink,
       method: 'GET',
-      responseType: 'stream',
+      responseType: 'arraybuffer', // Указываем тип ответа как arraybuffer
     })
 
-    const writer = fs.createWriteStream(tempZip)
-    response.data.pipe(writer)
+    fs.writeFileSync(tempZip, Buffer.from(response.data)) // Сохраняем полученные данные во временный ZIP-файл
 
+    // Разархивируем ZIP-файл
     await new Promise((resolve, reject) => {
-      writer.on('finish', resolve)
-      writer.on('error', reject)
-    })
+      yauzl.open(tempZip, { lazyEntries: true }, (err, zipfile) => {
+        if (err) {
+          reject(err)
+          return
+        }
 
-    await new Promise((resolve, reject) => {
-      fs.createReadStream(tempZip)
-        .pipe(unzipper.Extract({ path: tempDir }))
-        .on('close', resolve)
-        .on('error', reject)
-    })
+        zipfile.on('entry', (entry) => {
+          if (/\/$/.test(entry.fileName)) {
+            // Создаем директории, если это директория
+            if (!fs.existsSync(entry.fileName)) {
+              fs.mkdirSync(entry.fileName)
+            }
 
-    const promises = []
-    for (let i = 1; i <= 50; i++) {
-      const fileName = `${tempDir}/ru_obs/content/${i.toString().padStart(2, '0')}.md`
-      promises.push(
-        new Promise((resolve, reject) => {
-          fs.readFile(fileName, 'utf8', (err, data) => {
-            if (err) reject(err)
-            const { verseObjects } = MdToJson(data)
-            console.log(convertDataToChapters(verseObjects), i)
-            resolve()
-          })
+            zipfile.readEntry()
+          } else {
+            // Создаем файлы, если это файл
+            zipfile.openReadStream(entry, (err, readStream) => {
+              if (err) {
+                reject(err)
+                return
+              }
+
+              // Создаем файл и записываем данные
+              readStream.pipe(fs.createWriteStream(entry.fileName))
+
+              readStream.on('end', () => {
+                zipfile.readEntry()
+              })
+            })
+          }
         })
-      )
-    }
-    await Promise.all(promises)
 
-    const files = fs.readdirSync(tempDir)
-    for (const file of files) {
-      fs.unlinkSync(`${tempDir}/${file}`)
-    }
-    fs.rmdirSync(tempDir)
-    fs.unlinkSync(tempZip)
+        zipfile.on('end', () => {
+          resolve()
+        })
+
+        zipfile.on('error', (err) => {
+          reject(err)
+        })
+
+        zipfile.readEntry() // Начинаем чтение архива
+      })
+    })
+
+    console.log('Extraction completed successfully')
   } catch (error) {
-    console.error('Ошибка при получении данных:', error)
+    console.error('Error fetching data:', error)
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  } finally {
+    // Удаляем временные файлы
+    fs.unlinkSync(tempZip)
   }
-}
-
-function convertDataToChapters(data) {
-  const chapters = {}
-
-  data.forEach((item, index) => {
-    const chapterNumber = Math.floor(index / 16) + 1
-    const verseNumber = (index % 16) + 1
-
-    if (!chapters[chapterNumber]) {
-      chapters[chapterNumber] = {}
-    }
-
-    chapters[chapterNumber][verseNumber] = {
-      text: item.text,
-      verse: item.verse,
-    }
-  })
-
-  return chapters
 }
