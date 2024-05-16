@@ -27,6 +27,7 @@ const CheckDetail = ({ lng }) => {
 
   const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
   const link = 'https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/65-3JN.usfm'
+  // const link = 'https://git.door43.org/ru_gl/ru_obs/archive/master.zip'
 
   const {
     data: material,
@@ -46,11 +47,9 @@ const CheckDetail = ({ lng }) => {
 
   useEffect(() => {
     if (material?.chapters) {
-      const chapters = material.chapters
-      const _chapter = parseChapter(chapters[currentChapterIndex])
-      console.log(_chapter, 52)
+      const _chapter = material.chapters[currentChapterIndex]
       setChapter(_chapter)
-      setChapterLength(Object.keys(chapters).length)
+      setChapterLength(Object.keys(material?.chapters).length)
     } else {
       mutate()
     }

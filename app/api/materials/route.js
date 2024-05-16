@@ -1,4 +1,4 @@
-import { parsingWordText } from '@/helpers/usfmHelper'
+import { parseChapter, parsingWordText } from '@/helpers/usfmHelper'
 import usfm from 'usfm-js'
 import { MdToJson } from '@texttree/obs-format-convert-rcl'
 const axios = require('axios')
@@ -77,8 +77,17 @@ async function getDataUsfm(materialLink) {
     const res = await axios.get(materialLink)
     const jsonData = parsingWordText(usfm.toJSON(res.data))
 
-    if (Object.keys(jsonData?.chapters).length > 0) {
-      return new Response(JSON.stringify(jsonData), {
+    if (jsonData && jsonData.chapters) {
+      const chapters = jsonData.chapters
+
+      for (const key in chapters) {
+        chapters[key] = parseChapter(chapters[key])
+      }
+      const updatedJsonData = {
+        ...jsonData,
+        chapters: chapters,
+      }
+      return new Response(JSON.stringify(updatedJsonData), {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
