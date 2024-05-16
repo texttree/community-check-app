@@ -1,4 +1,4 @@
-import { supabaseService } from '../supabase/server'
+import { supabaseService } from '../supabase/service'
 
 export async function getUser() {
   const { data: { user } = {} } = await supabaseService.auth.getUser()

@@ -167,9 +167,8 @@ export async function POST(req, { params: { checkId } }) {
     return Response.json({ error: 'Check name is required' }, { status: 400 })
   }
   // TODO: validate material link, started_at, finished_at
-  const supabase = initializeSupabaseService()
   try {
-    const { data: check, error } = await supabase
+    const { data: check, error } = await supabaseService
       .from('checks')
       .update([
         {
@@ -200,9 +199,8 @@ export async function DELETE(req, { params: { checkId } }) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const supabase = initializeSupabaseService()
   try {
-    const { error } = await supabase.rpc('soft_delete_check', {
+    const { error } = await supabaseService.rpc('soft_delete_check', {
       check_id: checkId,
       user_id: userId,
     })

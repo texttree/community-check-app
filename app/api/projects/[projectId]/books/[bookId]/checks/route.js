@@ -106,9 +106,8 @@ export async function POST(req, { params: { bookId } }) {
   if (!name) {
     return Response.json({ error: 'Check name is required' }, { status: 400 })
   }
-  const supabase = initializeSupabaseService()
   try {
-    const { data: check, error } = await supabase.rpc('create_check', {
+    const { data: check, error } = await supabaseService.rpc('create_check', {
       name,
       book_id: parseInt(bookId),
       user_id: userId,

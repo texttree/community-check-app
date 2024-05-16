@@ -126,7 +126,6 @@ export async function POST(req) {
   if (!name) {
     return Response.json({ error: 'Project name is required' }, { status: 400 })
   }
-  const supabaseService = initializeSupabaseService()
   try {
     const { data, error } = await supabaseService.rpc('create_project', {
       name,
@@ -161,8 +160,6 @@ export async function DELETE(req) {
   if (!projectId) {
     return Response.json({ error: 'Project ID is required' }, { status: 400 })
   }
-
-  const supabaseService = initializeSupabaseService()
 
   try {
     const { error } = await supabaseService

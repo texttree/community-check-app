@@ -1,4 +1,4 @@
-import { supabaseService } from '@/app/supabase/server'
+import { supabaseService } from '@/app/supabase/service'
 
 export async function POST(req) {
   const { email, password } = await req.json()

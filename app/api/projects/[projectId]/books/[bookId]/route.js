@@ -121,9 +121,8 @@ export async function POST(req, { params: { bookId } }) {
   if (!name) {
     return Response.json({ error: 'Book name is required' }, { status: 400 })
   }
-  const supabase = initializeSupabaseService()
   try {
-    const { data: book, error } = await supabase.rpc('update_book_name', {
+    const { data: book, error } = await supabaseService.rpc('update_book_name', {
       book_id: bookId,
       new_name: name,
     })
@@ -144,9 +143,8 @@ export async function DELETE(req, { params: { bookId } }) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const supabase = initializeSupabaseService()
   try {
-    const { error } = await supabase.rpc('delete_book', {
+    const { error } = await supabaseService.rpc('delete_book', {
       user_id: userId,
       book_id: bookId,
     })

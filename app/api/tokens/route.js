@@ -58,7 +58,6 @@ export async function DELETE(req) {
   if (!tokenName) {
     return Response.json({ error: 'Token name is required' }, { status: 400 })
   }
-  const supabaseService = initializeSupabaseService()
   try {
     const { error } = await supabaseService
       .from('tokens')

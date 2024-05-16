@@ -99,9 +99,8 @@ export async function POST(req, { params: { projectId } }) {
   if (!name) {
     return Response.json({ error: 'Project name is required' }, { status: 400 })
   }
-  const supabase = initializeSupabaseService()
   try {
-    const { data: project, error: updateError } = await supabase.rpc(
+    const { data: project, error: updateError } = await supabaseService.rpc(
       'update_project_name',
       {
         project_id: projectId,

@@ -44,7 +44,6 @@ export async function DELETE(req, { params: { checkId, inspectorId } }) {
   if (!noteId || !checkId || !inspectorId) {
     return Response.json({ error: 'Missing required parameters' }, { status: 400 })
   }
-  const supabaseService = initializeSupabaseService()
   try {
     const { error } = await supabaseService
       .from('notes')

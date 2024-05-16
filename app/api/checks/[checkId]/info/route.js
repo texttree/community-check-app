@@ -1,7 +1,6 @@
 import { supabaseService } from '@/app/supabase/service'
 
 export async function GET(req, { params: { checkId } }) {
-  const adminSupabase = createAdminClient()
   const res = await supabaseService.auth.getUser()
   const userId = res?.data?.user?.id ?? null
   if (!checkId) {

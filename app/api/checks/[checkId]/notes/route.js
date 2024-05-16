@@ -119,7 +119,6 @@ export async function POST(req, { params: { checkId } }) {
   if (!note || !chapter || !verse) {
     return Response.json({ error: 'Missing required parameters' }, { status: 400 })
   }
-  const supabaseService = initializeSupabaseService()
   try {
     const { data, error } = await supabaseService.rpc('insert_note', {
       note,
