@@ -3,11 +3,9 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { createClient } from '@/app/supabase/server'
+import { supabaseService } from '@/app/supabase/server'
 
 export async function login(formData) {
-  const supabase = createClient()
-
   // type-casting here for convenience
   // in practice, you should validate your inputs
   const data = {
@@ -15,7 +13,7 @@ export async function login(formData) {
     password: formData.get('password'),
   }
 
-  const { error } = await supabase.auth.signInWithPassword(data)
+  const { error } = await supabaseService.auth.signInWithPassword(data)
 
   if (error) {
     redirect('/error')
@@ -26,8 +24,6 @@ export async function login(formData) {
 }
 
 export async function signup(formData) {
-  const supabase = createClient()
-
   // type-casting here for convenience
   // in practice, you should validate your inputs
   const data = {
@@ -35,7 +31,7 @@ export async function signup(formData) {
     password: formData.get('password'),
   }
 
-  const { error } = await supabase.auth.signUp(data)
+  const { error } = await supabaseService.auth.signUp(data)
 
   if (error) {
     redirect('/error')

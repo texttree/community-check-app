@@ -1,4 +1,4 @@
-import { createClient } from '@/app/supabase/service'
+import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
@@ -81,9 +81,8 @@ export async function GET(req, { params: { bookId } }) {
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const supabase = createClient()
   try {
-    const { data, error } = await supabase.rpc('get_checks_for_book', {
+    const { data, error } = await supabaseService.rpc('get_checks_for_book', {
       book_id: bookId,
       user_id: userId,
     })
@@ -107,7 +106,7 @@ export async function POST(req, { params: { bookId } }) {
   if (!name) {
     return Response.json({ error: 'Check name is required' }, { status: 400 })
   }
-  const supabase = createClient()
+  const supabase = initializeSupabaseService()
   try {
     const { data: check, error } = await supabase.rpc('create_check', {
       name,

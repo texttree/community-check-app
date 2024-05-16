@@ -1,4 +1,4 @@
-import { createClient } from '@/app/supabase/service'
+import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
@@ -133,12 +133,11 @@ export async function GET(req, { params: { checkId } }) {
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const supabase = createClient()
   if (!checkId) {
     return Response.json({ error: 'Missing checkId parameter' }, { status: 400 })
   }
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseService
       .from('inspectors')
       .select('*')
       .eq('check_id', checkId)
@@ -166,7 +165,7 @@ export async function POST(req, { params: { checkId } }) {
   if (!checkId) {
     return Response.json({ error: 'Missing checkId parameter' }, { status: 400 })
   }
-  const supabase = createClient()
+  const supabase = initializeSupabaseService()
   try {
     const { data, error } = await supabase
       .from('inspectors')
@@ -198,7 +197,7 @@ export async function DELETE(req) {
     return Response.json({ error: 'Inspector id is required' }, { status: 400 })
   }
 
-  const supabase = createClient()
+  const supabase = initializeSupabaseService()
   try {
     const { error } = await supabase.rpc('delete_inspector_and_notes', {
       user_id: userId,
