@@ -101,66 +101,79 @@ async function getDataUsfm(materialLink) {
   }
 }
 
-async function getDataMd(materialLink) {
-  const tempZip = 'temp.zip'
+async function downloadZipFile(materialLink, tempZip) {
   try {
     const response = await axios({
       url: materialLink,
       method: 'GET',
-      responseType: 'arraybuffer', // Указываем тип ответа как arraybuffer
+      responseType: 'arraybuffer',
     })
-
-    fs.writeFileSync(tempZip, Buffer.from(response.data)) // Сохраняем полученные данные во временный ZIP-файл
-
-    // Разархивируем ZIP-файл
-    await new Promise((resolve, reject) => {
-      yauzl.open(tempZip, { lazyEntries: true }, (err, zipfile) => {
-        if (err) {
-          reject(err)
-          return
-        }
-
-        zipfile.on('entry', (entry) => {
-          if (/\/$/.test(entry.fileName)) {
-            // Создаем директории, если это директория
-            if (!fs.existsSync(entry.fileName)) {
-              fs.mkdirSync(entry.fileName)
-            }
-
-            zipfile.readEntry()
-          } else {
-            // Создаем файлы, если это файл
-            zipfile.openReadStream(entry, (err, readStream) => {
-              if (err) {
-                reject(err)
-                return
-              }
-
-              // Создаем файл и записываем данные
-              readStream.pipe(fs.createWriteStream(entry.fileName))
-
-              readStream.on('end', () => {
-                zipfile.readEntry()
-              })
-            })
-          }
-        })
-
-        zipfile.on('end', () => {
-          resolve()
-        })
-
-        zipfile.on('error', (err) => {
-          reject(err)
-        })
-
-        zipfile.readEntry() // Начинаем чтение архива
-      })
-    })
-
-    console.log('Extraction completed successfully')
+    fs.writeFileSync(tempZip, Buffer.from(response.data))
+    console.log('Download completed successfully')
   } catch (error) {
-    console.error('Error fetching data:', error)
+    console.error('Error downloading ZIP file:', error)
+    throw error
+  }
+}
+
+async function extractZipFile(tempZip) {
+  return new Promise((resolve, reject) => {
+    yauzl.open(tempZip, { lazyEntries: true }, (err, zipfile) => {
+      if (err) {
+        reject(err)
+        return
+      }
+
+      zipfile.on('entry', (entry) => {
+        if (/\/$/.test(entry.fileName)) {
+          if (!fs.existsSync(entry.fileName)) {
+            fs.mkdirSync(entry.fileName)
+          }
+          zipfile.readEntry()
+        } else {
+          zipfile.openReadStream(entry, (err, readStream) => {
+            if (err) {
+              reject(err)
+              return
+            }
+            readStream.pipe(fs.createWriteStream(entry.fileName))
+            readStream.on('end', () => {
+              zipfile.readEntry()
+            })
+          })
+        }
+      })
+
+      zipfile.on('end', () => {
+        console.log('Extraction completed successfully')
+        resolve()
+      })
+
+      zipfile.on('error', (err) => {
+        reject(err)
+      })
+
+      zipfile.readEntry()
+    })
+  })
+}
+
+async function removeTempFile(tempZip) {
+  try {
+    fs.unlinkSync(tempZip)
+    console.log('Temporary file removed successfully')
+  } catch (error) {
+    console.error('Error removing temporary file:', error)
+    throw error
+  }
+}
+
+async function getDataMd(materialLink) {
+  const tempZip = 'temp.zip'
+  try {
+    await downloadZipFile(materialLink, tempZip)
+    await extractZipFile(tempZip)
+  } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: {
@@ -168,7 +181,6 @@ async function getDataMd(materialLink) {
       },
     })
   } finally {
-    // Удаляем временные файлы
-    fs.unlinkSync(tempZip)
+    await removeTempFile(tempZip)
   }
 }
