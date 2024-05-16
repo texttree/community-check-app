@@ -87,7 +87,8 @@ async function getDataUsfm(materialLink) {
         ...jsonData,
         chapters: chapters,
       }
-      return new Response(JSON.stringify(updatedJsonData), {
+      const verseObjects = convertToVerseObjects(updatedJsonData)
+      return new Response(JSON.stringify(verseObjects), {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
@@ -237,4 +238,29 @@ async function removeDirectoryRecursive(directory) {
   } catch (error) {
     throw error
   }
+}
+
+function convertToVerseObjects(data) {
+  const chapters = data.chapters
+  const verses = []
+
+  for (const chapter in chapters) {
+    const verseObjects = chapters[chapter]
+    const chapterTitle = `${chapter}`
+    const chapterVerses = []
+
+    for (const verse of verseObjects) {
+      chapterVerses.push({
+        text: verse.text,
+        verse: verse.verse,
+      })
+    }
+
+    verses.push({
+      chapter: chapterTitle,
+      verseObjects: chapterVerses,
+    })
+  }
+
+  return verses
 }

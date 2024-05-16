@@ -26,7 +26,7 @@ const CheckDetail = ({ lng }) => {
   const [chapterLength, setChapterLength] = useState(0)
 
   const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
-  const link = 'https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/65-3JN.usfm'
+  const link = 'https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/57-TIT.usfm'
   // const link = 'https://git.door43.org/ru_gl/ru_obs/archive/master.zip'
 
   const {
@@ -34,8 +34,6 @@ const CheckDetail = ({ lng }) => {
     isLoading,
     mutate,
   } = useSWR(`/api/materials/?materialLink=${link}`, fetcher)
-
-  console.log(material, 37)
 
   useEffect(() => {
     if (info?.check_finished_at) {
@@ -46,10 +44,10 @@ const CheckDetail = ({ lng }) => {
   }, [info])
 
   useEffect(() => {
-    if (material?.chapters) {
-      const _chapter = material.chapters[currentChapterIndex]
+    if (material) {
+      const _chapter = material[currentChapterIndex - 1].verseObjects
       setChapter(_chapter)
-      setChapterLength(Object.keys(material?.chapters).length)
+      setChapterLength(Object.keys(material).length)
     } else {
       mutate()
     }
