@@ -1,4 +1,4 @@
-import { supabaseService } from '@/app/supabase/service'
+import { createClient } from '@/app/supabase/service'
 
 /**
  * @swagger
@@ -95,11 +95,12 @@ export async function GET(req, { params: { checkId } }) {
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
+  const supabase = createClient()
   if (!checkId) {
     return Response.json({ error: 'Missing checkId parameter' }, { status: 400 })
   }
   try {
-    const { data, error } = await supabaseService.rpc('get_notes_by_check_id', {
+    const { data, error } = await supabase.rpc('get_notes_by_check_id', {
       check_id: checkId,
       user_id: userId,
     })
@@ -119,6 +120,7 @@ export async function POST(req, { params: { checkId } }) {
   if (!note || !chapter || !verse) {
     return Response.json({ error: 'Missing required parameters' }, { status: 400 })
   }
+  const supabaseService = createClient()
   try {
     const { data, error } = await supabaseService.rpc('insert_note', {
       note,

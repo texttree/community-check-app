@@ -1,4 +1,4 @@
-import { supabaseService } from '@/app/supabase/service'
+import { supabaseService } from '@/helpers/supabaseService'
 
 export async function GET(req, { params: { checkId } }) {
   if (!checkId) {

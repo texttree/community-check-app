@@ -1,6 +1,7 @@
-import { supabaseService } from '@/app/supabase/service'
+import { createClient } from '@/app/supabase/service'
 
 export async function GET(req, { params: { checkId, inspectorId } }) {
+  const supabaseService = createClient()
   if (!checkId || !inspectorId) {
     return Response.json({ error: 'Missing required parameters' }, { status: 400 })
   }
@@ -44,6 +45,7 @@ export async function DELETE(req, { params: { checkId, inspectorId } }) {
   if (!noteId || !checkId || !inspectorId) {
     return Response.json({ error: 'Missing required parameters' }, { status: 400 })
   }
+  const supabaseService = createClient()
   try {
     const { error } = await supabaseService
       .from('notes')

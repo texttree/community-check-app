@@ -1,4 +1,4 @@
-import { supabaseService } from '@/app/supabase/service'
+import { createClient } from '@/app/supabase/service'
 
 /**
  * @swagger
@@ -75,8 +75,9 @@ export async function GET(req, { params: { projectId } }) {
       { status: 401 }
     )
   }
+  const supabase = createClient()
   try {
-    const { data, error } = await supabaseService.rpc('get_project_by_id', {
+    const { data, error } = await supabase.rpc('get_project_by_id', {
       project_id: projectId,
     })
 
@@ -99,6 +100,7 @@ export async function POST(req, { params: { projectId } }) {
   if (!name) {
     return Response.json({ error: 'Project name is required' }, { status: 400 })
   }
+  const supabase = createClient()
   try {
     const { data: project, error: updateError } = await supabaseService.rpc(
       'update_project_name',

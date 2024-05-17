@@ -1,6 +1,8 @@
-import { supabaseService } from '@/app/supabase/service'
+import { createClient } from '@/app/supabase/server'
 
 export async function POST(req) {
+  const supabase = createClient()
+
   const { email, password } = await req.json()
   if (!email || !password) {
     return Response.json({ error: 'Email and password are required' }, { status: 400 })
@@ -8,7 +10,7 @@ export async function POST(req) {
 
   try {
     console.log({ email, password })
-    const { data, error } = await supabaseService.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     })

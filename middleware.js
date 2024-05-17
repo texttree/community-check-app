@@ -4,7 +4,7 @@ import acceptLanguage from 'accept-language'
 
 import { supabaseMiddleware } from '@/app/supabase/middleware'
 import { fallbackLng, languages, cookieName } from '@/app/i18n/settings'
-import { supabaseService } from './app/supabase/service'
+import { createClient } from './app/supabase/service'
 import { Cookies } from 'react-cookie'
 
 acceptLanguage.languages(languages)
@@ -124,6 +124,7 @@ export async function middleware(req) {
       )
     }
     try {
+      const supabaseService = createClient()
       const tokenResult = await supabaseService
         .from('tokens')
         .select('user_id')

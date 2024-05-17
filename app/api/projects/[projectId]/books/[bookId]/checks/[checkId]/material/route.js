@@ -1,4 +1,4 @@
-import { supabaseService } from '@/app/supabase/service'
+import { createClient } from '@/app/supabase/service'
 
 /**
  * @swagger
@@ -109,8 +109,9 @@ export async function GET(req, { params: { checkId } }) {
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
+  const supabase = createClient()
   try {
-    const { data, error } = await supabaseService
+    const { data, error } = await supabase
       .from('checks')
       .select('content')
       .eq('id', checkId)
@@ -132,8 +133,9 @@ export async function POST(req, { params: { checkId } }) {
   }
   const { content } = await req.json()
   // TODO validate content
+  const supabase = createClient()
   try {
-    const { data: material, error } = await supabaseService
+    const { data: material, error } = await supabase
       .from('checks')
       .update([content])
       .eq('id', checkId)

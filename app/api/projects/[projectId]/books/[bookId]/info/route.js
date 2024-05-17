@@ -1,4 +1,5 @@
-import { supabaseService } from '@/app/supabase/service'
+import { supabaseService } from '@/helpers/supabaseService'
+
 /**
  * @swagger
  * /api/projects/{projectId}/books/{bookId}/info:
