@@ -170,7 +170,7 @@ export async function POST(req, { params: { checkId } }) {
   // TODO: validate material link, started_at, finished_at
   const supabase = createClient()
   try {
-    const { data: check, error } = await supabaseService
+    const { data: check, error } = await supabase
       .from('checks')
       .update([
         {
@@ -203,7 +203,7 @@ export async function DELETE(req, { params: { checkId } }) {
 
   const supabase = createClient()
   try {
-    const { error } = await supabaseService.rpc('soft_delete_check', {
+    const { error } = await supabase.rpc('soft_delete_check', {
       check_id: checkId,
       user_id: userId,
     })

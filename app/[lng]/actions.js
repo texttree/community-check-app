@@ -1,3 +1,4 @@
+import { supabaseService } from '../supabase/server'
 import { createClient } from '../supabase/server'
 
 export async function getUser() {

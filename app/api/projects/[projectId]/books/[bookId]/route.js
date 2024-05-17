@@ -124,7 +124,7 @@ export async function POST(req, { params: { bookId } }) {
   }
   const supabase = createClient()
   try {
-    const { data: book, error } = await supabaseService.rpc('update_book_name', {
+    const { data: book, error } = await supabase.rpc('update_book_name', {
       book_id: bookId,
       new_name: name,
     })
@@ -147,7 +147,7 @@ export async function DELETE(req, { params: { bookId } }) {
 
   const supabase = createClient()
   try {
-    const { error } = await supabaseService.rpc('delete_book', {
+    const { error } = await supabase.rpc('delete_book', {
       user_id: userId,
       book_id: bookId,
     })

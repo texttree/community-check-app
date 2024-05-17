@@ -102,7 +102,7 @@ export async function POST(req, { params: { projectId } }) {
   }
   const supabase = createClient()
   try {
-    const { data: project, error: updateError } = await supabaseService.rpc(
+    const { data: project, error: updateError } = await supabase.rpc(
       'update_project_name',
       {
         project_id: projectId,

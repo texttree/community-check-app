@@ -168,7 +168,7 @@ export async function POST(req, { params: { checkId } }) {
   }
   const supabase = createClient()
   try {
-    const { data, error } = await supabaseService
+    const { data, error } = await supabase
       .from('inspectors')
       .insert([
         {
@@ -200,7 +200,7 @@ export async function DELETE(req) {
 
   const supabase = createClient()
   try {
-    const { error } = await supabaseService.rpc('delete_inspector_and_notes', {
+    const { error } = await supabase.rpc('delete_inspector_and_notes', {
       user_id: userId,
       inspector_id: id,
       delete_all_notes: !!delete_all_notes,
