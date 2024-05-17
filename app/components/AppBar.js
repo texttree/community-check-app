@@ -10,12 +10,12 @@ import { createClient } from '@/app/supabase/client'
 
 const AppBar = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
-  const supabase = createClient()
+  const supabaseClient = createClient()
   const [user, setUser] = useState(null)
   useEffect(() => {
     const getUser = async () => {
       try {
-        const { data, error } = await supabase.auth.getUser()
+        const { data, error } = await supabaseClient.auth.getUser()
         setUser(data?.user ?? null)
         if (error) {
           throw error
@@ -25,7 +25,7 @@ const AppBar = ({ lng }) => {
       }
     }
     getUser()
-  }, [supabase.auth])
+  }, [supabaseClient.auth])
 
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)

@@ -8,7 +8,7 @@ import { createClient } from '@/app/supabase/client'
 import axios from 'axios'
 
 export default function FormComponent({ lng, redirectedFrom }) {
-  const supabase = createClient()
+  const supabaseClient = createClient()
   const router = useRouter()
   const { t } = useTranslation(lng, 'common')
   const [email, setEmail] = useState('')
@@ -16,7 +16,7 @@ export default function FormComponent({ lng, redirectedFrom }) {
   const [password, setPassword] = useState('')
   const handleLogin = async () => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabaseClient.auth.signInWithPassword({
         email,
         password,
       })

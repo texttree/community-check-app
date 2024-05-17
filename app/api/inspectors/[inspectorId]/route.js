@@ -58,12 +58,12 @@ export async function GET(req, { params: { inspectorId } }) {
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const supabase = createClient()
+  const supabaseService = createClient()
   if (!inspectorId) {
     return Response.json({ error: 'Missing inspectorId parameter' }, { status: 400 })
   }
   try {
-    const { data, error } = await supabase.rpc('has_notes', {
+    const { data, error } = await supabaseService.rpc('has_notes', {
       inspector_id: inspectorId,
     })
 

@@ -93,9 +93,9 @@ export async function GET(req, { params: { projectId } }) {
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const supabase = createClient()
+  const supabaseService = createClient()
   try {
-    const { data, error } = await supabase.rpc('get_books_by_project', {
+    const { data, error } = await supabaseService.rpc('get_books_by_project', {
       project_id: projectId,
       user_id: userId,
     })
@@ -119,9 +119,9 @@ export async function POST(req, { params: { projectId } }) {
   if (!name) {
     return Response.json({ error: 'Book name is required' }, { status: 400 })
   }
-  const supabase = createClient()
+  const supabaseService = createClient()
   try {
-    const { data: project, error } = await supabase.rpc('create_book', {
+    const { data: project, error } = await supabaseService.rpc('create_book', {
       project_id: projectId,
       name,
       user_id: userId,

@@ -109,9 +109,9 @@ export async function GET(req, { params: { checkId } }) {
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const supabase = createClient()
+  const supabaseService = createClient()
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseService
       .from('checks')
       .select('content')
       .eq('id', checkId)
@@ -133,9 +133,9 @@ export async function POST(req, { params: { checkId } }) {
   }
   const { content } = await req.json()
   // TODO validate content
-  const supabase = createClient()
+  const supabaseService = createClient()
   try {
-    const { data: material, error } = await supabase
+    const { data: material, error } = await supabaseService
       .from('checks')
       .update([content])
       .eq('id', checkId)

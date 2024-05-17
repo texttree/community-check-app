@@ -1,4 +1,4 @@
-import { supabaseService } from '@/helpers/supabaseService'
+import { createClient } from '@/app/supabase/service'
 
 /**
  * @swagger
@@ -69,6 +69,7 @@ export async function GET(req, { params: { bookId } }) {
   if (!bookId) {
     return Response.json({ error: 'Missing bookId parameter' }, { status: 400 })
   }
+  const supabaseService = createClient()
   try {
     const { data, error } = await supabaseService.rpc('get_notes_count_for_book', {
       book_id: bookId,
