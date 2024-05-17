@@ -166,7 +166,7 @@ export async function POST(req, { params: { checkId } }) {
     return Response.json({ error: 'Missing checkId parameter' }, { status: 400 })
   }
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseService
       .from('inspectors')
       .insert([
         {

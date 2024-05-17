@@ -74,7 +74,6 @@ export async function GET(req, { params: { bookId } }) {
       book_id: bookId,
       user_id: userId,
     })
-    console.log(bookId, userId, 78)
 
     if (error) {
       throw error

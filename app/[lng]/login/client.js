@@ -42,7 +42,7 @@ export default function FormComponent({ lng, redirectedFrom }) {
       setError(false)
       router.push('/' + lng + '/projects')
     } catch (error) {
-      console.log({ error })
+      console.error({ error })
       setError(error?.response?.data?.error?.message ?? 'Error')
     }
   }

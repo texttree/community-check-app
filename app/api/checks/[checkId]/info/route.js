@@ -1,9 +1,7 @@
 import { supabaseService } from '@/app/supabase/service'
-import { supabaseService as createAdminClient } from '@/app/supabase/server'
 
 export async function GET(req, { params: { checkId } }) {
-  const adminSupabase = createAdminClient()
-  const res = await adminSupabase.auth.getUser()
+  const res = await supabaseService.auth.getUser()
   const userId = res?.data?.user?.id ?? null
   if (!checkId) {
     return Response.json({ error: 'Missing checkId parameter' }, { status: 400 })
