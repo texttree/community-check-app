@@ -1,4 +1,4 @@
-import { createClient } from '@/app/supabase/service'
+import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
@@ -58,7 +58,6 @@ export async function GET(req, { params: { inspectorId } }) {
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const supabaseService = createClient()
   if (!inspectorId) {
     return Response.json({ error: 'Missing inspectorId parameter' }, { status: 400 })
   }

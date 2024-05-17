@@ -33,7 +33,7 @@ const AppBar = ({ lng }) => {
 
   const handleLogout = async () => {
     try {
-      const { error } = await supabase.auth.signOut()
+      const { error } = await supabaseClient.auth.signOut()
       if (error) throw error
       router.push('/' + lng + '/login')
     } catch (error) {

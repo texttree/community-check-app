@@ -1,4 +1,4 @@
-import { createClient } from '@/app/supabase/service'
+import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
@@ -141,7 +141,6 @@ export async function GET(req, { params: { checkId } }) {
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const supabaseService = createClient()
   try {
     const { data, error } = await supabaseService.rpc('get_check_by_id', {
       check_id: checkId,
@@ -168,7 +167,6 @@ export async function POST(req, { params: { checkId } }) {
     return Response.json({ error: 'Check name is required' }, { status: 400 })
   }
   // TODO: validate material link, started_at, finished_at
-  const supabaseService = createClient()
   try {
     const { data: check, error } = await supabaseService
       .from('checks')
@@ -201,7 +199,6 @@ export async function DELETE(req, { params: { checkId } }) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const supabaseService = createClient()
   try {
     const { error } = await supabaseService.rpc('soft_delete_check', {
       check_id: checkId,

@@ -1,11 +1,10 @@
-import { createClient } from '@/app/supabase/service'
+import { supabaseService } from '@/app/supabase/service'
 
 export async function GET(req) {
   const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const supabaseService = createClient()
   try {
     const { data: tokens, error } = await supabaseService
       .from('tokens')
@@ -26,7 +25,6 @@ export async function POST(req) {
   if (!tokenName) {
     return Response.json({ error: 'Token name is required' }, { status: 400 })
   }
-  const supabaseService = createClient()
   try {
     const { data: tokens, error: tokenError } = await supabaseService
       .from('tokens')
@@ -60,7 +58,6 @@ export async function DELETE(req) {
   if (!tokenName) {
     return Response.json({ error: 'Token name is required' }, { status: 400 })
   }
-  const supabaseService = createClient()
   try {
     const { error } = await supabaseService
       .from('tokens')

@@ -1,7 +1,6 @@
-import { createClient } from '@/app/supabase/service'
+import { supabaseService } from '@/app/supabase/service'
 
 export async function GET(req, { params: { checkId, inspectorId } }) {
-  const supabaseService = createClient()
   if (!inspectorId || !checkId) {
     return Response.json({ error: 'Missing required parameters' }, { status: 400 })
   }

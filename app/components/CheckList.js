@@ -42,7 +42,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
       setNotesCounts(counts)
     }
   }, [info])
-
+  console.log(info, 45)
   const handleDownloadNotes = (check) => {
     downloadNotes(check, t, projectId, bookId)
       .then((notes) => {
