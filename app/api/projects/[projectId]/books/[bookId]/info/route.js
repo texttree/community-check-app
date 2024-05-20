@@ -61,26 +61,34 @@ import { supabaseService } from '@/app/supabase/service'
  *                   description: Internal Server Error
  */
 
-export async function GET(req, { params: { bookId } }) {
+export function GET(req, { params: { bookId } }) {
   const userId = req.headers.get('x-user-id')
+
   if (!userId) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
   }
+
   if (!bookId) {
-    return Response.json({ error: 'Missing bookId parameter' }, { status: 400 })
+    return new Response(JSON.stringify({ error: 'Missing bookId parameter' }), {
+      status: 400,
+    })
   }
-  try {
-    const { data, error } = await supabaseService.rpc('get_notes_count_for_book', {
+
+  return supabaseService
+    .rpc('get_notes_count_for_book', {
       book_id: bookId,
       user_id: userId,
     })
-
-    if (error) {
-      throw error
-    }
-
-    return Response.json(data, { status: 200 })
-  } catch (error) {
-    return Response.json({ error: error.message || error }, { status: 500 })
-  }
+    .then((response) => {
+      const { data, error } = response
+      if (error) {
+        throw error
+      }
+      return new Response(JSON.stringify(data), { status: 200 })
+    })
+    .catch((error) => {
+      return new Response(JSON.stringify({ error: error.message || error }), {
+        status: 500,
+      })
+    })
 }
