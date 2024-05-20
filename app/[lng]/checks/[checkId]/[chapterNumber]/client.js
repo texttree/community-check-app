@@ -1,5 +1,4 @@
 'use client'
-
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import useSWR from 'swr'
@@ -22,7 +21,6 @@ const CheckDetail = ({ lng }) => {
   })
 
   const [isCheckExpired, setIsCheckExpired] = useState(false)
-
   const [chapterLength, setChapterLength] = useState(0)
 
   const { data: info } = useSWR(checkId && `/api/checks/${checkId}/info`, fetcher)
@@ -47,8 +45,10 @@ const CheckDetail = ({ lng }) => {
       const _chapter = parseChapter(chapters[currentChapterIndex])
       setChapter(_chapter)
       setChapterLength(Object.keys(chapters).length)
+    } else {
+      mutate()
     }
-  }, [material, currentChapterIndex])
+  }, [material, currentChapterIndex, mutate])
 
   useEffect(() => {
     setCurrentChapterIndex((prevIndex) => parseInt(chapterNumber) || prevIndex)
@@ -58,7 +58,7 @@ const CheckDetail = ({ lng }) => {
     if (checkId) {
       mutate()
     }
-  }, [checkId, mutate])
+  }, [checkId])
 
   const navigateToChapter = (index) => {
     router.push(`/${lng}/checks/${checkId}/${index}`)
