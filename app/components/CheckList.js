@@ -28,7 +28,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
     fetcher
   )
 
-  const { data: info } = useSWR(
+  const { data: info, mutate } = useSWR(
     bookId && `/api/projects/${projectId}/books/${bookId}/info`,
     fetcher
   )
@@ -40,8 +40,10 @@ const CheckList = ({ projectId, bookId, lng }) => {
         counts[item.check_id] = item.notes_count
       })
       setNotesCounts(counts)
+    } else {
+      mutate
     }
-  }, [info])
+  }, [info, mutate])
   const handleDownloadNotes = (check) => {
     downloadNotes(check, t, projectId, bookId)
       .then((notes) => {
