@@ -1,4 +1,5 @@
 'use client'
+
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import useSWR from 'swr'
@@ -58,7 +59,7 @@ const CheckDetail = ({ lng }) => {
     if (checkId) {
       mutate()
     }
-  }, [checkId])
+  }, [checkId, mutate])
 
   const navigateToChapter = (index) => {
     router.push(`/${lng}/checks/${checkId}/${index}`)
