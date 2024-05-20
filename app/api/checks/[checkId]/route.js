@@ -4,15 +4,12 @@ export async function GET(req, { params: { checkId } }) {
   if (!checkId) {
     return Response.json({ error: 'Missing checkId parameter' }, { status: 400 })
   }
-  try {
-    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
+  try {
     const { data, error } = await supabaseService
       .from('checks')
       .select('id, content')
       .eq('id', checkId)
-
-    await delay(100)
 
     if (error) {
       throw error

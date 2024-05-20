@@ -70,14 +70,10 @@ export async function GET(req, { params: { bookId } }) {
     return Response.json({ error: 'Missing bookId parameter' }, { status: 400 })
   }
   try {
-    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-
     const { data, error } = await supabaseService.rpc('get_notes_count_for_book', {
       book_id: bookId,
       user_id: userId,
     })
-
-    await delay(100)
 
     if (error) {
       throw error
