@@ -29,10 +29,26 @@ import { supabaseService } from '@/app/supabase/service'
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Check'
- *       '400':
+ *       '401':
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized
  *       '500':
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
  *   post:
  *     summary: Creates a new check for a book
  *     tags:
@@ -48,8 +64,19 @@ import { supabaseService } from '@/app/supabase/service'
  *                 type: string
  *                 description: The name of the check
  *                 example: Community Check
+ *               url:
+ *                 type: string
+ *                 description: The URL of the material
+ *                 example: https://example.com/material
+ *               startDate:
+ *                 type: string
+ *                 format: date
+ *                 description: The start date of the check
+ *                 example: 2023-01-01
  *             required:
  *               - name
+ *               - url
+ *               - startDate
  *     parameters:
  *       - in: path
  *         name: projectId
@@ -71,9 +98,35 @@ import { supabaseService } from '@/app/supabase/service'
  *             schema:
  *               $ref: '#/components/schemas/Check'
  *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Check name is required
+ *       '401':
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized
  *       '500':
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
  */
 
 export async function GET(req, { params: { bookId } }) {
@@ -102,13 +155,15 @@ export async function POST(req, { params: { bookId } }) {
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const { name } = await req.json()
+  const { name, url, startDate } = await req.json()
   if (!name) {
     return Response.json({ error: 'Check name is required' }, { status: 400 })
   }
   try {
     const { data: check, error } = await supabaseService.rpc('create_check', {
       name,
+      material_link: url,
+      started_at: startDate,
       book_id: parseInt(bookId),
       user_id: userId,
     })

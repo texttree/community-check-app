@@ -852,11 +852,37 @@
               }
             }
           },
-          "400": {
-            "description": "Unauthorized"
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -876,10 +902,23 @@
                     "type": "string",
                     "description": "The name of the check",
                     "example": "Community Check"
+                  },
+                  "url": {
+                    "type": "string",
+                    "description": "The URL of the material",
+                    "example": "https://example.com/material"
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "The start date of the check",
+                    "example": "2023-01-01"
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "url",
+                  "startDate"
                 ]
               }
             }
@@ -917,10 +956,52 @@
             }
           },
           "400": {
-            "description": "Unauthorized"
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Check name is required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal server error"
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }

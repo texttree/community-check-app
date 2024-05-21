@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
 
@@ -12,6 +13,7 @@ import { fetcher } from '@/helpers/fetcher'
 import LeftArrow from '@/public/left.svg'
 import Loader from '@/app/components/Loader'
 import { useTranslation } from '@/app/i18n/client'
+import CheckModal from '@/app/components/CheckModal'
 
 const BookDetailsPage = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -23,30 +25,29 @@ const BookDetailsPage = ({ lng }) => {
     fetcher
   )
 
-  const handleCreateCheck = () => {
-    const currentDate = new Date()
-    const formattedDate = currentDate.toISOString()
+  const [isModalOpen, setModalOpen] = useState(false)
 
-    const name = `${t('newCheck')} - ${formattedDate}`
-
-    axios
-      .post(`/api/projects/${projectId}/books/${bookId}/checks`, { name })
-      .then((res) => {
-        if (res.status === 201) {
-          const checkId = res.data
-          router.push(`/${lng}/projects/${projectId}/${bookId}/${checkId}`)
-        }
+  const handleCreateCheck = async ({ name, url, startDate }) => {
+    try {
+      const res = await axios.post(`/api/projects/${projectId}/books/${bookId}/checks`, {
+        name,
+        url,
+        startDate,
       })
-      .catch((error) => {
-        console.error(error)
-      })
+      if (res.status === 201) {
+        const checkId = res.data
+        router.push(`/${lng}/projects/${projectId}/${bookId}/${checkId}`)
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
     <div className="bg-gray-200 py-8">
       <div className="max-w-6xl mx-auto p-4">
         <Link
-          href={`/${lng}//projects/${projectId}`}
+          href={`/${lng}/projects/${projectId}`}
           className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 mb-4 rounded-md inline-flex items-center"
         >
           <LeftArrow className="h-5 w-5 mr-1" />
@@ -70,11 +71,17 @@ const BookDetailsPage = ({ lng }) => {
         )}
         <button
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 rounded-md inline-block"
-          onClick={handleCreateCheck}
+          onClick={() => setModalOpen(true)}
         >
           {t('startNewCheck')}
         </button>
       </div>
+      <CheckModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleCreateCheck}
+        lng={lng}
+      />
     </div>
   )
 }
