@@ -26,7 +26,8 @@ const CheckDetail = ({ lng }) => {
   const [chapterLength, setChapterLength] = useState(0)
 
   const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
-  const link = 'https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/57-TIT.usfm'
+  const link =
+    'https://git.door43.org/unfoldingWord/en_ust/raw/commit/8d2e1b09a900bb6712d7dd3efeefa0ce13f6568d/51-PHP.usfm'
   // const link = 'https://git.door43.org/ru_gl/ru_obs/archive/master.zip'
 
   const {

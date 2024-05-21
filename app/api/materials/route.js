@@ -244,22 +244,38 @@ function convertToVerseObjects(data) {
   const chapters = data.chapters
   const verses = []
 
-  for (const chapter in chapters) {
-    const verseObjects = chapters[chapter]
-    const chapterTitle = `${chapter}`
-    const chapterVerses = []
+  function compareVerses(a, b) {
+    const verseA = extractVerseNumber(a)
+    const verseB = extractVerseNumber(b)
+    return verseA - verseB
+  }
 
-    for (const verse of verseObjects) {
-      chapterVerses.push({
-        text: verse.text,
-        verse: verse.verse,
+  function extractVerseNumber(verse) {
+    if (verse === 'front') return 1 // чтобы 'front' всегда был в конце
+    const parts = verse.split('-')
+    return parseInt(parts[0], 10)
+  }
+
+  for (const chapter in chapters) {
+    if (chapters.hasOwnProperty(chapter)) {
+      const verseObjects = chapters[chapter]
+      const chapterTitle = `${chapter}`
+      const chapterVerses = []
+
+      for (const verse of verseObjects) {
+        chapterVerses.push({
+          text: verse.text,
+          verse: verse.verse,
+        })
+      }
+
+      chapterVerses.sort((a, b) => compareVerses(a.verse, b.verse))
+
+      verses.push({
+        chapter: chapterTitle,
+        verseObjects: chapterVerses,
       })
     }
-
-    verses.push({
-      chapter: chapterTitle,
-      verseObjects: chapterVerses,
-    })
   }
 
   return verses
