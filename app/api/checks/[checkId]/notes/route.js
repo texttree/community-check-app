@@ -62,7 +62,7 @@ import { supabaseService } from '@/app/supabase/service'
  *               verse:
  *                 type: integer
  *               inspectorId:
- *                 type: integer
+ *                 type: string
  *                 default: null
  *     responses:
  *       201:
@@ -81,9 +81,9 @@ import { supabaseService } from '@/app/supabase/service'
  *                 verse:
  *                   type: integer
  *                 inspectorId:
- *                   type: integer
+ *                   type: string
  *                 checkId:
- *                   type: integer
+ *                   type: string
  *       400:
  *         description: Bad request
  *       500:
@@ -105,7 +105,7 @@ import { supabaseService } from '@/app/supabase/service'
  *               note:
  *                 type: string
  *               inspectorId:
- *                 type: integer
+ *                 type: string
  *     responses:
  *       200:
  *         description: Note updated successfully
