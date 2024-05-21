@@ -128,7 +128,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION public.create_check(name text, book_id bigint, user_id uuid)
+CREATE OR REPLACE FUNCTION public.create_check(name text, material_link text, started_at timestamptz,
+book_id bigint, user_id uuid)
  RETURNS uuid
  LANGUAGE plpgsql
 AS $function$
@@ -143,8 +144,8 @@ BEGIN
       INTO user_exists;
 
     if user_exists then
-      INSERT INTO public.checks (name, book_id)
-      VALUES (create_check.name, create_check.book_id)
+      INSERT INTO public.checks (name, material_link, started_at, book_id)
+      VALUES (create_check.name, create_check.material_link, create_check.started_at, create_check.book_id)
       RETURNING id INTO check_id;
       RETURN check_id;
     ELSE
