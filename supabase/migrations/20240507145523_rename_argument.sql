@@ -383,3 +383,77 @@ BEGIN
     END IF;
 END;
 $$;
+
+
+CREATE OR REPLACE FUNCTION public.create_project_book_check(
+    user_id uuid, 
+    project_name text, 
+    book_name text, 
+    check_name text
+) 
+RETURNS jsonb
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    project_id_table bigint;
+    book_id bigint;
+    check_id uuid;
+    project_exists boolean;
+    book_exists boolean;
+    result jsonb;
+BEGIN
+    
+    -- Проверяем существует ли проект
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.projects p
+        WHERE p.name = project_name AND p.user_id = create_project_book_check.user_id
+    ) INTO project_exists;
+
+    IF project_exists THEN
+        -- Если проект существует, получаем его id
+        SELECT p.id INTO project_id_table
+        FROM public.projects p
+        WHERE p.name = project_name AND p.user_id = create_project_book_check.user_id;
+    ELSE
+        -- Если проект не существует, создаем его
+        project_id_table := create_project(project_name, user_id);
+    END IF;
+
+    -- Проверяем существует ли книга
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.books b
+        WHERE b.name = book_name AND b.project_id = project_id_table
+    ) INTO book_exists;
+
+    IF book_exists THEN
+        -- Если книга существует, получаем ее id
+        SELECT b.id INTO book_id
+        FROM public.books b
+        WHERE b.name = book_name AND b.project_id = project_id_table;
+    ELSE
+        -- Если книга не существует, создаем ее
+        result := create_book(project_id_table, book_name, user_id);
+        book_id := (result->>'book_id')::bigint;
+    END IF;
+
+    -- Создаем проверку
+    check_id := create_fast_check(check_name, book_id, user_id);
+
+    -- Возвращаем результат
+    result := jsonb_build_object(
+        'project_id', project_id_table,
+        'book_id', book_id,
+        'check_id', check_id
+    );
+
+    RETURN result;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Error creating project, book, or check: %', SQLERRM;
+END;
+$$;
+
+
