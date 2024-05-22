@@ -156,6 +156,40 @@ $function$
 ;
 
 
+CREATE OR REPLACE FUNCTION public.create_fast_check(name text, book_id bigint, user_id uuid)
+RETURNS uuid
+LANGUAGE plpgsql
+AS $function$
+DECLARE
+    check_id uuid;
+    user_exists boolean;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.books AS b
+        JOIN public.projects AS p ON b.project_id = p.id
+        JOIN public.users AS u ON p.user_id = u.id
+        WHERE b.id = book_id AND u.id = create_fast_check.user_id AND u.is_blocked = false
+    ) INTO user_exists;
+
+    IF user_exists THEN
+        INSERT INTO public.checks (name, book_id)
+        VALUES (create_fast_check.name, create_fast_check.book_id)
+        RETURNING id INTO check_id;
+
+        RETURN check_id;
+    ELSE
+        RAISE EXCEPTION 'User not found or blocked';
+    END IF;
+EXCEPTION
+    WHEN others THEN
+        RAISE EXCEPTION 'An error occurred: %', SQLERRM;
+END;
+$function$
+;
+
+
+
 CREATE OR REPLACE FUNCTION public.get_check_by_id(check_id uuid, user_id uuid)
  RETURNS TABLE(id uuid, name text, material_link text, content jsonb, book_id bigint, started_at timestamp with time zone, finished_at timestamp with time zone, created_at timestamp with time zone)
  LANGUAGE plpgsql
@@ -395,21 +429,31 @@ END;
 $function$
 ;
 
-CREATE OR REPLACE FUNCTION public.create_project(name text, user_id uuid)
- RETURNS bigint
- LANGUAGE plpgsql
-AS $function$
+CREATE OR REPLACE FUNCTION public.create_project(name text, user_id uuid) 
+  RETURNS bigint
+    LANGUAGE "plpgsql"
+    AS $$
 DECLARE
     project_id bigint;
+    project_exists boolean;
 BEGIN
-    INSERT INTO public.projects (name, user_id)
-    VALUES (create_project.name, create_project.user_id)
-    RETURNING id INTO project_id;
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.projects
+        WHERE projects.user_id = create_project.user_id AND projects.name = create_project.name
+    ) INTO project_exists;
 
-    RETURN project_id;
+    IF project_exists THEN
+        RAISE EXCEPTION 'A project with name % already exists for this user', create_project.name;
+    ELSE
+        INSERT INTO public.projects (name, user_id)
+        VALUES (create_project.name, create_project.user_id)
+        RETURNING id INTO project_id;
+
+        RETURN project_id;
+    END IF;
 END;
-$function$
-;
+$$;
 
 CREATE OR REPLACE FUNCTION public.get_book_by_id(book_id bigint, user_id uuid)
  RETURNS TABLE(name text, project_id bigint)
