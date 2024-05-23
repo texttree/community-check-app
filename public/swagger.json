@@ -1414,7 +1414,7 @@
     },
     "/api/projects/fast": {
       "post": {
-        "summary": "Create a fast project, books anв check",
+        "summary": "Create a fast project, books and check",
         "tags": [
           "Checks"
         ],

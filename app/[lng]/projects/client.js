@@ -1,91 +1,80 @@
 'use client'
 
-import Link from 'next/link'
-import axios from 'axios'
 import { useState } from 'react'
-import useSWR, { mutate } from 'swr'
+import Link from 'next/link'
 import { useTranslation } from '@/app/i18n/client'
-import { fetcher } from '@/helpers/fetcher'
-import Loader from '@/app/components/Loader'
-import DeleteModal from '@/app/components/DeleteModal'
+import axios from 'axios'
 
-export async function getProjects() {
-  const res = await fetch('/api/projects')
-  const projects = await res.json()
-  return projects
-}
+import { mutate } from 'swr'
 
-const Projects = ({ lng }) => {
+import Projects from '@/app/components/Projects'
+import AddProjectModal from '@/app/components/AddProjectModal'
+
+const ProjectPage = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
-  const { data: projects, error } = useSWR('/api/projects', fetcher)
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [projectToDelete, setProjectToDelete] = useState(null)
+  const [showAddModal, setShowAddModal] = useState(false)
 
-  const openDeleteModal = (project) => {
-    setProjectToDelete(project)
-    setShowDeleteModal(true)
+  const openAddModal = () => {
+    setShowAddModal(true)
   }
 
-  const confirmDeleteProject = async () => {
-    if (projectToDelete) {
-      try {
-        await axios.delete('/api/projects', {
-          data: { projectId: projectToDelete.id },
-        })
+  const closeAddModal = () => {
+    setShowAddModal(false)
+  }
 
-        mutate('/api/projects', (data) => data.filter((p) => p.id !== projectToDelete.id))
-        setShowDeleteModal(false)
-      } catch (error) {
-        console.error('Failed to delete project:', error)
+  const handleAddProject = async (projectName, book, check) => {
+    try {
+      const response = await axios.post('/api/projects/fast', {
+        project_name: projectName,
+        book_name: book,
+        check_name: check,
+      })
+
+      if (response.status === 201) {
+        mutate('/api/projects')
+        setShowAddModal(false)
+      } else {
+        console.error('Failed to add project:', response.data)
       }
+    } catch (error) {
+      console.error('Error adding project:', error)
     }
   }
-
-  const cancelDeleteProject = () => {
-    setShowDeleteModal(false)
-  }
-
   return (
-    <>
-      {error ? (
-        <p className="text-red-600">{t('errorOccurred')}</p>
-      ) : projects ? (
-        projects.map((project) => (
-          <div key={project.id} className="block">
-            <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105">
-              <Link
-                className="text-3xl font-semibold text-blue-600"
-                href={`projects/${project.id}`}
-              >
-                {project.name}
-              </Link>
-              <button
-                className="bg-red-500 block hover:bg-red-600 text-white px-4 py-2 rounded-md"
-                onClick={() => openDeleteModal(project)}
-              >
-                {t('delete')}
-              </button>
-            </div>
-          </div>
-        ))
-      ) : (
-        <Loader />
-      )}
-
-      {showDeleteModal && (
-        <DeleteModal
+    <div className="bg-gray-200 py-8">
+      <div className="max-w-6xl mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-4">{t('projects')}</h1>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <Projects lng={lng} />
+        </div>
+        <Link
+          href={`/${lng}/projects/new`}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-4 inline-block rounded-md"
+        >
+          {t('createProject')}
+        </Link>
+        <Link
+          href={`/${lng}/tokens`}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 ml-2 mt-4 inline-block rounded-md"
+        >
+          {t('tokens')}
+        </Link>
+        <AddProjectModal
+          isOpen={showAddModal}
+          onClose={closeAddModal}
+          onAddProject={handleAddProject}
           lng={lng}
-          isVisible={showDeleteModal}
-          message={`${t('confirmDeleteProject')}`}
-          onConfirm={confirmDeleteProject}
-          onCancel={cancelDeleteProject}
-          expectedText={projectToDelete?.name}
-          requireTextMatch={true}
         />
-      )}
-    </>
+        <button
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md mt-4 ml-2"
+          onClick={openAddModal}
+        >
+          {t('quickCreateCheck')}
+        </button>
+      </div>
+    </div>
   )
 }
 
-export default Projects
+export default ProjectPage
