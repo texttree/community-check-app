@@ -76,7 +76,6 @@ export async function POST(req) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
   const { project_name, book_name, check_name } = await req.json()
-  console.log(project_name, book_name, check_name)
 
   if (!project_name || !book_name || !check_name) {
     return Response.json({ error: 'Name is required' }, { status: 400 })
