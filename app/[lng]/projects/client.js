@@ -5,15 +5,15 @@ import Link from 'next/link'
 import { useTranslation } from '@/app/i18n/client'
 import axios from 'axios'
 
-import { mutate } from 'swr'
-
 import Projects from '@/app/components/Projects'
 import AddProjectModal from '@/app/components/AddProjectModal'
+import { useRouter } from 'next/navigation'
 
 const ProjectPage = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
 
   const [showAddModal, setShowAddModal] = useState(false)
+  const router = useRouter()
 
   const openAddModal = () => {
     setShowAddModal(true)
@@ -30,9 +30,10 @@ const ProjectPage = ({ lng }) => {
         book_name: book,
         check_name: check,
       })
-
       if (response.status === 201) {
-        mutate('/api/projects')
+        router.push(
+          `/${lng}/projects/${response.data.project_id}/${response.data.book_id}/${response.data.check_id}`
+        )
         setShowAddModal(false)
       } else {
         console.error('Failed to add project:', response.data)

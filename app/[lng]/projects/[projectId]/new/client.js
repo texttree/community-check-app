@@ -21,7 +21,7 @@ const NewBookPage = ({ lng }) => {
     const name = bookName.trim()
     if (name) {
       try {
-        const response = await axios.post(`/api/projects/${projectId}/books`, { name }) // Используем Axios для POST запроса
+        const response = await axios.post(`/api/projects/${projectId}/books`, { name })
         const data = response.data
         router.push(`/${lng}/projects/${projectId}/${data.book_id}`)
       } catch (error) {
