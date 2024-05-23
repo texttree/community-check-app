@@ -35,15 +35,16 @@ const CheckList = ({ projectId, bookId, lng }) => {
 
   useEffect(() => {
     if (info) {
-      const counts = {}
-      info.forEach((item) => {
-        counts[item.check_id] = item.notes_count
-      })
+      const counts = info.reduce((acc, item) => {
+        acc[item.check_id] = item.notes_count
+        return acc
+      }, {})
       setNotesCounts(counts)
     } else {
-      mutate
+      mutate()
     }
   }, [info, mutate])
+
   const handleDownloadNotes = (check) => {
     downloadNotes(check, t, projectId, bookId)
       .then((notes) => {
