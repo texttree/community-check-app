@@ -165,7 +165,18 @@ export async function POST(req, { params: { checkId } }) {
   if (!checkId) {
     return Response.json({ error: 'Missing checkId parameter' }, { status: 400 })
   }
+
   try {
+    const { data: existingInspector } = await supabaseService
+      .from('inspectors')
+      .select('*')
+      .eq('name', name)
+      .single()
+
+    if (existingInspector) {
+      return Response.json({ error: 'Inspector name must be unique' }, { status: 400 })
+    }
+
     const { data, error } = await supabaseService
       .from('inspectors')
       .insert([
