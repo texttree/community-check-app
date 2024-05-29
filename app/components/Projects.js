@@ -9,12 +9,6 @@ import { fetcher } from '@/helpers/fetcher'
 import Loader from '@/app/components/Loader'
 import DeleteModal from '@/app/components/DeleteModal'
 
-export async function getProjects() {
-  const res = await fetch('/api/projects')
-  const projects = await res.json()
-  return projects
-}
-
 const Projects = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
   const { data: projects, error } = useSWR('/api/projects', fetcher)
