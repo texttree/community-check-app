@@ -78,12 +78,17 @@ const CheckDetail = ({ lng }) => {
           <Loader />
         </div>
       )}
+      {info?.deleted_at && (
+        <div className="max-w-6xl mx-auto p-4 text-center">
+          <p className="text-2xl text-red-500">{t('checkDeleted')}</p>
+        </div>
+      )}
       {!isLoading && !material?.content && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
       )}
-      {!isLoading && material?.content && (
+      {!isLoading && material?.content && !info?.deleted_at && (
         <div className="max-w-6xl mx-auto p-4">
           <CheckInfo checkId={checkId} lng={lng} />
           {(!isCheckExpired || info?.is_owner) && chapter.length > 0 && (

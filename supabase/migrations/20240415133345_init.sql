@@ -283,6 +283,7 @@ BEGIN
         'check_name', c.name,
         'book_name', b.name,
         'check_finished_at', c.finished_at,
+        'deleted_at', c.deleted_at,
         'is_owner', (p.user_id = get_check_info.user_id)
     )
     INTO check_info
