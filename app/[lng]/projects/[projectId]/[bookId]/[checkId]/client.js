@@ -10,12 +10,9 @@ import toast from 'react-hot-toast'
 import useSWR from 'swr'
 import axios from 'axios'
 
-import usfm from 'usfm-js'
-
 import { fetcher } from '@/helpers/fetcher'
 import LeftArrow from '@/public/left.svg'
 import Copy from '@/public/copy.svg'
-import { parsingWordText } from '@/helpers/usfmHelper'
 import { useTranslation } from '@/app/i18n/client'
 import DeleteModal from '@/app/components/DeleteModal'
 
@@ -113,14 +110,8 @@ const CheckId = ({ lng }) => {
   const updateResourse = async () => {
     if (materialLink) {
       try {
-        const res = await axios.get(materialLink)
-        const jsonData = parsingWordText(usfm.toJSON(res.data))
-        if (Object.keys(jsonData?.chapters).length > 0) {
-          await updateCheck(jsonData)
-          toast.success(t('save'))
-        } else {
-          toast.error(t('enterCorrectLink'))
-        }
+        await updateCheck()
+        toast.success(t('save'))
       } catch (error) {
         console.error(error)
         toast.error(error.message)
@@ -130,14 +121,13 @@ const CheckId = ({ lng }) => {
     }
   }
 
-  const updateCheck = async (jsonData) => {
+  const updateCheck = async () => {
     try {
       await axios.post(`/api/projects/${projectId}/books/${bookId}/checks/${checkId}`, {
         started_at: startDate,
         finished_at: endDate,
         name: checkName,
         material_link: materialLink,
-        content: jsonData,
       })
     } catch (error) {
       console.error(error)
