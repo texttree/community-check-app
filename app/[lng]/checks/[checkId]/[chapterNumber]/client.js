@@ -6,12 +6,12 @@ import useSWR from 'swr'
 import { useTranslation } from '@/app/i18n/client'
 
 import { fetcher } from '@/helpers/fetcher'
-import { parseChapter } from '@/helpers/usfmHelper'
 
 import CustomError from '@/app/components/CustomError'
 import Loader from '@/app/components/Loader'
 import Notes from '@/app/components/Notes'
 import CheckInfo from '@/app/components/CheckInfo'
+
 const CheckDetail = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
   const router = useRouter()
@@ -25,16 +25,21 @@ const CheckDetail = ({ lng }) => {
   const [isCheckExpired, setIsCheckExpired] = useState(false)
   const [chapterLength, setChapterLength] = useState(0)
 
-  const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
-  const link =
-    'https://git.door43.org/unfoldingWord/en_ust/raw/commit/8d2e1b09a900bb6712d7dd3efeefa0ce13f6568d/51-PHP.usfm'
-  // const link = 'https://git.door43.org/ru_gl/ru_obs/archive/master.zip'
+  const { data: info } = useSWR(checkId && `/api/checks/${checkId}/info`, fetcher, {
+    onError: (error) => console.error('Failed to fetch check info:', error),
+  })
 
   const {
     data: material,
     isLoading,
     mutate,
-  } = useSWR(`/api/materials/?materialLink=${link}`, fetcher)
+  } = useSWR(
+    info ? `/api/materials/?materialLink=${info.material_link}` : null,
+    fetcher,
+    {
+      onError: (error) => console.error('Failed to fetch materials:', error),
+    }
+  )
 
   useEffect(() => {
     if (info?.check_finished_at) {
@@ -45,10 +50,10 @@ const CheckDetail = ({ lng }) => {
   }, [info])
 
   useEffect(() => {
-    if (material) {
-      const _chapter = material[currentChapterIndex - 1].verseObjects
+    if (material && material.length > 0) {
+      const _chapter = material[currentChapterIndex - 1]?.verseObjects || []
       setChapter(_chapter)
-      setChapterLength(Object.keys(material).length)
+      setChapterLength(material.length)
     } else {
       mutate()
     }
@@ -85,12 +90,12 @@ const CheckDetail = ({ lng }) => {
           <Loader />
         </div>
       )}
-      {!isLoading && !material?.content && (
+      {!isLoading && !material && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
       )}
-      {!isLoading && material?.content && (
+      {!isLoading && material && (
         <div className="max-w-6xl mx-auto p-4">
           <CheckInfo checkId={checkId} lng={lng} />
           {(!isCheckExpired || info?.is_owner) && chapter.length > 0 && (

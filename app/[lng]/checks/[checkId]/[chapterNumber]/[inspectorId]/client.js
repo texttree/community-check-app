@@ -6,7 +6,6 @@ import useSWR from 'swr'
 import { useTranslation } from '@/app/i18n/client'
 
 import { fetcher } from '@/helpers/fetcher'
-import { parseChapter } from '@/helpers/usfmHelper'
 import CheckInfo from '@/app/components/CheckInfo'
 import Loader from '@/app/components/Loader'
 import InspectorNotes from '@/app/components/InspectorNotes'
@@ -23,15 +22,33 @@ const CheckInspectorDetail = ({ lng }) => {
   })
   const [notes, setNotes] = useState([])
 
-  const [chapterLength, setСhapterLength] = useState(0)
-
+  const [chapterLength, setChapterLength] = useState(0)
   const [isCheckExpired, setIsCheckExpired] = useState(false)
 
-  const { data: info } = useSWR(checkId && `/api/checks/${checkId}/info`, fetcher)
+  const { data: info } = useSWR(checkId && `/api/checks/${checkId}/info`, fetcher, {
+    onError: (error) => console.error('Failed to fetch check info:', error),
+  })
+
   const { data: isInspectorDeleted, isLoading: isInspectorDeletedLoading } = useSWR(
     checkId && inspectorId && `/api/checks/${checkId}/${inspectorId}/info`,
-    fetcher
+    fetcher,
+    {
+      onError: (error) => console.error('Failed to fetch inspector info:', error),
+    }
   )
+
+  const {
+    data: material,
+    isLoading,
+    mutate,
+  } = useSWR(
+    info ? `/api/materials/?materialLink=${info.material_link}` : null,
+    fetcher,
+    {
+      onError: (error) => console.error('Failed to fetch materials:', error),
+    }
+  )
+
   useEffect(() => {
     if (info?.check_finished_at) {
       const currentDate = new Date()
@@ -40,25 +57,23 @@ const CheckInspectorDetail = ({ lng }) => {
     }
   }, [info])
 
-  const {
-    data: material,
-    isLoading,
-    mutate,
-  } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
-
   const { data: inspectorNotes, mutate: inspectorMutate } = useSWR(
     checkId && `/api/checks/${checkId}/${inspectorId}`,
-    fetcher
+    fetcher,
+    {
+      onError: (error) => console.error('Failed to fetch inspector notes:', error),
+    }
   )
 
   useEffect(() => {
-    if (material?.content) {
-      const chapters = material.content.chapters
-      const _chapter = parseChapter(chapters[currentChapterIndex])
+    if (material && material.length > 0) {
+      const _chapter = material[currentChapterIndex - 1]?.verseObjects || []
       setChapter(_chapter)
-      setСhapterLength(Object.keys(chapters).length)
+      setChapterLength(material.length)
+    } else {
+      mutate()
     }
-  }, [material, currentChapterIndex])
+  }, [material, currentChapterIndex, mutate])
 
   useEffect(() => {
     if (inspectorNotes) {
@@ -98,17 +113,19 @@ const CheckInspectorDetail = ({ lng }) => {
         </div>
       )}
 
-      {!isLoading && !material?.content && (
+      {!isLoading && !material && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
       )}
+
       {!isInspectorDeletedLoading && isInspectorDeleted && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('inspectorDeleted')}</p>
         </div>
       )}
-      {!isLoading && material?.content && !isInspectorDeleted && (
+
+      {!isLoading && material && !isInspectorDeleted && (
         <div className="max-w-6xl mx-auto p-4">
           <CheckInfo checkId={checkId} lng={lng} />
           {(!isCheckExpired || info?.is_owner) && chapter.length > 0 && (
@@ -117,7 +134,7 @@ const CheckInspectorDetail = ({ lng }) => {
                 <button
                   onClick={() => navigateToChapter(currentChapterIndex - 1)}
                   disabled={currentChapterIndex === 1}
-                  className={`bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {t('previousChapter')}
                 </button>
@@ -125,7 +142,7 @@ const CheckInspectorDetail = ({ lng }) => {
                 <button
                   onClick={handleNextChapter}
                   disabled={currentChapterIndex === chapterLength}
-                  className={`bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {t('nextChapter')}
                 </button>
