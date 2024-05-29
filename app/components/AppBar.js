@@ -10,12 +10,12 @@ import { createClient } from '@/app/supabase/client'
 
 const AppBar = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
-  const supabase = createClient()
+  const supabaseClient = createClient()
   const [user, setUser] = useState(null)
   useEffect(() => {
     const getUser = async () => {
       try {
-        const { data, error } = await supabase.auth.getUser()
+        const { data, error } = await supabaseClient.auth.getUser()
         setUser(data?.user ?? null)
         if (error) {
           throw error
@@ -25,7 +25,7 @@ const AppBar = ({ lng }) => {
       }
     }
     getUser()
-  }, [supabase.auth])
+  }, [supabaseClient.auth])
 
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -33,7 +33,7 @@ const AppBar = ({ lng }) => {
 
   const handleLogout = async () => {
     try {
-      const { error } = await supabase.auth.signOut()
+      const { error } = await supabaseClient.auth.signOut()
       if (error) throw error
       router.push('/' + lng + '/login')
     } catch (error) {
@@ -89,7 +89,7 @@ const AppBar = ({ lng }) => {
                 className="text-gray-700 block px-4 py-2 text-sm text-center mt-2 bg-gray-200 rounded-md hover:bg-green-500"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {t('signUp')}
+                {t('signIn')}
               </Link>
             )}
           </div>

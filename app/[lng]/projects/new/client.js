@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import axios from 'axios' // Импортируем Axios
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -20,22 +21,13 @@ const NewProjectPage = ({ lng }) => {
 
     if (name) {
       try {
-        const response = await fetch('/api/projects', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ name }),
-        })
+        const response = await axios.post('/api/projects', { name }) // Используем Axios для POST запроса
 
-        if (!response.ok) {
-          const errorMessage =
-            response.status === 400 ? t('errorCreateProject') : response.statusText
-          throw new Error(`${errorMessage}`)
+        if (!response.data) {
+          throw new Error(t('errorCreateProject'))
         }
 
-        const data = await response.json()
-        router.push('/projects/' + data.id)
+        router.push(`/${lng}/projects/${response.data}`)
       } catch (error) {
         setErrorMessage(error.message)
       }
@@ -49,7 +41,7 @@ const NewProjectPage = ({ lng }) => {
       <div className="max-w-6xl mx-auto p-4">
         <div className="flex items-center mb-4">
           <Link
-            href="/projects"
+            href={`/${lng}/projects`}
             className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md inline-flex items-center"
           >
             <LeftArrow className="h-5 w-5 mr-1" />

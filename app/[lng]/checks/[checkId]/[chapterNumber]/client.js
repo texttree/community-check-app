@@ -3,14 +3,15 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import useSWR from 'swr'
+import { useTranslation } from '@/app/i18n/client'
 
 import { fetcher } from '@/helpers/fetcher'
 import { parseChapter } from '@/helpers/usfmHelper'
-import CheckInfo from '@/app/components/CheckInfo'
+
+import CustomError from '@/app/components/CustomError'
 import Loader from '@/app/components/Loader'
 import Notes from '@/app/components/Notes'
-import { useTranslation } from '@/app/i18n/client'
-
+import CheckInfo from '@/app/components/CheckInfo'
 const CheckDetail = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
   const router = useRouter()
@@ -22,10 +23,9 @@ const CheckDetail = ({ lng }) => {
   })
 
   const [isCheckExpired, setIsCheckExpired] = useState(false)
-
   const [chapterLength, setChapterLength] = useState(0)
 
-  const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
+  const { data: info } = useSWR(checkId && `/api/checks/${checkId}/info`, fetcher)
 
   useEffect(() => {
     if (info?.check_finished_at) {
@@ -47,8 +47,10 @@ const CheckDetail = ({ lng }) => {
       const _chapter = parseChapter(chapters[currentChapterIndex])
       setChapter(_chapter)
       setChapterLength(Object.keys(chapters).length)
+    } else {
+      mutate()
     }
-  }, [material, currentChapterIndex])
+  }, [material, currentChapterIndex, mutate])
 
   useEffect(() => {
     setCurrentChapterIndex((prevIndex) => parseInt(chapterNumber) || prevIndex)
@@ -70,6 +72,10 @@ const CheckDetail = ({ lng }) => {
     }
   }
 
+  if (info?.deleted_at) {
+    return <CustomError statusCode={404} title={t('Check Deleted')} />
+  }
+
   return (
     <div className="bg-gray-200">
       {isLoading && (
@@ -77,12 +83,12 @@ const CheckDetail = ({ lng }) => {
           <Loader />
         </div>
       )}
-      {!isLoading && !material && (
+      {!isLoading && !material?.content && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
       )}
-      {!isLoading && material && (
+      {!isLoading && material?.content && (
         <div className="max-w-6xl mx-auto p-4">
           <CheckInfo checkId={checkId} lng={lng} />
           {(!isCheckExpired || info?.is_owner) && chapter.length > 0 && (

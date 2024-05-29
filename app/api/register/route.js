@@ -1,7 +1,7 @@
 import { createClient } from '@/app/supabase/server'
 
 export async function POST(req) {
-  const supabase = createClient()
+  const supabaseServer = createClient()
 
   const { email, password } = await req.json()
   if (!email || !password) {
@@ -9,8 +9,7 @@ export async function POST(req) {
   }
 
   try {
-    console.log({ email, password })
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await supabaseServer.auth.signUp({
       email,
       password,
     })

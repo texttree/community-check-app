@@ -1,8 +1,9 @@
-import { createClient } from '@/app/supabase/service'
-import { headers } from 'next/headers'
+import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
+ * tags:
+ *   - Books
  * /api/projects/{projectId}:
  *   get:
  *     summary: Returns a project by ID.
@@ -48,8 +49,9 @@ import { headers } from 'next/headers'
  *               name:
  *                 type: string
  *                 description: New project name
+ *                 example: RSOB
  *     responses:
- *       201:
+ *       200:
  *         description: Project
  *         content:
  *           application/json:
@@ -64,8 +66,7 @@ import { headers } from 'next/headers'
  */
 
 export async function GET(req, { params: { projectId } }) {
-  const headersList = headers()
-  const userId = headersList.get('x-user-id')
+  const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json(
       {
@@ -74,9 +75,8 @@ export async function GET(req, { params: { projectId } }) {
       { status: 401 }
     )
   }
-  const supabase = createClient()
   try {
-    const { data, error } = await supabase.rpc('get_project_by_id', {
+    const { data, error } = await supabaseService.rpc('get_project_by_id', {
       project_id: projectId,
     })
 
@@ -99,9 +99,8 @@ export async function POST(req, { params: { projectId } }) {
   if (!name) {
     return Response.json({ error: 'Project name is required' }, { status: 400 })
   }
-  const supabase = createClient()
   try {
-    const { data: project, error: updateError } = await supabase.rpc(
+    const { data: project, error: updateError } = await supabaseService.rpc(
       'update_project_name',
       {
         project_id: projectId,
@@ -113,7 +112,7 @@ export async function POST(req, { params: { projectId } }) {
       return Response.json({ error: updateError }, { status: 400 })
     }
 
-    return Response.json(project, { status: 201 })
+    return Response.json(project, { status: 200 })
   } catch (error) {
     return Response.json({ error }, { status: 500 })
   }

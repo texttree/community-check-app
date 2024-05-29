@@ -3,13 +3,14 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import useSWR from 'swr'
+import { useTranslation } from '@/app/i18n/client'
 
 import { fetcher } from '@/helpers/fetcher'
 import { parseChapter } from '@/helpers/usfmHelper'
 import CheckInfo from '@/app/components/CheckInfo'
 import Loader from '@/app/components/Loader'
 import InspectorNotes from '@/app/components/InspectorNotes'
-import { useTranslation } from '@/app/i18n/client'
+import CustomError from '@/app/components/CustomError'
 
 const CheckInspectorDetail = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -26,9 +27,9 @@ const CheckInspectorDetail = ({ lng }) => {
 
   const [isCheckExpired, setIsCheckExpired] = useState(false)
 
-  const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
-  const { data: existInspector, isLoading: isLoadingInspector } = useSWR(
-    checkId && inspectorId && `/api/info_check/${checkId}/${inspectorId}`,
+  const { data: info } = useSWR(checkId && `/api/checks/${checkId}/info`, fetcher)
+  const { data: isInspectorDeleted, isLoading: isInspectorDeletedLoading } = useSWR(
+    checkId && inspectorId && `/api/checks/${checkId}/${inspectorId}/info`,
     fetcher
   )
   useEffect(() => {
@@ -85,6 +86,10 @@ const CheckInspectorDetail = ({ lng }) => {
     }
   }
 
+  if (info?.deleted_at) {
+    return <CustomError statusCode={404} title={t('Check Deleted')} />
+  }
+
   return (
     <div className="bg-gray-200">
       {isLoading && (
@@ -92,17 +97,18 @@ const CheckInspectorDetail = ({ lng }) => {
           <Loader />
         </div>
       )}
-      {!isLoading && !material && (
+
+      {!isLoading && !material?.content && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
       )}
-      {!isLoadingInspector && !existInspector && (
+      {!isInspectorDeletedLoading && isInspectorDeleted && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('inspectorDeleted')}</p>
         </div>
       )}
-      {!isLoading && material && existInspector && (
+      {!isLoading && material?.content && !isInspectorDeleted && (
         <div className="max-w-6xl mx-auto p-4">
           <CheckInfo checkId={checkId} lng={lng} />
           {(!isCheckExpired || info?.is_owner) && chapter.length > 0 && (

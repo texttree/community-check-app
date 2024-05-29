@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import axios from 'axios' // Импортируем Axios
 
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
@@ -20,19 +21,8 @@ const NewBookPage = ({ lng }) => {
     const name = bookName.trim()
     if (name) {
       try {
-        const response = await fetch(`/api/projects/${projectId}/books`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ name }),
-        })
-        if (!response.ok) {
-          const errorMessage =
-            response.status === 400 ? t('errorCreateBook') : response.statusText
-          throw new Error(`${errorMessage}`)
-        }
-        const data = await response.json()
+        const response = await axios.post(`/api/projects/${projectId}/books`, { name })
+        const data = response.data
         router.push(`/${lng}/projects/${projectId}/${data.book_id}`)
       } catch (error) {
         console.error(error)

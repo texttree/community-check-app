@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/app/supabase/server'
 
 export async function login(formData) {
-  const supabase = createClient()
+  const supabaseServer = createClient()
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
@@ -15,7 +15,7 @@ export async function login(formData) {
     password: formData.get('password'),
   }
 
-  const { error } = await supabase.auth.signInWithPassword(data)
+  const { error } = await supabaseServer.auth.signInWithPassword(data)
 
   if (error) {
     redirect('/error')
@@ -26,7 +26,7 @@ export async function login(formData) {
 }
 
 export async function signup(formData) {
-  const supabase = createClient()
+  const supabaseServer = createClient()
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
@@ -35,7 +35,7 @@ export async function signup(formData) {
     password: formData.get('password'),
   }
 
-  const { error } = await supabase.auth.signUp(data)
+  const { error } = await supabaseServer.auth.signUp(data)
 
   if (error) {
     redirect('/error')

@@ -14,7 +14,7 @@ const CheckInfo = ({ checkId, lng }) => {
   const [isCheckExpired, setIsCheckExpired] = useState(false)
   const [error, setError] = useState(null)
 
-  const { data: info } = useSWR(checkId && `/api/info_check/${checkId}`, fetcher)
+  const { data: info } = useSWR(checkId && `/api/checks/${checkId}/info`, fetcher)
 
   useEffect(() => {
     if (info) {
