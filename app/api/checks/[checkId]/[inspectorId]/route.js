@@ -12,6 +12,10 @@ export async function GET(req, { params: { checkId, inspectorId } }) {
       .is(`deleted_at`, null)
       .eq(`notes.inspector_id`, inspectorId)
       .is(`notes.deleted_at`, null)
+      .order('created_at', {
+        ascending: true,
+        referencedTable: 'notes',
+      })
 
     if (error) {
       throw error
