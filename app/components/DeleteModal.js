@@ -38,7 +38,9 @@ const DeleteModal = ({
 
         {requireTextMatch && (
           <div className="mt-4">
-            <label className="block text-gray-700">{t('enterName')}</label>
+            <label className="block text-gray-700">
+              {t('enterConfirm')} <strong>{expectedText}</strong>
+            </label>
             <input
               type="text"
               value={inputText}
