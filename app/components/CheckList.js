@@ -28,11 +28,10 @@ const CheckList = ({ projectId, bookId, lng }) => {
     fetcher
   )
 
-  const { data: info, mutate } = useSWR(
+  const { data: info, mutate: mutateInfo } = useSWR(
     bookId && `/api/projects/${projectId}/books/${bookId}/info`,
     fetcher
   )
-
   useEffect(() => {
     if (info) {
       const counts = info.reduce((acc, item) => {
@@ -41,9 +40,9 @@ const CheckList = ({ projectId, bookId, lng }) => {
       }, {})
       setNotesCounts(counts)
     } else {
-      mutate()
+      mutateInfo()
     }
-  }, [info, mutate])
+  }, [info, mutateInfo])
 
   const handleDownloadNotes = (check) => {
     downloadNotes(check, t, projectId, bookId)
@@ -81,6 +80,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
 
         toast.success(t('checkDeleted'))
         mutate(`/api/projects/${projectId}/books/${bookId}/checks`) // Обновляем данные после удаления
+        mutateInfo()
       } catch (error) {
         toast.error(t('errorOccurred'))
       }
