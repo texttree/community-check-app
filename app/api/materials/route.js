@@ -116,11 +116,8 @@ async function getDataMd(materialLink) {
     const files = []
 
     zip.forEach((relativePath, file) => {
-      if (
-        !file.dir &&
-        relativePath.includes('ru_obs/content/') &&
-        !relativePath.endsWith('/')
-      ) {
+      const fileName = path.basename(relativePath, '.md')
+      if (!file.dir && relativePath.endsWith('.md') && /^[0-4][0-9]|50$/.test(fileName)) {
         files.push(file)
       }
     })
@@ -129,10 +126,7 @@ async function getDataMd(materialLink) {
 
     for (const file of files) {
       const content = await file.async('string')
-      if (
-        content.trim().length > 0 &&
-        !['intro.md', 'title.md'].includes(path.basename(file.name))
-      ) {
+      if (content.trim().length > 0) {
         jsonDataArray.push(MdToJson(content))
       }
     }
