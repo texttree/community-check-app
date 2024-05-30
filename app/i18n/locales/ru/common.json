@@ -110,9 +110,9 @@
   "tokenSuccessCreated": "Токен успешно сгенерирован",
   "tokenSuccessDeleted": "Токен успешно удален",
   "updatedInformation": "Информация обновлена",
-  "updatedMaterial": "Материал обновлен",
+  "updatedContent": "Материал обновлен",
   "updateInformation": "Обновить информацию",
-  "updateMaterial": "Обновить материал",
+  "updateContent": "Обновить материал",
   "welcomeTo": "Добро пожаловать в Community Check",
   "youLoggedIn": "Вы уже вошли в систему."
 }

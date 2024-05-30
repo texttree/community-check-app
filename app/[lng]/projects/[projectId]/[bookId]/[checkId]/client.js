@@ -114,7 +114,7 @@ const CheckId = ({ lng }) => {
           materialLink: materialLink,
           checkId: checkId,
         })
-        toast.success(t('updatedMaterial'))
+        toast.success(t('updatedContent'))
       } catch (error) {
         console.error(error)
         toast.error(error.message)
@@ -241,7 +241,7 @@ const CheckId = ({ lng }) => {
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
           onClick={updateContent}
         >
-          {t('updateMaterial')}
+          {t('updateContent')}
         </button>
         <br />
         <br />

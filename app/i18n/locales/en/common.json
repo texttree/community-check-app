@@ -110,9 +110,9 @@
   "tokenSuccessCreated": "Token generated successfully",
   "tokenSuccessDeleted": "Token deleted successfully",
   "updatedInformation": "Information updated",
-  "updatedMaterial": "Material updated",
+  "updatedContent": "Material updated",
   "updateInformation": "Update information",
-  "updateMaterial": "Update material",
+  "updateContent": "Update content",
   "welcomeTo": "Welcome to Community Check",
   "youLoggedIn": "You are already logged in."
 }
