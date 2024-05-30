@@ -43,14 +43,12 @@ const CheckDetail = ({ lng }) => {
   }, [info])
 
   useEffect(() => {
-    if (material?.content) {
+    if (material?.content && chapter.length === 0) {
       const _chapter = material.content[currentChapterIndex - 1]
       setChapter(_chapter)
       setChapterLength(material.content.length)
-    } else {
-      mutate()
     }
-  }, [material, currentChapterIndex, mutate])
+  }, [material, currentChapterIndex, mutate, chapter])
 
   useEffect(() => {
     setCurrentChapterIndex((prevIndex) => parseInt(chapterNumber) || prevIndex)

@@ -60,14 +60,12 @@ const CheckInspectorDetail = ({ lng }) => {
   )
 
   useEffect(() => {
-    if (material?.content) {
+    if (material?.content && chapter.length === 0) {
       const _chapter = material.content[currentChapterIndex - 1]
       setChapter(_chapter)
       setChapterLength(material.content.length)
-    } else {
-      mutate()
     }
-  }, [material, currentChapterIndex, mutate])
+  }, [material, currentChapterIndex, mutate, chapter])
 
   useEffect(() => {
     if (inspectorNotes) {
@@ -107,7 +105,7 @@ const CheckInspectorDetail = ({ lng }) => {
         </div>
       )}
 
-      {!isLoading && !material && (
+      {!isLoading && !material?.content && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
@@ -119,7 +117,7 @@ const CheckInspectorDetail = ({ lng }) => {
         </div>
       )}
 
-      {!isLoading && material && !isInspectorDeleted && (
+      {!isLoading && material?.content && !isInspectorDeleted && (
         <div className="max-w-6xl mx-auto p-4">
           <CheckInfo checkId={checkId} lng={lng} />
           {(!isCheckExpired || info?.is_owner) && chapter?.verseObjects?.length > 0 && (
