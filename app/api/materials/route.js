@@ -10,6 +10,7 @@ export async function POST(req) {
   const url = new URL(req.url)
   const materialLink = url.searchParams.get('materialLink')
   const userId = req.headers.get('x-user-id')
+  const checkId = url.searchParams.get('checkId')
 
   if (!userId) {
     return new Response(
@@ -25,13 +26,31 @@ export async function POST(req) {
     })
   }
 
-  try {
-    const content = await fetchContent(materialLink)
-    const checkId = url.searchParams.get('checkId')
+  if (!checkId) {
+    return new Response(JSON.stringify({ error: 'Check ID is missing' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
 
-    if (!checkId) {
-      throw new Error('Check ID is missing')
+  try {
+    const { data: isValid, error: validationError } = await supabaseService
+      .rpc('is_user_valid_for_check', {
+        check_id: checkId,
+        user_id: userId,
+      })
+      .single()
+
+    if (validationError) throw validationError
+
+    if (!isValid) {
+      return new Response(
+        JSON.stringify({ error: 'User is not authorized to modify this check' }),
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
+      )
     }
+
+    const content = await fetchContent(materialLink)
 
     const { data, error } = await supabaseService
       .from('checks')
