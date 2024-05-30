@@ -1,6 +1,7 @@
 import { parseChapter, parsingWordText } from '@/helpers/usfmHelper'
 import usfm from 'usfm-js'
 import { MdToJson } from '@texttree/obs-format-convert-rcl'
+import { supabaseService } from '@/app/supabase/service'
 const axios = require('axios')
 
 const fs = require('fs')
@@ -9,7 +10,7 @@ const yauzl = require('yauzl')
 const { promisify } = require('util')
 const rimraf = promisify(require('rimraf'))
 
-export async function GET(req) {
+export async function POST(req) {
   const url = new URL(req.url)
   const materialLink = url.searchParams.get('materialLink')
   const userId = req.headers.get('x-user-id')
@@ -43,11 +44,12 @@ export async function GET(req) {
   }
 
   try {
-    // Проверяем тип ссылки: файл USFM или архив
+    let content
+
     if (materialLink.endsWith('.usfm')) {
-      return await getDataUsfm(materialLink)
+      content = await getDataUsfm(materialLink)
     } else if (materialLink.endsWith('.zip')) {
-      return await getDataMd(materialLink)
+      content = await getDataMd(materialLink)
     } else {
       return new Response(
         JSON.stringify({
@@ -61,6 +63,31 @@ export async function GET(req) {
         }
       )
     }
+
+    const checkId = url.searchParams.get('checkId')
+
+    const { data, error } = await supabaseService
+      .from('checks')
+      .update({ content: content })
+      .eq('id', checkId)
+      .single()
+
+    if (error) {
+      throw error
+    }
+
+    return new Response(
+      JSON.stringify({
+        message: 'Content updated successfully',
+        data: data,
+      }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
   } catch (error) {
     console.error(error)
     return new Response(JSON.stringify({ error: error.message }), {
@@ -71,7 +98,6 @@ export async function GET(req) {
     })
   }
 }
-
 async function getDataUsfm(materialLink) {
   try {
     const res = await axios.get(materialLink)
@@ -88,28 +114,33 @@ async function getDataUsfm(materialLink) {
         chapters: chapters,
       }
       const verseObjects = convertToVerseObjects(updatedJsonData)
-      return new Response(JSON.stringify(verseObjects), {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      return verseObjects
     } else {
-      return new Response(JSON.stringify({ error: 'Incorrect material format' }), {
-        status: 400,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      throw new Error('Incorrect material format')
     }
   } catch (error) {
     console.error(error)
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    throw new Error(error.message)
+  }
+}
+
+async function getDataMd(materialLink) {
+  const tempZip = 'temp.zip'
+  try {
+    await downloadZipFile(materialLink, tempZip)
+    await extractZipFile(tempZip)
+
+    const directory = 'ru_obs/content'
+    const jsonDataArray = await convertMdToJson(directory)
+
+    await removeDirectoryRecursive(`ru_obs`)
+
+    return jsonDataArray
+  } catch (error) {
+    console.error('Error processing MD file:', error)
+    throw new Error(error.message)
+  } finally {
+    await removeTempFile(tempZip)
   }
 }
 
@@ -192,35 +223,6 @@ async function convertMdToJson(directory) {
   } catch (error) {
     console.error('Error converting MD to JSON:', error)
     throw error
-  }
-}
-
-async function getDataMd(materialLink) {
-  const tempZip = 'temp.zip'
-  try {
-    await downloadZipFile(materialLink, tempZip)
-    await extractZipFile(tempZip)
-
-    const directory = 'ru_obs/content'
-    const jsonDataArray = await convertMdToJson(directory)
-
-    await removeDirectoryRecursive(`ru_obs`)
-
-    return new Response(JSON.stringify(jsonDataArray), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-  } finally {
-    await removeTempFile(tempZip)
   }
 }
 
