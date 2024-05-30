@@ -7,10 +7,8 @@ import JSZip from 'jszip'
 import path from 'path'
 
 export async function POST(req) {
-  const url = new URL(req.url)
-  const materialLink = url.searchParams.get('materialLink')
   const userId = req.headers.get('x-user-id')
-  const checkId = url.searchParams.get('checkId')
+  const { materialLink, checkId } = await req.json()
 
   if (!userId) {
     return new Response(

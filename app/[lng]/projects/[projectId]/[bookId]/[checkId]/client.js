@@ -110,9 +110,10 @@ const CheckId = ({ lng }) => {
   const updateContent = async () => {
     if (materialLink) {
       try {
-        await axios.post(
-          `/api/materials/?materialLink=${materialLink}&checkId=${checkId}`
-        )
+        await axios.post('/api/materials/', {
+          materialLink: materialLink,
+          checkId: checkId,
+        })
         toast.success(t('updatedMaterial'))
       } catch (error) {
         console.error(error)
