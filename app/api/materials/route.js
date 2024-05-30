@@ -68,7 +68,7 @@ export async function POST(req) {
 
     const { data, error } = await supabaseService
       .from('checks')
-      .update({ content: content })
+      .update({ content: content, material_link: materialLink })
       .eq('id', checkId)
       .single()
 

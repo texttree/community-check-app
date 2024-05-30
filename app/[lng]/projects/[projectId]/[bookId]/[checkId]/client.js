@@ -129,7 +129,6 @@ const CheckId = ({ lng }) => {
         started_at: startDate,
         finished_at: endDate,
         name: checkName,
-        material_link: materialLink,
       })
       toast.success(t('updatedInformation'))
     } catch (error) {
