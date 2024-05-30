@@ -164,6 +164,7 @@ export async function POST(req, { params: { bookId } }) {
       name,
       material_link: url,
       started_at: startDate,
+      finished_at: startDate,
       book_id: parseInt(bookId),
       user_id: userId,
     })

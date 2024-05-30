@@ -21,3 +21,35 @@ BEGIN
     RETURN check_info;
 END;
 $$;
+
+
+DROP FUNCTION IF EXISTS create_check;
+CREATE OR REPLACE FUNCTION public.create_check(name text, material_link text, started_at timestamptz, finished_at timestamptz,
+book_id bigint, user_id uuid)
+ RETURNS uuid
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+    check_id uuid;
+    user_exists boolean;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.books AS b
+        JOIN public.projects AS p ON b.project_id = p.id
+        JOIN public.users AS u ON p.user_id = u.id
+        WHERE b.id = create_check.book_id AND u.id = create_check.user_id AND u.is_blocked = false
+    )
+    INTO user_exists;
+
+    IF user_exists THEN
+        INSERT INTO public.checks (name, material_link, started_at, finished_at, book_id)
+        VALUES (name, material_link, started_at, finished_at, book_id)
+        RETURNING id INTO check_id;
+        RETURN check_id;
+    ELSE
+        RAISE EXCEPTION 'User not found';
+    END IF;
+END;
+$function$;
+
