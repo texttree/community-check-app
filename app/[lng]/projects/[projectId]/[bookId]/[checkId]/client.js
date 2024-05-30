@@ -107,11 +107,13 @@ const CheckId = ({ lng }) => {
     }
   }, [check])
 
-  const updateResourse = async () => {
+  const updateContent = async () => {
     if (materialLink) {
       try {
-        await updateCheck()
-        toast.success(t('save'))
+        await axios.post(
+          `/api/materials/?materialLink=${materialLink}&checkId=${checkId}`
+        )
+        toast.success(t('updatedMaterial'))
       } catch (error) {
         console.error(error)
         toast.error(error.message)
@@ -121,7 +123,7 @@ const CheckId = ({ lng }) => {
     }
   }
 
-  const updateCheck = async () => {
+  const updateCheckInfo = async () => {
     try {
       await axios.post(`/api/projects/${projectId}/books/${bookId}/checks/${checkId}`, {
         started_at: startDate,
@@ -129,6 +131,7 @@ const CheckId = ({ lng }) => {
         name: checkName,
         material_link: materialLink,
       })
+      toast.success(t('updatedInformation'))
     } catch (error) {
       console.error(error)
       toast.error(error.message)
@@ -183,6 +186,16 @@ const CheckId = ({ lng }) => {
           <LeftArrow className="h-5 w-5 mr-1" />
           {t('back')}
         </Link>
+        {checkName !== '' && (
+          <div className="flex my-4">
+            <Link href={`/${lng}/checks/${checkId}/${chapterNumber}`} ref={checkPageRef}>
+              {currentDomain}/{lng}/checks/{checkId}/{chapterNumber}
+            </Link>
+            <Copy className="h-5 w-5 ml-1" onClick={copyToClipboard}></Copy>
+          </div>
+        )}
+        <br />
+
         <div className="mb-4">
           <label className="block font-medium text-gray-700">{t('name')}</label>
           <input
@@ -193,16 +206,6 @@ const CheckId = ({ lng }) => {
           />
         </div>
         <div className="mb-4">
-          <label className="block font-medium text-gray-700 mt-2">
-            {t('provideLink')}
-          </label>
-          <input
-            type="text"
-            value={materialLink}
-            onChange={(e) => setMaterialLink(e.target.value)}
-            placeholder={t('linkResource')}
-            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full"
-          />
           <label className="block font-medium text-gray-700">{t('startingDate')}</label>
           <input
             type="datetime-local"
@@ -218,19 +221,27 @@ const CheckId = ({ lng }) => {
             className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
           />
         </div>
-        {checkName !== '' && (
-          <div className="flex my-4">
-            <Link href={`/${lng}/checks/${checkId}/${chapterNumber}`} ref={checkPageRef}>
-              {currentDomain}/{lng}/checks/{checkId}/{chapterNumber}
-            </Link>
-            <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
-          </div>
-        )}
         <button
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
-          onClick={updateResourse}
+          onClick={updateCheckInfo}
         >
           {t('updateInformation')}
+        </button>
+        <br />
+        <br />
+        <label className="block font-medium text-gray-700 mt-2">{t('provideLink')}</label>
+        <input
+          type="text"
+          value={materialLink}
+          onChange={(e) => setMaterialLink(e.target.value)}
+          placeholder={t('linkResource')}
+          className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full"
+        />
+        <button
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
+          onClick={updateContent}
+        >
+          {t('updateMaterial')}
         </button>
         <br />
         <br />
