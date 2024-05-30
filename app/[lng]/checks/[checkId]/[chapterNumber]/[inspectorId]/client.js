@@ -60,7 +60,7 @@ const CheckInspectorDetail = ({ lng }) => {
   )
 
   useEffect(() => {
-    if (material?.content && chapter.length === 0) {
+    if (material?.content && chapter?.length === 0) {
       const _chapter = material.content[currentChapterIndex - 1]
       setChapter(_chapter)
       setChapterLength(material.content.length)
