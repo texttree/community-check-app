@@ -1,7 +1,7 @@
-{
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-  "editor.formatOnSave": true,
-  "[javascript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  }
-}
+// {
+//   "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+//   "editor.formatOnSave": true,
+//   "[javascript]": {
+//     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+//   }
+// }
