@@ -26,20 +26,12 @@ export async function POST(req) {
   }
 
   try {
-    let content
-
-    if (materialLink.endsWith('.usfm')) {
-      content = await getDataUsfm(materialLink)
-    } else if (materialLink.endsWith('.zip')) {
-      content = await getDataMd(materialLink)
-    } else {
-      return new Response(
-        JSON.stringify({ error: 'Incorrect material link: unsupported format' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      )
-    }
-
+    const content = await fetchContent(materialLink)
     const checkId = url.searchParams.get('checkId')
+
+    if (!checkId) {
+      throw new Error('Check ID is missing')
+    }
 
     const { data, error } = await supabaseService
       .from('checks')
@@ -62,21 +54,31 @@ export async function POST(req) {
   }
 }
 
+async function fetchContent(materialLink) {
+  if (materialLink.endsWith('.usfm')) {
+    return getDataUsfm(materialLink)
+  } else if (materialLink.endsWith('.zip')) {
+    return getDataMd(materialLink)
+  } else {
+    throw new Error('Incorrect material link: unsupported format')
+  }
+}
+
 async function getDataUsfm(materialLink) {
   try {
     const res = await axios.get(materialLink)
     const jsonData = parsingWordText(usfm.toJSON(res.data))
 
-    if (jsonData && jsonData.chapters) {
-      const chapters = jsonData.chapters
-      for (const key in chapters) {
-        chapters[key] = parseChapter(chapters[key])
-      }
-      const updatedJsonData = { ...jsonData, chapters }
-      return convertToVerseObjects(updatedJsonData)
-    } else {
+    if (!jsonData || !jsonData.chapters) {
       throw new Error('Incorrect material format')
     }
+
+    const chapters = jsonData.chapters
+    for (const key in chapters) {
+      chapters[key] = parseChapter(chapters[key])
+    }
+
+    return convertToVerseObjects({ ...jsonData, chapters })
   } catch (error) {
     console.error(error)
     throw new Error(error.message)
@@ -112,8 +114,7 @@ async function getDataMd(materialLink) {
         content.trim().length > 0 &&
         !['intro.md', 'title.md'].includes(path.basename(file.name))
       ) {
-        const jsonData = MdToJson(content)
-        jsonDataArray.push(jsonData)
+        jsonDataArray.push(MdToJson(content))
       }
     }
 
@@ -125,36 +126,28 @@ async function getDataMd(materialLink) {
 }
 
 function convertToVerseObjects(data) {
-  const chapters = data.chapters
   const verses = []
 
-  for (const chapter in chapters) {
-    if (chapters.hasOwnProperty(chapter)) {
-      const verseObjects = chapters[chapter]
-      const chapterTitle = `${chapter}`
-      const chapterVerses = []
+  for (const [chapter, verseObjects] of Object.entries(data.chapters)) {
+    const chapterVerses = verseObjects
+      .filter((verse) => verse.verse !== 'front')
+      .map((verse) => ({
+        text: verse.text,
+        verse: verse.verse,
+      }))
+      .sort((a, b) => compareVerses(a.verse, b.verse))
 
-      for (const verse of verseObjects) {
-        chapterVerses.push({ text: verse.text, verse: verse.verse })
-      }
-
-      chapterVerses.sort((a, b) => compareVerses(a.verse, b.verse))
-
-      verses.push({ chapter: chapterTitle, verseObjects: chapterVerses })
-    }
+    verses.push({ chapter, verseObjects: chapterVerses })
   }
 
   return verses
 }
 
 function compareVerses(a, b) {
-  const verseA = extractVerseNumber(a)
-  const verseB = extractVerseNumber(b)
-  return verseA - verseB
+  return extractVerseNumber(a) - extractVerseNumber(b)
 }
 
 function extractVerseNumber(verse) {
-  if (verse === 'front') return 1
   const parts = verse.split('-')
   return parseInt(parts[0], 10)
 }
