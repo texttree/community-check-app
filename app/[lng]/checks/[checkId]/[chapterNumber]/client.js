@@ -28,18 +28,11 @@ const CheckDetail = ({ lng }) => {
   const { data: info } = useSWR(checkId && `/api/checks/${checkId}/info`, fetcher, {
     onError: (error) => console.error('Failed to fetch check info:', error),
   })
-
   const {
     data: material,
     isLoading,
     mutate,
-  } = useSWR(
-    info ? `/api/materials/?materialLink=${info.material_link}` : null,
-    fetcher,
-    {
-      onError: (error) => console.error('Failed to fetch materials:', error),
-    }
-  )
+  } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
 
   useEffect(() => {
     if (info?.check_finished_at) {
@@ -50,10 +43,10 @@ const CheckDetail = ({ lng }) => {
   }, [info])
 
   useEffect(() => {
-    if (material && material.length > 0) {
-      const _chapter = material[currentChapterIndex - 1]?.verseObjects || []
+    if (material?.content) {
+      const _chapter = material.content[currentChapterIndex - 1]
       setChapter(_chapter)
-      setChapterLength(material.length)
+      setChapterLength(material.content.length)
     } else {
       mutate()
     }
@@ -90,15 +83,15 @@ const CheckDetail = ({ lng }) => {
           <Loader />
         </div>
       )}
-      {!isLoading && !material && (
+      {!isLoading && !material?.content && (
         <div className="max-w-6xl mx-auto p-4 text-center">
           <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
         </div>
       )}
-      {!isLoading && material && (
+      {!isLoading && material?.content && (
         <div className="max-w-6xl mx-auto p-4">
           <CheckInfo checkId={checkId} lng={lng} />
-          {(!isCheckExpired || info?.is_owner) && chapter.length > 0 && (
+          {(!isCheckExpired || info?.is_owner) && chapter?.verseObjects?.length > 0 && (
             <div className="mt-4">
               <div className="flex justify-between mb-4">
                 <button
@@ -117,7 +110,7 @@ const CheckDetail = ({ lng }) => {
                   {t('nextChapter')}
                 </button>
               </div>
-              {chapter
+              {chapter?.verseObjects
                 .filter((verse) => verse.text !== '')
                 .map((verse) => (
                   <div key={verse.verse} className="bg-gray-100 p-2 rounded-md my-2">
