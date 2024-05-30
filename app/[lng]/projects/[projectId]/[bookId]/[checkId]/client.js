@@ -194,8 +194,6 @@ const CheckId = ({ lng }) => {
             <Copy className="h-5 w-5 ml-1" onClick={copyToClipboard}></Copy>
           </div>
         )}
-        <br />
-
         <div className="mb-4">
           <label className="block font-medium text-gray-700">{t('name')}</label>
           <input
@@ -222,14 +220,12 @@ const CheckId = ({ lng }) => {
           />
         </div>
         <button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
+          className=" bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
           onClick={updateCheckInfo}
         >
           {t('updateInformation')}
         </button>
-        <br />
-        <br />
-        <label className="block font-medium text-gray-700 mt-2">{t('provideLink')}</label>
+        <label className="mt-6 block font-medium text-gray-700">{t('provideLink')}</label>
         <input
           type="text"
           value={materialLink}
@@ -243,9 +239,8 @@ const CheckId = ({ lng }) => {
         >
           {t('updateContent')}
         </button>
-        <br />
-        <br />
-        <div className="my-2">
+
+        <div className="my-2 mt-6">
           <label className="block font-medium text-gray-700">{t('nameInspector')}</label>
           <input
             type="text"
