@@ -10,12 +10,9 @@ import toast from 'react-hot-toast'
 import useSWR from 'swr'
 import axios from 'axios'
 
-import usfm from 'usfm-js'
-
 import { fetcher } from '@/helpers/fetcher'
 import LeftArrow from '@/public/left.svg'
 import Copy from '@/public/copy.svg'
-import { parsingWordText } from '@/helpers/usfmHelper'
 import { useTranslation } from '@/app/i18n/client'
 import DeleteModal from '@/app/components/DeleteModal'
 
@@ -110,17 +107,14 @@ const CheckId = ({ lng }) => {
     }
   }, [check])
 
-  const updateResourse = async () => {
+  const updateContent = async () => {
     if (materialLink) {
       try {
-        const res = await axios.get(materialLink)
-        const jsonData = parsingWordText(usfm.toJSON(res.data))
-        if (Object.keys(jsonData?.chapters).length > 0) {
-          await updateCheck(jsonData)
-          toast.success(t('save'))
-        } else {
-          toast.error(t('enterCorrectLink'))
-        }
+        await axios.post('/api/materials/', {
+          materialLink: materialLink,
+          checkId: checkId,
+        })
+        toast.success(t('updatedContent'))
       } catch (error) {
         console.error(error)
         toast.error(error.message)
@@ -130,15 +124,14 @@ const CheckId = ({ lng }) => {
     }
   }
 
-  const updateCheck = async (jsonData) => {
+  const updateCheckInfo = async () => {
     try {
       await axios.post(`/api/projects/${projectId}/books/${bookId}/checks/${checkId}`, {
         started_at: startDate,
         finished_at: endDate,
         name: checkName,
-        material_link: materialLink,
-        content: jsonData,
       })
+      toast.success(t('updatedInformation'))
     } catch (error) {
       console.error(error)
       toast.error(error.message)
@@ -193,6 +186,14 @@ const CheckId = ({ lng }) => {
           <LeftArrow className="h-5 w-5 mr-1" />
           {t('back')}
         </Link>
+        {checkName !== '' && (
+          <div className="flex my-4">
+            <Link href={`/${lng}/checks/${checkId}/${chapterNumber}`} ref={checkPageRef}>
+              {currentDomain}/{lng}/checks/{checkId}/{chapterNumber}
+            </Link>
+            <Copy className="h-5 w-5 ml-1" onClick={copyToClipboard}></Copy>
+          </div>
+        )}
         <div className="mb-4">
           <label className="block font-medium text-gray-700">{t('name')}</label>
           <input
@@ -203,16 +204,6 @@ const CheckId = ({ lng }) => {
           />
         </div>
         <div className="mb-4">
-          <label className="block font-medium text-gray-700 mt-2">
-            {t('provideLink')}
-          </label>
-          <input
-            type="text"
-            value={materialLink}
-            onChange={(e) => setMaterialLink(e.target.value)}
-            placeholder={t('linkResource')}
-            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full"
-          />
           <label className="block font-medium text-gray-700">{t('startingDate')}</label>
           <input
             type="datetime-local"
@@ -228,23 +219,28 @@ const CheckId = ({ lng }) => {
             className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
           />
         </div>
-        {checkName !== '' && (
-          <div className="flex my-4">
-            <Link href={`/${lng}/checks/${checkId}/${chapterNumber}`} ref={checkPageRef}>
-              {currentDomain}/{lng}/checks/{checkId}/{chapterNumber}
-            </Link>
-            <Copy className="h-5 w-5 ml-1 " onClick={copyToClipboard}></Copy>
-          </div>
-        )}
         <button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
-          onClick={updateResourse}
+          className=" bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
+          onClick={updateCheckInfo}
         >
           {t('updateInformation')}
         </button>
-        <br />
-        <br />
-        <div className="my-2">
+        <label className="mt-6 block font-medium text-gray-700">{t('provideLink')}</label>
+        <input
+          type="text"
+          value={materialLink}
+          onChange={(e) => setMaterialLink(e.target.value)}
+          placeholder={t('linkResource')}
+          className="mt-1 mb-2 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full"
+        />
+        <button
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
+          onClick={updateContent}
+        >
+          {t('updateContent')}
+        </button>
+
+        <div className="my-2 mt-6">
           <label className="block font-medium text-gray-700">{t('nameInspector')}</label>
           <input
             type="text"

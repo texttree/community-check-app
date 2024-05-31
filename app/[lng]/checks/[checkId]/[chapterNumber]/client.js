@@ -6,12 +6,12 @@ import useSWR from 'swr'
 import { useTranslation } from '@/app/i18n/client'
 
 import { fetcher } from '@/helpers/fetcher'
-import { parseChapter } from '@/helpers/usfmHelper'
 
 import CustomError from '@/app/components/CustomError'
 import Loader from '@/app/components/Loader'
 import Notes from '@/app/components/Notes'
 import CheckInfo from '@/app/components/CheckInfo'
+
 const CheckDetail = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
   const router = useRouter()
@@ -25,7 +25,14 @@ const CheckDetail = ({ lng }) => {
   const [isCheckExpired, setIsCheckExpired] = useState(false)
   const [chapterLength, setChapterLength] = useState(0)
 
-  const { data: info } = useSWR(checkId && `/api/checks/${checkId}/info`, fetcher)
+  const { data: info } = useSWR(checkId && `/api/checks/${checkId}/info`, fetcher, {
+    onError: (error) => console.error('Failed to fetch check info:', error),
+  })
+  const {
+    data: material,
+    isLoading,
+    mutate,
+  } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
 
   useEffect(() => {
     if (info?.check_finished_at) {
@@ -35,22 +42,13 @@ const CheckDetail = ({ lng }) => {
     }
   }, [info])
 
-  const {
-    data: material,
-    isLoading,
-    mutate,
-  } = useSWR(checkId && `/api/checks/${checkId}`, fetcher)
-
   useEffect(() => {
-    if (material?.content) {
-      const chapters = material.content.chapters
-      const _chapter = parseChapter(chapters[currentChapterIndex])
+    if (material?.content && chapter?.length === 0) {
+      const _chapter = material.content[currentChapterIndex - 1]
       setChapter(_chapter)
-      setChapterLength(Object.keys(chapters).length)
-    } else {
-      mutate()
+      setChapterLength(material.content.length)
     }
-  }, [material, currentChapterIndex, mutate])
+  }, [material, currentChapterIndex, mutate, chapter])
 
   useEffect(() => {
     setCurrentChapterIndex((prevIndex) => parseInt(chapterNumber) || prevIndex)
@@ -91,7 +89,7 @@ const CheckDetail = ({ lng }) => {
       {!isLoading && material?.content && (
         <div className="max-w-6xl mx-auto p-4">
           <CheckInfo checkId={checkId} lng={lng} />
-          {(!isCheckExpired || info?.is_owner) && chapter.length > 0 && (
+          {(!isCheckExpired || info?.is_owner) && chapter?.verseObjects?.length > 0 && (
             <div className="mt-4">
               <div className="flex justify-between mb-4">
                 <button
@@ -110,7 +108,7 @@ const CheckDetail = ({ lng }) => {
                   {t('nextChapter')}
                 </button>
               </div>
-              {chapter
+              {chapter?.verseObjects
                 .filter((verse) => verse.text !== '')
                 .map((verse) => (
                   <div key={verse.verse} className="bg-gray-100 p-2 rounded-md my-2">
