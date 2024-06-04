@@ -19,8 +19,10 @@ const SwitchLanguage = ({ lng }) => {
           key={language}
           href={redirectedPathName(language)}
           className={`${
-            lng === language ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600'
-          } hover:bg-blue-600 hover:text-white px-2 py-1 rounded-md`}
+            lng === language
+              ? 'bg-desaturated-cyan text-white'
+              : 'bg-gray-200 text-gray-600'
+          } hover:bg-deep-space hover:text-white px-2 py-1 rounded-md`}
         >
           {language}
         </Link>
