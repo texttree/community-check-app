@@ -54,7 +54,7 @@ const AppBar = ({ lng }) => {
   }, [])
 
   return (
-    <header className="bg-blue-500 p-4 flex justify-between items-center rounded-t-lg">
+    <header className="bg-desaturated-cyan p-4 flex justify-between items-center rounded-t-lg">
       <Link href={'/' + lng} className="text-white cursor-pointer text-2xl font-bold">
         Community Check
       </Link>
@@ -86,7 +86,7 @@ const AppBar = ({ lng }) => {
             ) : (
               <Link
                 href={`/${lng}/login`}
-                className="text-gray-700 block px-4 py-2 text-sm text-center mt-2 bg-gray-200 rounded-md hover:bg-green-500"
+                className="text-gray-700 block px-4 py-2 text-sm text-center mt-2 bg-gray-200 rounded-md hover:bg-deep-space hover:text-white"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('signIn')}
