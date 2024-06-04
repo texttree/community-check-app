@@ -8,6 +8,7 @@ import { useTranslation } from '@/app/i18n/client'
 import { fetcher } from '@/helpers/fetcher'
 import Loader from '@/app/components/Loader'
 import DeleteModal from '@/app/components/DeleteModal'
+import Image from 'next/image'
 
 const Projects = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -45,24 +46,30 @@ const Projects = ({ lng }) => {
       {error ? (
         <p className="text-red-600">{t('errorOccurred')}</p>
       ) : projects ? (
-        projects.map((project) => (
-          <div key={project.id} className="block">
-            <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105">
-              <Link
-                className="text-3xl font-semibold text-blue-600"
-                href={`projects/${project.id}`}
-              >
-                {project.name}
+        <div className="flex flex-wrap gap-4 mb-4">
+          {projects.map((project) => (
+            <div key={project.id} className="flex flex-col items-center">
+              <Link href={`projects/${project.id}`}>
+                <Image
+                  src="/folder.svg"
+                  alt="folder icon"
+                  width={120}
+                  height={120}
+                  className="rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105"
+                />
+                <p className="text-xl font-semibold text-raisin-black mt-2 text-center">
+                  {project.name}
+                </p>
               </Link>
               <button
-                className="bg-red-500 block hover:bg-red-600 text-white px-4 py-2 rounded-md"
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md mt-2"
                 onClick={() => openDeleteModal(project)}
               >
                 {t('delete')}
               </button>
             </div>
-          </div>
-        ))
+          ))}
+        </div>
       ) : (
         <Loader />
       )}
