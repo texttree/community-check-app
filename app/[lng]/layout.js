@@ -18,7 +18,7 @@ export const metadata = {
 export default function RootLayout({ children, params: { lng } }) {
   return (
     <html lang={lng} dir={dir(lng)}>
-      <body>
+      <body className="bg-bright-gray">
         <div>
           <div className="w-full">
             <AppBar lng={lng} />
