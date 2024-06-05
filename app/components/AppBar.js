@@ -54,12 +54,8 @@ const AppBar = ({ lng }) => {
   }, [])
 
   return (
-    <header className="bg-desaturated-cyan p-4 flex justify-between items-center rounded-t-lg">
-      <Link href={'/' + lng} className="text-white cursor-pointer text-2xl font-bold">
-        Community Check
-      </Link>
-
-      <div className="relative inline-block text-left">
+    <header className="bg-desaturated-cyan p-4 flex justify-start items-center rounded-t-lg">
+      <div className="relative inline-block text-left mr-4">
         <div>
           <button
             className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-200 px-3 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
@@ -71,7 +67,7 @@ const AppBar = ({ lng }) => {
         {isMenuOpen && (
           <div
             ref={menuRef}
-            className="absolute right-0 mt-2 w-56 p-2 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            className="absolute mt-2 w-56 p-2 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
           >
             <SwitchLanguage lng={lng} />
             {user ? (
@@ -95,6 +91,9 @@ const AppBar = ({ lng }) => {
           </div>
         )}
       </div>
+      <Link href={'/' + lng} className="text-white cursor-pointer text-2xl font-bold">
+        Community Check
+      </Link>
     </header>
   )
 }
