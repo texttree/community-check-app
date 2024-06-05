@@ -61,23 +61,21 @@ const ProjectPage = ({ lng }) => {
           </TabList>
           <TabPanels className="mt-2">
             <TabPanel className="bg-white p-4 rounded-md text-left">
-              {' '}
-              {/* Добавлен класс text-left для выравнивания текста */}
               <div className="flex justify-start space-x-4 mb-4">
                 <Link
                   href={`/${lng}/projects/new`}
-                  className="bg-desaturated-cyan hover:bg-deep-space text-white px-4 py-2 rounded-md"
+                  className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
                 >
                   {t('createProject')}
                 </Link>
                 <Link
                   href={`/${lng}/tokens`}
-                  className="bg-desaturated-cyan hover:bg-deep-space text-white px-4 py-2 rounded-md"
+                  className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
                 >
                   {t('tokens')}
                 </Link>
                 <button
-                  className="bg-desaturated-cyan hover:bg-deep-space text-white px-4 py-2 rounded-md"
+                  className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
                   onClick={openAddModal}
                 >
                   {t('quickCreateCheck')}

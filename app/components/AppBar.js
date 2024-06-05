@@ -54,7 +54,7 @@ const AppBar = ({ lng }) => {
   }, [])
 
   return (
-    <header className="bg-desaturated-cyan p-4 flex justify-start items-center rounded-t-lg">
+    <header className="bg-ming-blue p-4 flex justify-start items-center">
       <div className="relative inline-block text-left mr-4">
         <div>
           <button

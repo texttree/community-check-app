@@ -88,13 +88,13 @@ export default function FormComponent({ lng, redirectedFrom }) {
 
         <p>{error}</p>
         <button
-          className="mt-6 flex w-full justify-center rounded-md bg-desaturated-cyan px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-deep-space focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:deep-space"
+          className="mt-6 flex w-full justify-center rounded-md bg-ming-blue px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-deep-space focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:deep-space"
           onClick={handleLogin}
         >
           {t('signIn')}
         </button>
         <button
-          className="flex mt-6 w-full justify-center rounded-md bg-desaturated-cyan px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-deep-space focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:deep-space"
+          className="flex mt-6 w-full justify-center rounded-md bg-ming-blue px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-deep-space focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:deep-space"
           onClick={handleRegister}
         >
           {t('register')}

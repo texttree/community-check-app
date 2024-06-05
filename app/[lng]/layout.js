@@ -19,8 +19,8 @@ export default function RootLayout({ children, params: { lng } }) {
   return (
     <html lang={lng} dir={dir(lng)}>
       <body>
-        <div className="bg-gray-200 min-h-screen py-8">
-          <div className="max-w-6xl mx-auto p-4">
+        <div>
+          <div className="w-full">
             <AppBar lng={lng} />
           </div>
           <main>
