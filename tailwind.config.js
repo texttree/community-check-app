@@ -11,6 +11,7 @@ module.exports = {
       colors: {
         'ming-blue': '#3C6E71',
         'deep-space': '#3C6371',
+        'dark-slate-gray': '#24585B',
         'desaturated-cyan': '#609295',
         'peru-orange': '#C68D39',
         'platinum-white': '#E3E3E3',
