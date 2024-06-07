@@ -61,9 +61,11 @@ export default function FormComponent({ lng, redirectedFrom }) {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="relative flex flex-col items-center">
-        <Image src="/Paul.svg" alt="login illustration" width={500} height={500} />
-        <div className="absolute top-1/2 transform -translate-y-1/2 w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
+      <div className="relative flex items-center justify-center">
+        <div className="absolute -left-44 top-2/3 transform -translate-y-2/3">
+          <Image src="/Paul.svg" alt="Paul" width={550} height={550} />
+        </div>
+        <div className="relative ml-72 w-96 h-80 p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-center text-3xl font-bold text-gray-900 mb-6">
             {t('signAccount')}
           </h2>
@@ -97,14 +99,14 @@ export default function FormComponent({ lng, redirectedFrom }) {
             <div className="mt-6 flex justify-between">
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-2"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-ming-blue hover:bg-dark-slate-gray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-2"
                 disabled={loading}
               >
                 {loading ? 'Загрузка...' : 'Войти'}
               </button>
               <button
                 type="button"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                className="w-full flex justify-center py-2 px-4 border border-transparent border-gray-300 rounded-md shadow-sm text-sm font-medium text-deep-space bg-white hover:bg-dark-slate-gray hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                 onClick={handleRegister}
                 disabled={loading}
               >
