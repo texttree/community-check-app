@@ -1594,6 +1594,70 @@
           }
         }
       }
+    },
+    "/api/tokens/validate": {
+      "get": {
+        "summary": "Validate user token",
+        "description": "Checks if the provided token exists and belongs to the user.",
+        "tags": [
+          "Token Validation"
+        ],
+        "parameters": {
+          "schema": {
+            "type": "string"
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token is valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized or invalid token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Internal server error message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "tags": [
