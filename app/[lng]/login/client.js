@@ -60,12 +60,12 @@ export default function FormComponent({ lng, redirectedFrom }) {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="relative flex items-center justify-center">
-        <div className="absolute -left-44 top-2/3 transform -translate-y-2/3">
+        <div className="absolute -left-44 top-48 transform -translate-y-2/3">
           <Image src="/Paul.svg" alt="Paul" width={550} height={550} />
         </div>
-        <div className="relative ml-72 w-96 h-80 p-8 bg-white shadow-lg rounded-lg">
+        <div className="relative ml-80 w-96 h-80 p-8 bg-white shadow-lg rounded-lg transform -translate-y-16">
           <h2 className="text-center text-3xl font-bold text-gray-900 mb-6">
             {t('signAccount')}
           </h2>

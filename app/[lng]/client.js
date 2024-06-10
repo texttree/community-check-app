@@ -3,22 +3,26 @@
 import Link from 'next/link'
 import { useTranslation } from '../i18n/client'
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
-const Index = ({ lng, user }) => {
+const Index = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
 
-  const currentDomain =
-    typeof window !== 'undefined'
-      ? window.location.origin
-      : 'https://community-check-app.netlify.app'
+  const [currentDomain, setCurrentDomain] = useState(
+    'https://community-check-app.netlify.app'
+  )
+
+  useEffect(() => {
+    setCurrentDomain(window.location.origin)
+  }, [])
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100">
+    <div className="flex min-h-screen flex-col items-center justify-center scale-75">
       <div className="mx-auto p-4 text-center max-w-6xl">
         <Image
           src="/logo.svg"
           alt="Community Check Logo"
-          className="mx-auto mb-6"
+          className="mx-auto mb-6 -mt-32"
           width={60}
           height={60}
         />
@@ -32,7 +36,7 @@ const Index = ({ lng, user }) => {
           tortor pretium massa mi odio vulputate cursus.
         </p>
 
-        <div className="mb-10 grid gap-6 grid-cols-1 md:grid-cols-3">
+        <div className="mb-10 grid gap-6 grid-cols-1 md:grid-cols-4">
           <div className="w-full md:w-auto h-auto md:h-64 p-6 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col">
             <div className="flex items-center mb-4">
               <Image src="/icon-check.svg" alt="Check" width={60} height={60} />
@@ -64,12 +68,12 @@ const Index = ({ lng, user }) => {
               Пожалуйста, войдите, чтобы получить доступ к полному функционалу.
             </p>
           </div>
-        </div>
-
-        <div className="mb-10 flex flex-col items-center space-y-4">
-          <div className="flex justify-center bg-gray-200 rounded-lg h-12 items-center space-x-4 px-6">
-            <p className="font-bold text-lg flex-shrink-0">API</p>
-            <Link href="/doc">{`${currentDomain}/doc`}</Link>
+          <div className="w-full md:w-auto h-auto md:h-64 p-6 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col">
+            <div className="flex items-center mb-4">
+              <Image src="/icon-project.svg" alt="Project" width={60} height={60} />
+            </div>
+            <h2 className="font-semibold text-xl">Интеграция с большими проектами</h2>
+            <Link className="flex-grow" href="/doc">{`${currentDomain}/doc`}</Link>
           </div>
         </div>
         <div className="mx-auto my- h-16 w-2/5 flex justify-center bg-gray-200 rounded-lg">
