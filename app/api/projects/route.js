@@ -38,26 +38,17 @@ import { supabaseService } from '@/app/supabase/service'
  *       required: true
  *       content:
  *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: Name of the project
- *                 example: RLOB
+*             schema:
+ *               $ref: '#/components/schemas/Project'
  *             required:
  *               - name
  *     responses:
- *       201:
+ *       200:
  *         description: The newly created project
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: number
- *                   description: The ID of the newly created project
+ *               $ref: '#/components/schemas/Project'
  *       400:
  *         description: Invalid input, project name is missing or already exists
  *       401:
@@ -134,7 +125,7 @@ export async function POST(req) {
       return Response.json({ error }, { status: 400 })
     }
 
-    return Response.json(data, { status: 201 })
+    return Response.json(data, { status: 200 })
   } catch (error) {
     return Response.json({ error }, { status: 500 })
   }
