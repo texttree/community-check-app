@@ -33,6 +33,29 @@
         "url": "http: //opensource.org/licenses/MIT"
       },
       "version": "1.0.0"
-    }
+    },
+    "tags": [
+      {
+        "name": "Token"
+      },
+      {
+        "name": "Fast"
+      },
+      {
+        "name": "Projects"
+      },
+      {
+        "name": "Books"
+      },
+      {
+        "name": "Checks"
+      },
+      {
+        "name": "Material"
+      },
+      {
+        "name": "Inspector"
+      }
+    ]
   }
 }

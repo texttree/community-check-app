@@ -2,8 +2,6 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * tags:
- *   - Checks
  * components:
  *   schemas:
  *     Check:
@@ -25,7 +23,7 @@ import { supabaseService } from '@/app/supabase/service'
  *   post:
  *     summary: Create a fast project, books and check
  *     tags:
- *       - Checks
+ *       - Fast
  *     requestBody:
  *       required: true
  *       content:
