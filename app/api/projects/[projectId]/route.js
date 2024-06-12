@@ -103,6 +103,7 @@ export async function POST(req, { params: { projectId } }) {
       {
         project_id: projectId,
         new_name: name,
+        user_id: userId,
       }
     )
 

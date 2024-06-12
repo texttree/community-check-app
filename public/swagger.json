@@ -39,20 +39,6 @@
           }
         }
       },
-      "Material": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Check ID"
-          },
-          "content": {
-            "type": "string",
-            "description": "Material content"
-          }
-        }
-      },
       "Check": {
         "type": "object",
         "properties": {
@@ -282,6 +268,55 @@
         }
       }
     },
+    "/api/materials": {
+      "post": {
+        "summary": "Create or update material",
+        "tags": [
+          "Material"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "materialLink": {
+                    "type": "string",
+                    "description": "Link to the material"
+                  },
+                  "checkId": {
+                    "type": "string",
+                    "description": "ID of the check"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The material was created or updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Material"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/projects/{projectId}/books/{bookId}/checks/{checkId}/inspector": {
       "get": {
         "summary": "Returns the list of inspectors for the check",
@@ -437,133 +472,6 @@
           },
           "500": {
             "description": "Server error"
-          }
-        }
-      }
-    },
-    "/api/projects/{projectId}/books/{bookId}/checks/{checkId}/material": {
-      "get": {
-        "summary": "Get material by check id",
-        "tags": [
-          "Material"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Project ID"
-          },
-          {
-            "in": "path",
-            "name": "bookId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Book ID"
-          },
-          {
-            "in": "path",
-            "name": "checkId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Check ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The material",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Material"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "post": {
-        "summary": "Create or update material",
-        "tags": [
-          "Material"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Project ID"
-          },
-          {
-            "in": "path",
-            "name": "bookId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Book ID"
-          },
-          {
-            "in": "path",
-            "name": "checkId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Check ID"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "content": {
-                    "type": "string",
-                    "description": "Material content"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "The material",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Material"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
@@ -1534,34 +1442,21 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Name of the project",
-                    "example": "RLOB"
-                  }
-                },
-                "required": [
-                  "name"
-                ]
-              }
+                "$ref": "#/components/schemas/Project"
+              },
+              "required": [
+                "name"
+              ]
             }
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "The newly created project",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "number",
-                      "description": "The ID of the newly created project"
-                    }
-                  }
+                  "$ref": "#/components/schemas/Project"
                 }
               }
             }
