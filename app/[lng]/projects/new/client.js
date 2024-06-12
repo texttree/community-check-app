@@ -27,7 +27,7 @@ const NewProjectPage = ({ lng }) => {
           throw new Error(t('errorCreateProject'))
         }
 
-        router.push(`/${lng}/projects/${response.data}`)
+        router.push(`/${lng}/projects/${response.data.id}`)
       } catch (error) {
         setErrorMessage(error.message)
       }
