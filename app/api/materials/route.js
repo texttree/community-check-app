@@ -4,7 +4,41 @@ import { MdToJson } from '@texttree/obs-format-convert-rcl'
 import { supabaseService } from '@/app/supabase/service'
 import axios from 'axios'
 import JSZip from 'jszip'
-import path from 'path'
+
+/**
+ * @swagger
+ * /api/materials:
+ *   post:
+ *     summary: Create or update material
+ *     tags:
+ *       - Material
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               materialLink:
+ *                 type: string
+ *                 description: Link to the material
+ *               checkId:
+ *                 type: string
+ *                 description: ID of the check
+ *     responses:
+ *       201:
+ *         description: The material was created or updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Material'
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal Server Error
+ */
 
 export async function POST(req) {
   const userId = req.headers.get('x-user-id')
