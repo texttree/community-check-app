@@ -2,9 +2,6 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * tags:
- *   name: Checks
- *   description: Checks operations
  * components:
  *   schemas:
  *     Check:

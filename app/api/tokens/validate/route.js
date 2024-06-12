@@ -7,20 +7,8 @@ import { supabaseService } from '@/app/supabase/service'
  *     summary: Validate user token
  *     description: Checks if the provided token exists and belongs to the user.
  *     tags:
- *       - Token Validation
- *     parameters:
- *       - in: header
- *         name: x-user-id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID of the user
- *       - in: header
- *         name: x-comcheck-token
- *         schema:
- *           type: string
- *         required: true
- *         description: Token to be validated
+ *       - Token
+ 
  *     responses:
  *       200:
  *         description: Token is valid.

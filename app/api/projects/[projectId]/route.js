@@ -2,8 +2,6 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * tags:
- *   - Books
  * /api/projects/{projectId}:
  *   get:
  *     summary: Returns a project by ID.

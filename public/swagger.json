@@ -177,6 +177,29 @@
     },
     "version": "1.0.0"
   },
+  "tags": [
+    {
+      "name": "Token"
+    },
+    {
+      "name": "Fast"
+    },
+    {
+      "name": "Projects"
+    },
+    {
+      "name": "Books"
+    },
+    {
+      "name": "Checks"
+    },
+    {
+      "name": "Material"
+    },
+    {
+      "name": "Inspector"
+    }
+  ],
   "paths": {
     "/api/inspectors/{inspectorId}": {
       "get": {
@@ -1416,7 +1439,7 @@
       "post": {
         "summary": "Create a fast project, books and check",
         "tags": [
-          "Checks"
+          "Fast"
         ],
         "requestBody": {
           "required": true,
@@ -1600,13 +1623,8 @@
         "summary": "Validate user token",
         "description": "Checks if the provided token exists and belongs to the user.",
         "tags": [
-          "Token Validation"
+          "Token"
         ],
-        "parameters": {
-          "schema": {
-            "type": "string"
-          }
-        },
         "responses": {
           "200": {
             "description": "Token is valid.",
@@ -1618,6 +1636,10 @@
                     "status": {
                       "type": "integer",
                       "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Token is valid"
                     }
                   }
                 }
@@ -1659,24 +1681,5 @@
         }
       }
     }
-  },
-  "tags": [
-    {
-      "name": "Inspector",
-      "description": "Inspector operations"
-    },
-    {
-      "name": "Material",
-      "description": "Material operations"
-    },
-    {
-      "name": "Checks",
-      "description": "Checks operations"
-    },
-    {
-      "name": "Books",
-      "description": "Operations about books"
-    },
-    "Books"
-  ]
+  }
 }

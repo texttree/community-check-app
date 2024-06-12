@@ -2,8 +2,7 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * tags:
- *   - Projects
+
  * components:
  *   schemas:
  *     Project:
