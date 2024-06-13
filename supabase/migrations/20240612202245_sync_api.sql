@@ -1,7 +1,7 @@
 DROP FUNCTION IF EXISTS create_project;
 DROP FUNCTION IF EXISTS get_project_by_id;
 DROP FUNCTION IF EXISTS update_project_name;
--- DROP FUNCTION IF EXISTS create_project_book_check;
+DROP FUNCTION IF EXISTS create_project_book_check;
 
 CREATE OR REPLACE FUNCTION public.create_project(name text, user_id uuid) 
   RETURNS json
@@ -81,71 +81,71 @@ $$;
 
 
 
--- CREATE OR REPLACE FUNCTION public.create_project_book_check(
---     user_id uuid, 
---     project_name text, 
---     book_name text, 
---     check_name text
--- ) 
--- RETURNS jsonb
--- LANGUAGE plpgsql
--- AS $$
--- DECLARE
---     project_id_table bigint;
---     book_id bigint;
---     check_id uuid;
---     project_exists boolean;
---     book_exists boolean;
---     result jsonb;
--- BEGIN
---     -- Проверяем существует ли проект
---     SELECT EXISTS (
---         SELECT 1
---         FROM public.projects p
---         WHERE p.name = project_name AND p.user_id = create_project_book_check.user_id
---     ) INTO project_exists;
+CREATE OR REPLACE FUNCTION public.create_project_book_check(
+    user_id uuid, 
+    project_name text, 
+    book_name text, 
+    check_name text
+) 
+RETURNS jsonb
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    project_id_table bigint;
+    book_id bigint;
+    check_id uuid;
+    project_exists boolean;
+    book_exists boolean;
+    result jsonb;
+BEGIN
+    -- Проверяем существует ли проект
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.projects p
+        WHERE p.name = project_name AND p.user_id = create_project_book_check.user_id
+    ) INTO project_exists;
 
---     IF project_exists THEN
---         -- Если проект существует, получаем его id
---         SELECT p.id INTO project_id_table
---         FROM public.projects p
---         WHERE p.name = project_name AND p.user_id = create_project_book_check.user_id;
---     ELSE
---         -- Если проект не существует, создаем его и получаем его id из результата
---         SELECT (create_project(project_name, user_id)->>'project_id')::bigint INTO project_id_table;
---     END IF;
+    IF project_exists THEN
+        -- Если проект существует, получаем его id
+        SELECT p.id INTO project_id_table
+        FROM public.projects p
+        WHERE p.name = project_name AND p.user_id = create_project_book_check.user_id;
+    ELSE
+        -- Если проект не существует, создаем его и получаем его id из результата
+        SELECT (create_project(project_name, user_id)->>'id')::bigint INTO project_id_table;
+    END IF;
 
---     -- Проверяем существует ли книга
---     SELECT EXISTS (
---         SELECT 1
---         FROM public.books b
---         WHERE b.name = book_name AND b.project_id = project_id_table
---     ) INTO book_exists;
+    -- Проверяем существует ли книга
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.books b
+        WHERE b.name = book_name AND b.project_id = project_id_table
+    ) INTO book_exists;
 
---     IF book_exists THEN
---         -- Если книга существует, получаем ее id
---         SELECT b.id INTO book_id
---         FROM public.books b
---         WHERE b.name = book_name AND b.project_id = project_id_table;
---     ELSE
---         -- Если книга не существует, создаем ее и получаем ее id из результата
---         SELECT (create_book(project_id_table, book_name, user_id)->>'book_id')::bigint INTO book_id;
---     END IF;
+    IF book_exists THEN
+        -- Если книга существует, получаем ее id
+        SELECT b.id INTO book_id
+        FROM public.books b
+        WHERE b.name = book_name AND b.project_id = project_id_table;
+    ELSE
+        -- Если книга не существует, создаем ее и получаем ее id из результата
+        SELECT (create_book(project_id_table, book_name, user_id)->>'book_id')::bigint INTO book_id;
+    END IF;
 
---     -- Создаем проверку
---     check_id := create_fast_check(check_name, book_id, user_id);
+    -- Создаем проверку
+    check_id := create_fast_check(check_name, book_id, user_id);
 
---     -- Возвращаем результат
---     result := jsonb_build_object(
---         'project_id', project_id_table,
---         'book_id', book_id,
---         'check_id', check_id
---     );
+    -- Возвращаем результат
+    result := jsonb_build_object(
+        'project_id', project_id_table,
+        'book_id', book_id,
+        'check_id', check_id
+    );
 
---     RETURN result;
+    RETURN result;
 
--- EXCEPTION
---     WHEN OTHERS THEN
---         RAISE EXCEPTION 'Error creating project, book, or check: %', SQLERRM;
--- END;
--- $$;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'Error creating project, book, or check: %', SQLERRM;
+END;
+$$;
