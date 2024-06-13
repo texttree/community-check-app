@@ -35,7 +35,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
   useEffect(() => {
     if (info) {
       const counts = info.reduce((acc, item) => {
-        acc[item.check_id] = item.notes_count
+        acc[item.check_name] = item.notes_count
         return acc
       }, {})
       setNotesCounts(counts)
