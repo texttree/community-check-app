@@ -38,10 +38,13 @@ import { supabaseService } from '@/app/supabase/service'
  *       required: true
  *       content:
  *         application/json:
-*             schema:
- *               $ref: '#/components/schemas/Project'
- *             required:
- *               - name
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 name:
+ *                   type: string
+ *                   description: Name of the project
+ *                   example: RLOB
  *     responses:
  *       200:
  *         description: The newly created project
