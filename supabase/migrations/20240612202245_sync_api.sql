@@ -3,6 +3,11 @@ DROP FUNCTION IF EXISTS get_project_by_id;
 DROP FUNCTION IF EXISTS update_project_name;
 DROP FUNCTION IF EXISTS create_project_book_check;
 DROP FUNCTION IF EXISTS create_book;
+DROP FUNCTION IF EXISTS update_book_name;
+DROP FUNCTION IF EXISTS get_book_by_id;
+DROP FUNCTION IF EXISTS get_notes_count_for_book;
+
+
 
 
 CREATE OR REPLACE FUNCTION public.create_project(name text, user_id uuid) 
@@ -196,6 +201,94 @@ BEGIN
         );
 
         RETURN result;
+    END IF;
+END;
+$$;
+
+
+
+CREATE OR REPLACE FUNCTION "public"."update_book_name"("book_id" bigint, "new_name" "text") RETURNS "json"
+    LANGUAGE "plpgsql"
+    AS $$
+DECLARE
+    project_id_val bigint;
+BEGIN
+    SELECT project_id INTO project_id_val FROM public.books WHERE id = book_id;
+
+    IF EXISTS(
+        SELECT 1
+        FROM public.books
+        WHERE project_id = project_id_val
+        AND name = new_name
+    ) THEN
+        RAISE EXCEPTION 'A book named % already exists for this project', new_name;
+    ELSE
+        UPDATE public.books SET name = new_name WHERE id = book_id;
+        RETURN (SELECT row_to_json(r) FROM (SELECT id, name, created_at FROM public.books WHERE id = book_id) r);
+    END IF;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION public.get_book_by_id(
+    book_id BIGINT,
+    user_id UUID
+)
+RETURNS TABLE(
+    id BIGINT,
+    name TEXT,
+    created_at TIMESTAMP WITH TIME ZONE 
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF is_user_valid_for_book(book_id, user_id) THEN
+        RETURN QUERY
+        SELECT
+            b.id,
+            b.name,
+            b.created_at
+        FROM
+            public.books b
+        WHERE
+            b.id = book_id;
+    ELSE
+        RAISE EXCEPTION 'Permission denied. User does not have access to this book';
+    END IF;
+END;
+$$;
+
+
+
+CREATE OR REPLACE FUNCTION public.get_notes_count_for_book(
+    book_id BIGINT,
+    user_id UUID
+)
+RETURNS JSON
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    result JSON;
+BEGIN
+    IF is_user_valid_for_book(book_id, user_id) THEN
+        SELECT json_agg(json_build_object(
+            'check_name', subquery.name,
+            'notes_count', subquery.notes_count
+        ))
+        INTO result
+        FROM (
+            SELECT c.id, c.name, COUNT(n.id) AS notes_count
+            FROM public.checks c
+            LEFT JOIN public.notes n ON c.id = n.check_id
+            WHERE c.book_id = get_notes_count_for_book.book_id
+              AND c.deleted_at IS NULL
+              AND n.deleted_at IS NULL
+            GROUP BY c.id
+        ) AS subquery;
+
+        RETURN result;
+    ELSE
+        RAISE EXCEPTION 'User not found or permission denied';
     END IF;
 END;
 $$;
