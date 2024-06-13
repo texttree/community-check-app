@@ -119,7 +119,7 @@ export async function POST(req, { params: { projectId } }) {
   try {
     const { data: project, error } = await supabaseService.rpc('create_book', {
       project_id: projectId,
-      name,
+      book_name: name,
       user_id: userId,
     })
 

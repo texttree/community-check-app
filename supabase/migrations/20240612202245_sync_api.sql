@@ -2,6 +2,8 @@ DROP FUNCTION IF EXISTS create_project;
 DROP FUNCTION IF EXISTS get_project_by_id;
 DROP FUNCTION IF EXISTS update_project_name;
 DROP FUNCTION IF EXISTS create_project_book_check;
+DROP FUNCTION IF EXISTS create_book;
+
 
 CREATE OR REPLACE FUNCTION public.create_project(name text, user_id uuid) 
   RETURNS json
@@ -129,7 +131,7 @@ BEGIN
         WHERE b.name = book_name AND b.project_id = project_id_table;
     ELSE
         -- Если книга не существует, создаем ее и получаем ее id из результата
-        SELECT (create_book(project_id_table, book_name, user_id)->>'book_id')::bigint INTO book_id;
+        SELECT (create_book(project_id_table, book_name, user_id)->>'id')::bigint INTO book_id;
     END IF;
 
     -- Создаем проверку
@@ -147,5 +149,53 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         RAISE EXCEPTION 'Error creating project, book, or check: %', SQLERRM;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION public.create_book(
+    project_id BIGINT,
+    book_name TEXT,
+    user_id UUID
+) 
+RETURNS JSONB
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    book_id BIGINT;
+    book_exists BOOLEAN;
+    result JSONB;
+    created_at TIMESTAMP;
+BEGIN
+    -- Проверка прав доступа пользователя к проекту
+    IF NOT is_user_valid_for_project(project_id, user_id) THEN
+        RAISE EXCEPTION 'Permission denied. User does not have access to the project';
+    END IF;
+
+    -- Проверка на существование книги с таким именем в проекте
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.books b
+        WHERE b.project_id = create_book.project_id
+          AND b.name = book_name
+    ) INTO book_exists;
+
+    IF book_exists THEN
+        RAISE EXCEPTION 'A book with the name % already exists for this project', book_name;
+    ELSE
+        -- Вставка новой книги и получение id, name и created_at
+        INSERT INTO public.books (name, project_id)
+        VALUES (book_name, project_id)
+        RETURNING id, name, current_timestamp INTO book_id, book_name, created_at;
+
+        -- Формирование результата в формате JSONB
+        result := jsonb_build_object(
+            'id', book_id,
+            'name', book_name,
+            'created_at', created_at
+        );
+
+        RETURN result;
+    END IF;
 END;
 $$;
