@@ -546,16 +546,20 @@
                 "type": "object",
                 "properties": {
                   "note": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "This is a note"
                   },
                   "chapter": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                   },
                   "verse": {
-                    "type": "integer"
+                    "type": "sinteger",
+                    "example": 1
                   },
                   "inspectorId": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": null
                   }
                 }
               }

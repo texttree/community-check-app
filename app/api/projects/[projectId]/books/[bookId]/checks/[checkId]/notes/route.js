@@ -53,12 +53,16 @@ import { supabaseService } from '@/app/supabase/service'
  *             properties:
  *               note:
  *                 type: string
+ *                 example: This is a note
  *               chapter:
  *                 type: integer
+ *                 example: 1
  *               verse:
- *                 type: integer
+ *                 type: sinteger
+ *                 example: 1
  *               inspectorId:
  *                 type: integer
+ *                 example: null
  *     parameters:
  *       - in: path
  *         name: projectId
