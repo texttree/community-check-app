@@ -39,6 +39,31 @@
           }
         }
       },
+      "Note": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Note ID"
+          },
+          "note": {
+            "type": "string",
+            "description": "Note text"
+          },
+          "chapter": {
+            "type": "string",
+            "description": "Chapter Number"
+          },
+          "verse": {
+            "type": "string",
+            "description": "Verse Number"
+          },
+          "inspector_name": {
+            "type": "string",
+            "description": "Inspector Name"
+          }
+        }
+      },
       "Check": {
         "type": "object",
         "properties": {
@@ -74,28 +99,6 @@
           "book_id": {
             "type": "number",
             "example": 1
-          }
-        }
-      },
-      "CheckUpdate": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Check name",
-            "example": "Community Check"
-          },
-          "started_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Check start datetime",
-            "example": "2024-04-04"
-          },
-          "finished_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Check finish datetime",
-            "example": "2025-05-05"
           }
         }
       },
@@ -281,11 +284,13 @@
                 "properties": {
                   "materialLink": {
                     "type": "string",
-                    "description": "Link to the material"
+                    "description": "Link to the material",
+                    "example": "https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/65-3JN.usfm"
                   },
                   "checkId": {
                     "type": "string",
-                    "description": "ID of the check"
+                    "description": "ID of the check",
+                    "example": "1a2b3c4d"
                   }
                 }
               }
@@ -298,7 +303,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Material"
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Content updated successfully"
+                    }
+                  }
                 }
               }
             }
@@ -604,16 +615,20 @@
                       "type": "integer"
                     },
                     "note": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "This is a note"
                     },
                     "chapter": {
-                      "type": "integer"
+                      "type": "integer",
+                      "example": 1
                     },
                     "verse": {
-                      "type": "integer"
+                      "type": "integer",
+                      "example": 1
                     },
-                    "inspector_id": {
-                      "type": "integer"
+                    "inspectorName": {
+                      "type": "string",
+                      "example": "Test"
                     }
                   }
                 }
