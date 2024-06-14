@@ -377,3 +377,35 @@ END;
 $function$;
 
 
+CREATE OR REPLACE FUNCTION public.get_notes_by_check_id(
+    check_id UUID,
+    user_id UUID
+)
+RETURNS JSON
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    notes_data JSON;
+BEGIN
+    IF is_user_valid_for_check(check_id, user_id) THEN
+        SELECT json_agg(
+            json_build_object(
+                'id', n.id,
+                'chapter', n.chapter,
+                'verse', n.verse,
+                'note', n.note,
+                'inspector_name', i.name
+            )
+        )
+        INTO notes_data
+        FROM public.notes n
+        LEFT JOIN public.inspectors i ON n.inspector_id = i.id
+        WHERE n.check_id = get_notes_by_check_id.check_id
+          AND n.deleted_at IS NULL;
+
+        RETURN notes_data;
+    ELSE
+        RAISE EXCEPTION 'Permission denied. You do not have access to this check.';
+    END IF;
+END;
+$$;
