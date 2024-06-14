@@ -85,11 +85,6 @@
             "description": "Check name",
             "example": "Community Check"
           },
-          "material_link": {
-            "type": "string",
-            "description": "Check material link",
-            "example": "https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/57-TIT.usfm"
-          },
           "started_at": {
             "type": "string",
             "format": "date-time",
@@ -178,6 +173,9 @@
     },
     {
       "name": "Checks"
+    },
+    {
+      "name": "Notes"
     },
     {
       "name": "Material"
@@ -479,7 +477,7 @@
     "/api/projects/{projectId}/books/{bookId}/checks/{checkId}/notes": {
       "get": {
         "tags": [
-          "Checks"
+          "Notes"
         ],
         "summary": "Get notes by check id",
         "description": "Returns an array of notes for a given check id",
@@ -536,7 +534,7 @@
       },
       "post": {
         "tags": [
-          "Checks"
+          "Notes"
         ],
         "summary": "Create a new note",
         "description": "Creates a new note for a given check id",

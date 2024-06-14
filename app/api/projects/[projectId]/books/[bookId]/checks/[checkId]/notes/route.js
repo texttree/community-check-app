@@ -5,7 +5,7 @@ import { supabaseService } from '@/app/supabase/service'
  * /api/projects/{projectId}/books/{bookId}/checks/{checkId}/notes:
  *   get:
  *     tags:
- *       - Checks
+ *       - Notes
  *     summary: Get notes by check id
  *     description: Returns an array of notes for a given check id
  *     parameters:
@@ -41,7 +41,7 @@ import { supabaseService } from '@/app/supabase/service'
  *         description: Internal server error
  *   post:
  *     tags:
- *       - Checks
+ *       - Notes
  *     summary: Create a new note
  *     description: Creates a new note for a given check id
  *     requestBody:
