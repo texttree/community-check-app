@@ -7,6 +7,7 @@ DROP FUNCTION IF EXISTS update_book_name;
 DROP FUNCTION IF EXISTS get_book_by_id;
 DROP FUNCTION IF EXISTS get_notes_count_for_book;
 DROP FUNCTION IF EXISTS create_check;
+DROP FUNCTION IF EXISTS get_check_by_id;
 
 
 
@@ -337,4 +338,42 @@ BEGIN
     END IF;
 END;
 $function$;
+
+
+
+
+
+CREATE OR REPLACE FUNCTION public.get_check_by_id(check_id uuid, user_id uuid)
+RETURNS TABLE(
+    id uuid,
+    name text,
+    material_link text,
+    created_at timestamp with time zone,
+    started_at timestamp with time zone,
+    finished_at timestamp with time zone
+)
+LANGUAGE plpgsql
+AS $function$
+BEGIN
+    RETURN QUERY 
+    SELECT 
+        c.id AS id, 
+        c.name AS name, 
+        c.material_link AS material_link, 
+        c.created_at AS created_at, 
+        c.started_at AS started_at, 
+        c.finished_at AS finished_at
+    FROM 
+        public.checks AS c
+        JOIN public.books AS b ON c.book_id = b.id
+        JOIN public.projects AS p ON b.project_id = p.id
+        JOIN public.users AS u ON p.user_id = u.id
+    WHERE 
+        c.id = get_check_by_id.check_id
+        AND c.deleted_at IS NULL
+        AND u.id = get_check_by_id.user_id
+        AND u.is_blocked = false;
+END;
+$function$;
+
 
