@@ -2,6 +2,30 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     Note:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: Note ID
+ *         note:
+ *           type: string
+ *           description: Note text
+ *         chapter:
+ *           type: string
+ *           description: Chapter Number
+ *         verse:
+ *           type: string
+ *           description: Verse Number
+ *         inspector_name:
+ *           type: string
+ *           description: Inspector Name
+ */
+
+/**
+ * @swagger
  * /api/projects/{projectId}/books/{bookId}/checks/{checkId}/notes:
  *   get:
  *     tags:
@@ -91,12 +115,16 @@ import { supabaseService } from '@/app/supabase/service'
  *                   type: integer
  *                 note:
  *                   type: string
+ *                   example: This is a note
  *                 chapter:
  *                   type: integer
+ *                   example: 1
  *                 verse:
  *                   type: integer
- *                 inspector_id:
- *                   type: integer
+ *                   example: 1
+ *                 inspectorName:
+ *                   type: string
+ *                   example: Test
  *       400:
  *         description: Bad request
  *       500:
