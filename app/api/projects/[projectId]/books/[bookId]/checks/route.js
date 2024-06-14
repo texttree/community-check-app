@@ -161,10 +161,10 @@ export async function POST(req, { params: { bookId } }) {
   }
   try {
     const { data: check, error } = await supabaseService.rpc('create_check', {
-      name,
-      material_link: url,
-      started_at: startDate,
-      finished_at: startDate,
+      check_name: name,
+      check_material_link: url,
+      check_started_at: startDate,
+      check_finished_at: startDate,
       book_id: parseInt(bookId),
       user_id: userId,
     })

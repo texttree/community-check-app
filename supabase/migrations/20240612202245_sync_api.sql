@@ -6,6 +6,7 @@ DROP FUNCTION IF EXISTS create_book;
 DROP FUNCTION IF EXISTS update_book_name;
 DROP FUNCTION IF EXISTS get_book_by_id;
 DROP FUNCTION IF EXISTS get_notes_count_for_book;
+DROP FUNCTION IF EXISTS create_check;
 
 
 
@@ -292,3 +293,48 @@ BEGIN
     END IF;
 END;
 $$;
+
+CREATE OR REPLACE FUNCTION public.create_check(
+    check_name TEXT, 
+    check_material_link TEXT, 
+    check_started_at TIMESTAMPTZ, 
+    check_finished_at TIMESTAMPTZ, 
+    book_id BIGINT, 
+    user_id UUID
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+AS $function$
+DECLARE
+    user_exists BOOLEAN;
+    result RECORD;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.books AS b
+        JOIN public.projects AS p ON b.project_id = p.id
+        JOIN public.users AS u ON p.user_id = u.id
+        WHERE b.id = create_check.book_id AND u.id = create_check.user_id AND u.is_blocked = false
+    )
+    INTO user_exists;
+
+    IF user_exists THEN
+        INSERT INTO public.checks (name, material_link, started_at, finished_at, book_id)
+        VALUES (check_name, check_material_link, check_started_at, check_finished_at, book_id)
+        RETURNING checks.id, checks.name, checks.material_link, current_timestamp AS created_at, check_started_at AS started_at, check_finished_at AS finished_at
+        INTO result;
+
+        RETURN jsonb_build_object(
+            'id', result.id,
+            'name', result.name,
+            'material_link', result.material_link,
+            'created_at', result.created_at,
+            'started_at', result.started_at,
+            'finished_at', result.finished_at
+        );
+    ELSE
+        RAISE EXCEPTION 'User not found';
+    END IF;
+END;
+$function$;
+
