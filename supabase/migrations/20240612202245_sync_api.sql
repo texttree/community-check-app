@@ -8,6 +8,7 @@ DROP FUNCTION IF EXISTS get_book_by_id;
 DROP FUNCTION IF EXISTS get_notes_count_for_book;
 DROP FUNCTION IF EXISTS create_check;
 DROP FUNCTION IF EXISTS get_check_by_id;
+DROP FUNCTION IF EXISTS insert_note;
 
 
 
@@ -409,3 +410,55 @@ BEGIN
     END IF;
 END;
 $$;
+
+
+CREATE OR REPLACE FUNCTION public.insert_note(
+    note text,
+    inspector_id uuid,
+    check_id uuid,
+    chapter text,
+    verse text
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $function$
+DECLARE
+    current_check boolean;
+    result RECORD;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.checks AS c
+        LEFT JOIN public.inspectors AS i ON i.check_id = c.id
+        WHERE c.id = insert_note.check_id
+            AND c.deleted_at IS NULL
+            AND c.finished_at > now()
+            AND (insert_note.inspector_id IS NULL OR i.id = insert_note.inspector_id)
+    )
+    INTO current_check;
+
+    IF current_check THEN
+        -- Вставляем заметку и возвращаем необходимые поля
+        INSERT INTO public.notes (note, inspector_id, check_id, chapter, verse)
+        VALUES (note, inspector_id, check_id, chapter, verse)
+        RETURNING 
+            notes.id, 
+            notes.note, 
+            notes.chapter, 
+            notes.verse, 
+            (SELECT i.name FROM public.inspectors i WHERE i.id = notes.inspector_id) AS inspector_name
+        INTO result;
+
+        RETURN jsonb_build_object(
+            'id', result.id,
+            'note', result.note,
+            'chapter', result.chapter,
+            'verse', result.verse,
+            'inspector_name', result.inspector_name
+        );
+    ELSE
+        RAISE EXCEPTION 'Check not found';
+    END IF;
+END;
+$function$;
