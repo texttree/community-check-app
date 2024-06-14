@@ -32,10 +32,6 @@ import { supabaseService } from '@/app/supabase/service'
  *           type: string
  *           description: Check name
  *           example: Community Check
- *         material_link:
- *           type: string
- *           description: Check material link
- *           example: https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/57-TIT.usfm
  *         started_at:
  *           type: string
  *           format: date-time
@@ -153,31 +149,28 @@ export async function GET(req, { params: { checkId } }) {
     return Response.json({ error }, { status: 500 })
   }
 }
-
 export async function POST(req, { params: { checkId } }) {
   const userId = req.headers.get('x-user-id')
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const { name, material_link, started_at, finished_at, content } = await req.json()
+  const { name, started_at, finished_at } = await req.json()
+
   if (!name) {
     return Response.json({ error: 'Check name is required' }, { status: 400 })
   }
-  // TODO: validate material link, started_at, finished_at
   try {
     const { data: check, error } = await supabaseService
       .from('checks')
       .update([
         {
           name,
-          material_link,
           started_at,
           finished_at,
-          content,
         },
       ])
       .eq('id', checkId)
-      .select()
+      .select('id, name, material_link, created_at, started_at, finished_at')
       .single()
 
     if (error) {
