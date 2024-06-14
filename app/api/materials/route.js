@@ -22,16 +22,22 @@ import JSZip from 'jszip'
  *               materialLink:
  *                 type: string
  *                 description: Link to the material
+ *                 example: https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/65-3JN.usfm
  *               checkId:
  *                 type: string
  *                 description: ID of the check
+ *                 example: 1a2b3c4d
  *     responses:
  *       201:
  *         description: The material was created or updated
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Material'
+ *              type: object
+ *              properties:
+ *                 message:
+ *                   type: string
+ *                   example: Content updated successfully
  *       400:
  *         description: Bad request
  *       401:
@@ -92,10 +98,10 @@ export async function POST(req) {
 
     if (error) throw error
 
-    return new Response(
-      JSON.stringify({ message: 'Content updated successfully', data }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    )
+    return new Response(JSON.stringify({ message: 'Content updated successfully' }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
   } catch (error) {
     console.error(error)
     return new Response(JSON.stringify({ error: error.message }), {

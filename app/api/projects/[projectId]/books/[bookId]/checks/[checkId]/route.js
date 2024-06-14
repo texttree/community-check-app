@@ -25,23 +25,6 @@ import { supabaseService } from '@/app/supabase/service'
  *           type: string
  *           format: date-time
  *           description: Check finish datetime
- *     CheckUpdate:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *           description: Check name
- *           example: Community Check
- *         started_at:
- *           type: string
- *           format: date-time
- *           description: Check start datetime
- *           example: 2024-04-04
- *         finished_at:
- *           type: string
- *           format: date-time
- *           description: Check finish datetime
- *           example: 2025-05-05
  */
 
 /**
