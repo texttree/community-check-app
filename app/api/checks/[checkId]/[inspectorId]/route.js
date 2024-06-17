@@ -1,5 +1,113 @@
 import { supabaseService } from '@/app/supabase/service'
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Note:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         note:
+ *           type: string
+ *         chapter:
+ *           type: string
+ *         verse:
+ *           type: string
+ *         created_at:
+ *           type: string
+ *           format: date-time
+ *         check_id:
+ *           type: string
+ *           format: uuid
+ *         inspector_id:
+ *           type: string
+ *           format: uuid
+ *         deleted_at:
+ *           type: string
+ *           format: date-time
+ * /api/checks/{checkId}/{inspectorId}/notes:
+ *   get:
+ *     tags:
+ *       - Notes
+ *     summary: Get notes by check id and inspector id
+ *     parameters:
+ *       - in: path
+ *         name: checkId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the check
+ *       - in: query
+ *         name: inspectorId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the inspector
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               additionalProperties:
+ *                 type: object
+ *                 properties:
+ *                   note:
+ *                     type: string
+ *                   id:
+ *                     type: string
+ *                   created_at:
+ *                     type: string
+ *                     format: date-time
+ *       400:
+ *         description: Missing required parameters
+ *       404:
+ *         description: No notes found for this inspector
+ *       500:
+ *         description: Internal server error
+ *   delete:
+ *     tags:
+ *       - Notes
+ *     summary: Delete note
+ *     parameters:
+ *       - in: path
+ *         name: checkId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the check
+ *       - in: query
+ *         name: inspectorId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the inspector
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               noteId:
+ *                 type: string
+ *                 format: uuid
+ *     responses:
+ *       200:
+ *         description: Note deleted successfully
+ *       400:
+ *         description: Missing required parameters
+ *       500:
+ *         description: Internal server error
+ */
+
 export async function GET(req, { params: { checkId, inspectorId } }) {
   if (!checkId || !inspectorId) {
     return Response.json({ error: 'Missing required parameters' }, { status: 400 })
@@ -16,7 +124,7 @@ export async function GET(req, { params: { checkId, inspectorId } }) {
         ascending: true,
         referencedTable: 'notes',
       })
-
+    console.log(127)
     if (error) {
       throw error
     }
