@@ -25,29 +25,18 @@ import { supabaseService } from '@/app/supabase/service'
  *           type: string
  *           format: uuid
  * /api/checks/{checkId}/notes:
- *   get:
- *     tags:
- *       - Checks
- *     summary: Get notes by check id
- *     responses:
- *       200:
- *         description: Successful response
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Note'
- *       401:
- *         description: Unauthorized
- *       400:
- *         description: Bad request
- *       500:
- *         description: Internal server error
  *   post:
  *     tags:
- *       - Checks
+ *       - Notes
  *     summary: Insert note
+ *     parameters:
+ *       - in: path
+ *         name: checkId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the check
  *     requestBody:
  *       required: true
  *       content:
@@ -88,11 +77,18 @@ import { supabaseService } from '@/app/supabase/service'
  *         description: Bad request
  *       500:
  *         description: Internal server error
- * /api/checks/{checkId}/notes:
  *   put:
  *     tags:
- *       - Checks
+ *       - Notes
  *     summary: Update note
+ *     parameters:
+ *       - in: path
+ *         name: checkId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the check
  *     requestBody:
  *       required: true
  *       content:
@@ -123,30 +119,6 @@ import { supabaseService } from '@/app/supabase/service'
  *       500:
  *         description: Internal server error
  */
-
-export async function GET(req, { params: { checkId } }) {
-  const userId = req.headers.get('x-user-id')
-  if (!userId) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-  if (!checkId) {
-    return Response.json({ error: 'Missing checkId parameter' }, { status: 400 })
-  }
-  try {
-    const { data, error } = await supabaseService.rpc('get_notes_by_check_id', {
-      check_id: checkId,
-      user_id: userId,
-    })
-
-    if (error) {
-      throw error
-    }
-
-    return Response.json(data, { status: 200 })
-  } catch (error) {
-    return Response.json({ error }, { status: 500 })
-  }
-}
 
 export async function POST(req, { params: { checkId } }) {
   const { note, chapter, verse, inspectorId } = await req.json()
