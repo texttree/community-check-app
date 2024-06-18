@@ -8,17 +8,15 @@ import { supabaseService } from '@/app/supabase/service'
  *       type: object
  *       properties:
  *         id:
- *           type: string
+ *           type: integer
+ *           description: Book identifier
  *         name:
  *           type: string
- *         project_id:
- *           type: string
+ *           description: Book name
  *         created_at:
  *           type: string
  *           format: date-time
- *         updated_at:
- *           type: string
- *           format: date-time
+ *           description: Date and time of creation
  *
  * /api/projects/{projectId}/books:
  *   get:
