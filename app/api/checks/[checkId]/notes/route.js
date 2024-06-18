@@ -138,7 +138,6 @@ export async function POST(req, { params: { checkId } }) {
 
 export async function PUT(req, { params: { checkId } }) {
   const { noteId, note, inspectorId } = await req.json()
-  console.log(noteId, note, inspectorId)
   if (!note || !checkId || !noteId || !inspectorId) {
     return Response.json({ error: 'Missing required parameters' }, { status: 400 })
   }
