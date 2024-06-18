@@ -24,11 +24,16 @@ import { supabaseService } from '@/app/supabase/service'
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 notes_count:
- *                   type: integer
- *                   description: Notes count for book
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   check_name:
+ *                     type: string
+ *                     description: Name of the check
+ *                   notes_count:
+ *                     type: integer
+ *                     description: Notes count for the check
  *       401:
  *         description: Unauthorized
  *         content:
