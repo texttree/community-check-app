@@ -134,7 +134,7 @@ export async function GET(req, { params: { checkId, inspectorId } }) {
       throw error
     }
 
-    if (data.length === 0 || !data[0].notes) {
+    if (data.length === 0 || !data[0].notes.length) {
       return Response.json(
         { error: 'No notes found for this inspector' },
         { status: 404 }
