@@ -4,26 +4,26 @@ import { supabaseService } from '@/app/supabase/service'
  * @swagger
  * components:
  *   schemas:
- *     Note:
+ *     NoteResponse:
  *       type: object
  *       properties:
  *         id:
- *           type: string
+ *           type: integer
+ *           description: Note ID
  *         note:
  *           type: string
+ *           description: Note text
  *         chapter:
  *           type: string
+ *           description: Chapter number
  *         verse:
  *           type: string
- *         created_at:
+ *           description: Verse number
+ *         inspector_name:
  *           type: string
- *           format: date-time
- *         check_id:
- *           type: string
- *           format: uuid
- *         inspector_id:
- *           type: string
- *           format: uuid
+ *           nullable: true
+ *           description: Inspector name
+ *
  * /api/checks/{checkId}/notes:
  *   post:
  *     tags:
@@ -47,9 +47,11 @@ import { supabaseService } from '@/app/supabase/service'
  *               note:
  *                 type: string
  *               chapter:
- *                 type: integer
+ *                 type: string
+ *                 default: "1"
  *               verse:
- *                 type: integer
+ *                 type: string
+ *                 default: "1"
  *               inspectorId:
  *                 type: string
  *                 default: null
@@ -59,24 +61,12 @@ import { supabaseService } from '@/app/supabase/service'
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                 note:
- *                   type: string
- *                 chapter:
- *                   type: integer
- *                 verse:
- *                   type: integer
- *                 inspectorId:
- *                   type: string
- *                 checkId:
- *                   type: string
+ *               $ref: '#/components/schemas/NoteResponse'
  *       400:
  *         description: Bad request
  *       500:
  *         description: Internal server error
+ *
  *   put:
  *     tags:
  *       - Notes
@@ -130,7 +120,16 @@ export async function POST(req, { params: { checkId } }) {
       return Response.json({ error }, { status: 400 })
     }
 
-    return Response.json(data, { status: 201 })
+    return Response.json(
+      {
+        id: data.id,
+        note: data.note,
+        chapter: data.chapter,
+        verse: data.verse,
+        inspector_name: data.inspector_name,
+      },
+      { status: 201 }
+    )
   } catch (error) {
     return Response.json({ error }, { status: 500 })
   }
