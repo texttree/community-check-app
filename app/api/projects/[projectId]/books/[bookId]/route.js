@@ -2,18 +2,7 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Book:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           description: Book identifier
- *         name:
- *           type: string
- *           description: Book name
- *
+
  * paths:
  *   /api/projects/{projectId}/books/{bookId}:
  *     get:
