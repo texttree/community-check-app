@@ -16,15 +16,39 @@ import { supabaseService } from '@/app/supabase/service'
  *           description: Check name
  *         material_link:
  *           type: string
+ *           nullable: true
  *           description: Check material link
+ *         created_at:
+ *           type: string
+ *           format: date-time
+ *           description: Check creation datetime
  *         started_at:
  *           type: string
+ *           nullable: true
  *           format: date-time
  *           description: Check start datetime
  *         finished_at:
  *           type: string
+ *           nullable: true
  *           format: date-time
  *           description: Check finish datetime
+ *
+ *     CheckUpdate:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: New check name
+ *         started_at:
+ *           type: string
+ *           format: date-time
+ *           nullable: true
+ *           description: New start datetime for the check
+ *         finished_at:
+ *           type: string
+ *           format: date-time
+ *           nullable: true
+ *           description: New finish datetime for the check
  */
 
 /**
@@ -132,6 +156,7 @@ export async function GET(req, { params: { checkId } }) {
     return Response.json({ error }, { status: 500 })
   }
 }
+
 export async function POST(req, { params: { checkId } }) {
   const userId = req.headers.get('x-user-id')
   if (!userId) {
