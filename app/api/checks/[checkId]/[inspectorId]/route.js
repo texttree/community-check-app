@@ -27,7 +27,23 @@ import { supabaseService } from '@/app/supabase/service'
  *         deleted_at:
  *           type: string
  *           format: date-time
- * /api/checks/{checkId}/{inspectorId}/notes:
+ *     NotesResponse:
+ *       type: object
+ *       additionalProperties:
+ *         type: object
+ *         additionalProperties:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               note:
+ *                 type: string
+ *               id:
+ *                 type: string
+ *               created_at:
+ *                 type: string
+ *                 format: date-time
+ * /api/checks/{checkId}/{inspectorId}:
  *   get:
  *     tags:
  *       - Notes
@@ -40,7 +56,7 @@ import { supabaseService } from '@/app/supabase/service'
  *           type: string
  *           format: uuid
  *         description: ID of the check
- *       - in: query
+ *       - in: path
  *         name: inspectorId
  *         required: true
  *         schema:
@@ -53,17 +69,7 @@ import { supabaseService } from '@/app/supabase/service'
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               additionalProperties:
- *                 type: object
- *                 properties:
- *                   note:
- *                     type: string
- *                   id:
- *                     type: string
- *                   created_at:
- *                     type: string
- *                     format: date-time
+ *               $ref: '#/components/schemas/NotesResponse'
  *       400:
  *         description: Missing required parameters
  *       404:
@@ -82,7 +88,7 @@ import { supabaseService } from '@/app/supabase/service'
  *           type: string
  *           format: uuid
  *         description: ID of the check
- *       - in: query
+ *       - in: path
  *         name: inspectorId
  *         required: true
  *         schema:
@@ -97,8 +103,8 @@ import { supabaseService } from '@/app/supabase/service'
  *             type: object
  *             properties:
  *               noteId:
- *                 type: string
- *                 format: uuid
+ *                 type: integer
+ *
  *     responses:
  *       200:
  *         description: Note deleted successfully
@@ -124,7 +130,6 @@ export async function GET(req, { params: { checkId, inspectorId } }) {
         ascending: true,
         referencedTable: 'notes',
       })
-    console.log(127)
     if (error) {
       throw error
     }
