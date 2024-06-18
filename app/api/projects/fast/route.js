@@ -88,8 +88,14 @@ export async function POST(req) {
     if (error) {
       return Response.json({ error }, { status: 400 })
     }
-
-    return Response.json(data, { status: 201 })
+    return Response.json(
+      {
+        project_id: data.project_id,
+        book_id: data.book_id,
+        check_id: data.check_id,
+      },
+      { status: 201 }
+    )
   } catch (error) {
     return Response.json({ error }, { status: 500 })
   }
