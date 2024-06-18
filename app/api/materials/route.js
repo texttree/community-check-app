@@ -28,16 +28,8 @@ import JSZip from 'jszip'
  *                 description: ID of the check
  *                 example: 1a2b3c4d
  *     responses:
- *       201:
+ *       200:
  *         description: The material was created or updated
- *         content:
- *           application/json:
- *             schema:
- *              type: object
- *              properties:
- *                 message:
- *                   type: string
- *                   example: Content updated successfully
  *       400:
  *         description: Bad request
  *       401:
@@ -98,10 +90,13 @@ export async function POST(req) {
 
     if (error) throw error
 
-    return new Response(JSON.stringify({ message: 'Content updated successfully' }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return new Response(
+      JSON.stringify({ message: 'The material was created or updated' }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
   } catch (error) {
     console.error(error)
     return new Response(JSON.stringify({ error: error.message }), {
