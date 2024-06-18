@@ -165,7 +165,7 @@ export async function DELETE(req) {
       return Response.json({ error: error.message }, { status: 500 })
     }
 
-    return Response.json(null, { status: 200 })
+    return Response.json({ message: 'Project deleted successfully' }, { status: 200 })
   } catch (catchError) {
     console.error('Unexpected error:', catchError)
     return Response.json({ error: catchError.message }, { status: 500 })
