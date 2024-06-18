@@ -12,17 +12,6 @@ import { supabaseService } from '@/app/supabase/service'
  *     responses:
  *       200:
  *         description: Token is valid.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: integer
- *                   example: 200
- *                 message:
- *                   type: string
- *                   example: Token is valid
  *       401:
  *         description: Unauthorized or invalid token.
  *         content:
@@ -65,7 +54,7 @@ export async function GET(req) {
       return Response.json({ error: 'Invalid token' }, { status: 401 })
     }
 
-    return Response.json({ status: 200, message: 'Token is valid' })
+    return Response.json({ message: 'Token is valid' }, { status: 200 })
   } catch (error) {
     return Response.json(
       { error: 'Internal server error: ' + error.message },
