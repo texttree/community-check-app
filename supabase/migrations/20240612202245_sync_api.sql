@@ -106,6 +106,8 @@ DECLARE
     check_id uuid;
     project_exists boolean;
     book_exists boolean;
+    project_result jsonb;
+    book_result jsonb;
     result jsonb;
 BEGIN
     -- Проверяем существует ли проект
@@ -122,7 +124,11 @@ BEGIN
         WHERE p.name = project_name AND p.user_id = create_project_book_check.user_id;
     ELSE
         -- Если проект не существует, создаем его и получаем его id из результата
-        SELECT (create_project(project_name, user_id)->>'id')::bigint INTO project_id_table;
+        project_result := create_project(project_name, user_id);
+        IF project_result IS NULL OR project_result->>'id' IS NULL THEN
+            RAISE EXCEPTION 'Error creating project';
+        END IF;
+        project_id_table := (project_result->>'id')::bigint;
     END IF;
 
     -- Проверяем существует ли книга
@@ -139,11 +145,17 @@ BEGIN
         WHERE b.name = book_name AND b.project_id = project_id_table;
     ELSE
         -- Если книга не существует, создаем ее и получаем ее id из результата
-        SELECT (create_book(project_id_table, book_name, user_id)->>'id')::bigint INTO book_id;
+        book_result := create_book(project_id_table, book_name, user_id);
+        IF book_result IS NULL OR book_result->>'id' IS NULL THEN
+            RAISE EXCEPTION 'Error creating book';
+        END IF;
+        book_id := (book_result->>'id')::bigint;
     END IF;
 
-    -- Создаем проверку
     check_id := create_fast_check(check_name, book_id, user_id);
+    IF check_id IS NULL THEN
+        RAISE EXCEPTION 'Error creating check';
+    END IF;
 
     -- Возвращаем результат
     result := jsonb_build_object(
@@ -159,6 +171,7 @@ EXCEPTION
         RAISE EXCEPTION 'Error creating project, book, or check: %', SQLERRM;
 END;
 $$;
+
 
 
 CREATE OR REPLACE FUNCTION public.create_book(
