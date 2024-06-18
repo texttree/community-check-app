@@ -105,13 +105,6 @@ import { supabaseService } from '@/app/supabase/service'
  *     responses:
  *       200:
  *         description: Note updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
  *       400:
  *         description: Bad request
  *       401:
@@ -145,13 +138,13 @@ export async function POST(req, { params: { checkId } }) {
 
 export async function PUT(req, { params: { checkId } }) {
   const { noteId, note, inspectorId } = await req.json()
-
+  console.log(noteId, note, inspectorId)
   if (!note || !checkId || !noteId || !inspectorId) {
     return Response.json({ error: 'Missing required parameters' }, { status: 400 })
   }
 
   try {
-    const { data, error } = await supabaseService.rpc('update_note', {
+    const { error } = await supabaseService.rpc('update_note', {
       note_id: noteId,
       note,
       inspector_id: inspectorId,
@@ -162,7 +155,7 @@ export async function PUT(req, { params: { checkId } }) {
       return Response.json({ error }, { status: 400 })
     }
 
-    return Response.json({ success: data }, { status: 200 })
+    return Response.json({ message: 'Note updated successfully' }, { status: 200 })
   } catch (error) {
     return Response.json({ error }, { status: 500 })
   }
