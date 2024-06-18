@@ -4,7 +4,7 @@ import { supabaseService } from '@/app/supabase/service'
  * @swagger
  * components:
  *   schemas:
- *     Check:
+ *     Fast Check:
  *       type: object
  *       properties:
  *         id:
