@@ -36,34 +36,10 @@ import { supabaseService } from '@/app/supabase/service'
  *                     description: Notes count for the check
  *       401:
  *         description: Unauthorized
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Unauthorized
  *       400:
  *         description: Invalid request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Invalid request
  *       500:
  *         description: Internal Server Error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Internal Server Error
  */
 
 export function GET(req, { params: { bookId } }) {
