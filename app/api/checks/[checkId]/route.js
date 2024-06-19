@@ -30,24 +30,8 @@ import { supabaseService } from '@/app/supabase/service'
  *                   type: string
  *       400:
  *         description: Missing checkId parameter
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Missing checkId parameter
  *       500:
  *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Detailed error message
  */
 
 export function GET(req, { params: { checkId } }) {
