@@ -37,23 +37,10 @@ import { supabaseService } from '@/app/supabase/service'
 export async function GET(req) {
   const userId = req.headers.get('x-user-id')
   const access_token = req.headers.get('x-comcheck-token')
-
-  if (!userId || !access_token) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
   try {
-    const { error: tokenError } = await supabaseService
-      .from('tokens')
-      .select('id')
-      .eq('user_id', userId)
-      .eq('id', access_token)
-      .single()
-
-    if (tokenError) {
-      return Response.json({ error: 'Invalid token' }, { status: 401 })
+    if (!userId || !access_token) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
-
     return Response.json({ message: 'Token is valid' }, { status: 200 })
   } catch (error) {
     return Response.json(
