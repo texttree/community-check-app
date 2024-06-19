@@ -14,24 +14,8 @@ import { supabaseService } from '@/app/supabase/service'
  *         description: Token is valid.
  *       401:
  *         description: Unauthorized or invalid token.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Unauthorized
  *       500:
  *         description: Internal server error.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Internal server error message
  */
 
 export async function GET(req) {

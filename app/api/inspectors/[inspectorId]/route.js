@@ -23,31 +23,10 @@ import { supabaseService } from '@/app/supabase/service'
  *               type: boolean
  *       400:
  *         description: Missing required parameters or invalid request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
  *       401:
  *         description: Unauthorized
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
  *       500:
  *         description: Internal Server Error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
  */
 
 export async function GET(req, { params: { inspectorId } }) {
