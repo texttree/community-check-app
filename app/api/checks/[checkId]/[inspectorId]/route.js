@@ -2,67 +2,6 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Inspector:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           format: uuid
- *           description: Inspector ID
- *         name:
- *           type: string
- *           description: Inspector name
- *         check_id:
- *           type: string
- *           format: uuid
- *           description: Check ID
- *         deleted_at:
- *           type: string
- *           format: date-time
- *           description: Inspector created datetime
- *     Note:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *         note:
- *           type: string
- *         chapter:
- *           type: string
- *         verse:
- *           type: string
- *         created_at:
- *           type: string
- *           format: date-time
- *         check_id:
- *           type: string
- *           format: uuid
- *         inspector_id:
- *           type: string
- *           format: uuid
- *         deleted_at:
- *           type: string
- *           format: date-time
- *     NotesResponse:
- *       type: object
- *       properties:
- *         chapters:
- *           type: object
- *           additionalProperties:
- *             type: object
- *             properties:
- *               verses:
- *                 type: object
- *                 additionalProperties:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Note'
- */
-
-/**
- * @swagger
  * /api/projects/{projectId}/books/{bookId}/checks/{checkId}/inspector:
  *   get:
  *     summary: Returns the list of inspectors for the check

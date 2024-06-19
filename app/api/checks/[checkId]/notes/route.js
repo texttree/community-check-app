@@ -2,28 +2,6 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     NoteResponse:
- *       type: object
- *       properties:
- *         id:
- *           type: integer
- *           description: Note ID
- *         note:
- *           type: string
- *           description: Note text
- *         chapter:
- *           type: string
- *           description: Chapter number
- *         verse:
- *           type: string
- *           description: Verse number
- *         inspector_name:
- *           type: string
- *           nullable: true
- *           description: Inspector name
- *
  * /api/checks/{checkId}/notes:
  *   post:
  *     tags:
