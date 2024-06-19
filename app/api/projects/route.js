@@ -2,22 +2,6 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
-
- * components:
- *   schemas:
- *     Project:
- *       type: object
- *       properties:
- *         id:
- *           type: number
- *           example: 1
- *         name:
- *           type: string
- *           example: RLOB
- *     Projects:
- *       type: array
- *       items:
- *         $ref: '#/components/schemas/Project'
  * /api/projects:
  *   get:
  *     summary: Get projects for the current user

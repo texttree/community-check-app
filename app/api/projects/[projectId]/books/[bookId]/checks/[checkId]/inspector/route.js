@@ -2,18 +2,6 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Inspector:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           format: uuid
- *           description: Inspector ID
- *         name:
- *           type: string
- *           description: Inspector name
  * /api/projects/{projectId}/books/{bookId}/checks/{checkId}/inspector:
  *   get:
  *     summary: Returns the list of inspectors for the check

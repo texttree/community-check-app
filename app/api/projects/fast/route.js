@@ -2,23 +2,6 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Fast Check:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           example: "1a2b3c4d"
- *         name:
- *           type: string
- *           example: "Check 1"
- *         project_id:
- *           type: number
- *           example: 1
- *         book_id:
- *           type: number
- *           example: 1
  * /api/projects/fast:
  *   post:
  *     summary: Create a fast project, books and check
