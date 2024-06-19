@@ -119,7 +119,7 @@ export async function middleware(req) {
     } catch (error) {
       // Если аутентификация пользователя не удалась, то возвращаем ошибку
       return Response.json(
-        { success: false, error, message: 'Password authentication failed' },
+        { error, message: 'Password authentication failed' },
         { status: 401 }
       )
     }
@@ -130,10 +130,7 @@ export async function middleware(req) {
         .eq('id', access_token)
 
       if (!tokenResult || !tokenResult.data.length) {
-        return Response.json(
-          { success: false, message: 'Token authentication failed' },
-          { status: 401 }
-        )
+        return Response.json({ message: 'Token authentication failed' }, { status: 401 })
       }
       requestHeaders.set('x-user-id', tokenResult.data[0].user_id)
       return NextResponse.next({
@@ -143,10 +140,7 @@ export async function middleware(req) {
       })
     } catch (error) {
       // Если обработка токена не удалась, то возвращаем ошибку
-      return Response.json(
-        { success: false, message: 'Internal Server Error' },
-        { status: 500 }
-      )
+      return Response.json({ message: 'Internal Server Error' }, { status: 500 })
     }
   }
   return NextResponse.next()
