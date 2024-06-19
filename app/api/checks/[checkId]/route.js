@@ -1,5 +1,55 @@
 import { supabaseService } from '@/app/supabase/service'
 
+/**
+ * @swagger
+ * /api/checks/{checkId}:
+ *   get:
+ *     summary: Get check content by check ID
+ *     tags:
+ *       - Checks
+ *     parameters:
+ *       - in: path
+ *         name: checkId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: The ID of the check
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved check content
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   format: uuid
+ *                 content:
+ *                   type: string
+ *       400:
+ *         description: Missing checkId parameter
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Missing checkId parameter
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Detailed error message
+ */
+
 export function GET(req, { params: { checkId } }) {
   if (!checkId) {
     return new Response(JSON.stringify({ error: 'Missing checkId parameter' }), {
