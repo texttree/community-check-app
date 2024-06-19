@@ -6,8 +6,8 @@ import { supabaseService } from '@/app/supabase/service'
  *   get:
  *     tags:
  *       - Inspector
- *     summary: Returns true if there are notes for the inspector
- *     description: Returns true if there are notes for the inspector
+ *     summary: Check if there are notes for the inspector
+ *     description: Returns true if there are notes for the inspector, otherwise false.
  *     parameters:
  *       - in: path
  *         name: inspectorId
@@ -20,12 +20,9 @@ import { supabaseService } from '@/app/supabase/service'
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 has_notes:
- *                   type: boolean
+ *               type: boolean
  *       400:
- *         description: Missing required parameters
+ *         description: Missing required parameters or invalid request
  *         content:
  *           application/json:
  *             schema:
