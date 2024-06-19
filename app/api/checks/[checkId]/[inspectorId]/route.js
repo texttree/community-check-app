@@ -2,112 +2,6 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * /api/projects/{projectId}/books/{bookId}/checks/{checkId}/inspector:
- *   get:
- *     summary: Returns the list of inspectors for the check
- *     tags:
- *       - Inspector
- *     parameters:
- *       - in: path
- *         name: checkId
- *         schema:
- *           type: string
- *           format: uuid
- *         required: true
- *         description: The ID of the check
- *     responses:
- *       200:
- *         description: List of inspectors
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Inspector'
- *       500:
- *         description: Server error
- *   post:
- *     summary: Creates a new inspector
- *     tags:
- *       - Inspector
- *     parameters:
- *       - in: path
- *         name: checkId
- *         schema:
- *           type: string
- *           format: uuid
- *         required: true
- *         description: The ID of the check
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: Name of the inspector
- *     responses:
- *       201:
- *         description: Inspector created successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Inspector'
- *       400:
- *         description: Bad request
- *       401:
- *         description: Unauthorized
- *       500:
- *         description: Server error
- *   delete:
- *     summary: Deletes an inspector and its notes
- *     tags:
- *       - Inspector
- *     parameters:
- *       - in: path
- *         name: checkId
- *         schema:
- *           type: string
- *           format: uuid
- *         required: true
- *         description: The ID of the check
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               id:
- *                 type: string
- *                 format: uuid
- *               delete_all_notes:
- *                 type: boolean
- *             required:
- *               - id
- *               - delete_all_notes
- *     responses:
- *       200:
- *         description: Inspector deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *       400:
- *         description: Bad request
- *       401:
- *         description: Unauthorized
- *       500:
- *         description: Server error
- */
-
-/**
- * @swagger
  * /api/checks/{checkId}/{inspectorId}:
  *   get:
  *     tags:
@@ -198,8 +92,7 @@ export async function GET(req, { params: { checkId, inspectorId } }) {
     if (error) {
       throw error
     }
-
-    if (data.length === 0 || !data[0].notes.length) {
+    if (data.length === 0 || data[0].length === 0) {
       return Response.json(
         { error: 'No notes found for this inspector' },
         { status: 404 }
@@ -216,7 +109,7 @@ export async function GET(req, { params: { checkId, inspectorId } }) {
         created_at: note.created_at,
       })
     })
-
+    console.log(notes, 218)
     return Response.json(notes, { status: 200 })
   } catch (error) {
     return Response.json({ error }, { status: 500 })
