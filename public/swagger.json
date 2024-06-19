@@ -260,6 +260,517 @@
     }
   ],
   "paths": {
+    "/api/checks/{checkId}/{inspectorId}": {
+      "get": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Get notes by check id and inspector id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "checkId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID of the check"
+          },
+          {
+            "in": "path",
+            "name": "inspectorId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID of the inspector"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required parameters"
+          },
+          "404": {
+            "description": "No notes found for this inspector"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Delete note",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "checkId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID of the check"
+          },
+          {
+            "in": "path",
+            "name": "inspectorId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID of the inspector"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "noteId": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Note deleted successfully"
+          },
+          "400": {
+            "description": "Missing required parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/checks/{checkId}/{inspectorId}/url": {
+      "get": {
+        "summary": "Generate link for personal check page",
+        "tags": [
+          "Links"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "lng",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Language code"
+          },
+          {
+            "in": "query",
+            "name": "checkId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Check ID"
+          },
+          {
+            "in": "query",
+            "name": "chapterNumber",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Chapter number"
+          },
+          {
+            "in": "query",
+            "name": "inspectorId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Inspector ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated link",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "link": {
+                      "type": "string",
+                      "example": "https://example.com/en/checks/123/1/inspectorId"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/checks/{checkId}/notes": {
+      "post": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Insert note",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "checkId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID of the check"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "note": {
+                    "type": "string"
+                  },
+                  "chapter": {
+                    "type": "string",
+                    "default": "1"
+                  },
+                  "verse": {
+                    "type": "string",
+                    "default": "1"
+                  },
+                  "inspectorId": {
+                    "type": "string",
+                    "default": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Notes"
+        ],
+        "summary": "Update note",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "checkId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID of the check"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "noteId": {
+                    "type": "integer"
+                  },
+                  "note": {
+                    "type": "string"
+                  },
+                  "inspectorId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Note updated successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/checks/{checkId}": {
+      "get": {
+        "summary": "Get check content by check ID",
+        "tags": [
+          "Checks"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "checkId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "The ID of the check"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved check content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "content": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing checkId parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Missing checkId parameter"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Detailed error message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/checks/{checkId}/url": {
+      "get": {
+        "summary": "Generate link for public check page",
+        "tags": [
+          "Links"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "lng",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Language code"
+          },
+          {
+            "in": "query",
+            "name": "checkId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Check ID"
+          },
+          {
+            "in": "query",
+            "name": "chapterNumber",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Chapter number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated link",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "link": {
+                      "type": "string",
+                      "example": "https://example.com/en/checks/123/1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/inspectors/{inspectorId}": {
+      "get": {
+        "tags": [
+          "Inspector"
+        ],
+        "summary": "Check if there are notes for the inspector",
+        "description": "Returns true if there are notes for the inspector, otherwise false.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "inspectorId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns true if there are notes for the inspector",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required parameters or invalid request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/materials": {
+      "post": {
+        "summary": "Create or update material",
+        "tags": [
+          "Material"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "materialLink": {
+                    "type": "string",
+                    "description": "Link to the material",
+                    "example": "https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/65-3JN.usfm"
+                  },
+                  "checkId": {
+                    "type": "string",
+                    "description": "ID of the check",
+                    "example": "1a2b3c4d"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The material was created or updated"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/projects/{projectId}/books/{bookId}/checks/{checkId}/inspector": {
       "get": {
         "summary": "Returns the list of inspectors for the check",
@@ -396,19 +907,7 @@
         },
         "responses": {
           "200": {
-            "description": "Inspector deleted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Inspector deleted successfully"
           },
           "400": {
             "description": "Bad request"
@@ -418,313 +917,6 @@
           },
           "500": {
             "description": "Server error"
-          }
-        }
-      }
-    },
-    "/api/checks/{checkId}/{inspectorId}": {
-      "get": {
-        "tags": [
-          "Notes"
-        ],
-        "summary": "Get notes by check id and inspector id",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "checkId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "ID of the check"
-          },
-          {
-            "in": "path",
-            "name": "inspectorId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "ID of the inspector"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotesResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Missing required parameters"
-          },
-          "404": {
-            "description": "No notes found for this inspector"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Notes"
-        ],
-        "summary": "Delete note",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "checkId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "ID of the check"
-          },
-          {
-            "in": "path",
-            "name": "inspectorId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "ID of the inspector"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "noteId": {
-                    "type": "integer"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Note deleted successfully"
-          },
-          "400": {
-            "description": "Missing required parameters"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
-    "/api/checks/{checkId}/notes": {
-      "post": {
-        "tags": [
-          "Notes"
-        ],
-        "summary": "Insert note",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "checkId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "ID of the check"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "note": {
-                    "type": "string"
-                  },
-                  "chapter": {
-                    "type": "string",
-                    "default": "1"
-                  },
-                  "verse": {
-                    "type": "string",
-                    "default": "1"
-                  },
-                  "inspectorId": {
-                    "type": "string",
-                    "default": null
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NoteResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Notes"
-        ],
-        "summary": "Update note",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "checkId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "ID of the check"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "noteId": {
-                    "type": "integer"
-                  },
-                  "note": {
-                    "type": "string"
-                  },
-                  "inspectorId": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Note updated successfully"
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
-    "/api/inspectors/{inspectorId}": {
-      "get": {
-        "tags": [
-          "Inspector"
-        ],
-        "summary": "Check if there are notes for the inspector",
-        "description": "Returns true if there are notes for the inspector, otherwise false.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "inspectorId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Returns true if there are notes for the inspector",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Missing required parameters or invalid request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/api/materials": {
-      "post": {
-        "summary": "Create or update material",
-        "tags": [
-          "Material"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "materialLink": {
-                    "type": "string",
-                    "description": "Link to the material",
-                    "example": "https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/65-3JN.usfm"
-                  },
-                  "checkId": {
-                    "type": "string",
-                    "description": "ID of the check",
-                    "example": "1a2b3c4d"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The material was created or updated"
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
