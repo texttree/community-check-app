@@ -99,17 +99,16 @@ export async function GET(req, { params: { checkId, inspectorId } }) {
       )
     }
 
-    let notes = { chapters: {} }
+    let notes = {}
     data[0].notes.forEach((note) => {
-      notes.chapters[note.chapter] ??= { verses: {} }
-      notes.chapters[note.chapter].verses[note.verse] ??= []
-      notes.chapters[note.chapter].verses[note.verse].push({
+      notes[note.chapter] ??= {}
+      notes[note.chapter][note.verse] ??= []
+      notes[note.chapter][note.verse].push({
         note: note.note,
         id: note.id,
         created_at: note.created_at,
       })
     })
-    console.log(notes, 218)
     return Response.json(notes, { status: 200 })
   } catch (error) {
     return Response.json({ error }, { status: 500 })
