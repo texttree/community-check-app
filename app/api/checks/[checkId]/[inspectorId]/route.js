@@ -4,6 +4,24 @@ import { supabaseService } from '@/app/supabase/service'
  * @swagger
  * components:
  *   schemas:
+ *     Inspector:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           description: Inspector ID
+ *         name:
+ *           type: string
+ *           description: Inspector name
+ *         check_id:
+ *           type: string
+ *           format: uuid
+ *           description: Check ID
+ *         deleted_at:
+ *           type: string
+ *           format: date-time
+ *           description: Inspector created datetime
  *     Note:
  *       type: object
  *       properties:
@@ -29,20 +47,128 @@ import { supabaseService } from '@/app/supabase/service'
  *           format: date-time
  *     NotesResponse:
  *       type: object
- *       additionalProperties:
- *         type: object
- *         additionalProperties:
- *           type: array
- *           items:
+ *       properties:
+ *         chapters:
+ *           type: object
+ *           additionalProperties:
  *             type: object
  *             properties:
- *               note:
+ *               verses:
+ *                 type: object
+ *                 additionalProperties:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Note'
+ */
+
+/**
+ * @swagger
+ * /api/projects/{projectId}/books/{bookId}/checks/{checkId}/inspector:
+ *   get:
+ *     summary: Returns the list of inspectors for the check
+ *     tags:
+ *       - Inspector
+ *     parameters:
+ *       - in: path
+ *         name: checkId
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the check
+ *     responses:
+ *       200:
+ *         description: List of inspectors
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Inspector'
+ *       500:
+ *         description: Server error
+ *   post:
+ *     summary: Creates a new inspector
+ *     tags:
+ *       - Inspector
+ *     parameters:
+ *       - in: path
+ *         name: checkId
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the check
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
  *                 type: string
+ *                 description: Name of the inspector
+ *     responses:
+ *       201:
+ *         description: Inspector created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Inspector'
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ *   delete:
+ *     summary: Deletes an inspector and its notes
+ *     tags:
+ *       - Inspector
+ *     parameters:
+ *       - in: path
+ *         name: checkId
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the check
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
  *               id:
  *                 type: string
- *               created_at:
- *                 type: string
- *                 format: date-time
+ *                 format: uuid
+ *               delete_all_notes:
+ *                 type: boolean
+ *             required:
+ *               - id
+ *               - delete_all_notes
+ *     responses:
+ *       200:
+ *         description: Inspector deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
  * /api/checks/{checkId}/{inspectorId}:
  *   get:
  *     tags:
@@ -140,16 +266,18 @@ export async function GET(req, { params: { checkId, inspectorId } }) {
         { status: 404 }
       )
     }
-    let notes = {}
+
+    let notes = { chapters: {} }
     data[0].notes.forEach((note) => {
-      notes[note.chapter] ??= {}
-      notes[note.chapter][note.verse] ??= []
-      notes[note.chapter][note.verse].push({
+      notes.chapters[note.chapter] ??= { verses: {} }
+      notes.chapters[note.chapter].verses[note.verse] ??= []
+      notes.chapters[note.chapter].verses[note.verse].push({
         note: note.note,
         id: note.id,
         created_at: note.created_at,
       })
     })
+
     return Response.json(notes, { status: 200 })
   } catch (error) {
     return Response.json({ error }, { status: 500 })
