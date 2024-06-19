@@ -30,6 +30,10 @@ import { supabaseService } from '@/app/supabase/service'
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Projects'
+ *       401:
+ *         description: Unauthorized, missing x-user-id header
+ *       500:
+ *         description: Internal server error
  *   post:
  *     summary: Create a new project
  *     tags:
@@ -38,13 +42,13 @@ import { supabaseService } from '@/app/supabase/service'
  *       required: true
  *       content:
  *         application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 name:
- *                   type: string
- *                   description: Name of the project
- *                   example: RLOB
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Name of the project
+ *                 example: RLOB
  *     responses:
  *       200:
  *         description: The newly created project
