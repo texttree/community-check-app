@@ -30,18 +30,7 @@ import { supabaseService } from '@/app/supabase/service'
  *                   type: array
  *                   items:
  *                     type: object
- *                     properties:
- *                       chapter:
- *                         type: string
- *                       verseObjects:
- *                         type: array
- *                         items:
- *                           type: object
- *                           properties:
- *                             text:
- *                               type: string
- *                             verse:
- *                               type: string
+
  *       400:
  *         description: Missing checkId parameter
  *       500:
