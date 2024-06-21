@@ -6,24 +6,27 @@
  *     tags:
  *       - Links
  *     parameters:
- *       - in: query
- *         name: lng
- *         required: true
- *         schema:
- *           type: string
- *         description: Language code
- *       - in: query
+ *       - in: path
  *         name: checkId
  *         required: true
  *         schema:
  *           type: string
+ *           format: uuid
+ *           example: "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
  *         description: Check ID
  *       - in: query
  *         name: chapterNumber
- *         required: true
+ *         required: false
  *         schema:
  *           type: string
- *         description: Chapter number
+ *           example: "1"
+ *         description: Chapter number (default is 1)
+ *       - in: query
+ *         name: lng
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Language
  *     responses:
  *       200:
  *         description: Generated link
@@ -34,7 +37,7 @@
  *               properties:
  *                 link:
  *                   type: string
- *                   example: https://example.com/en/checks/123/1
+ *                   example: https://example.com/en/checks/a1b2c3d4-e5f6-7890-abcd-1234567890ab/1
  *       400:
  *         description: Missing required parameters
  *       500:
@@ -42,14 +45,31 @@
  */
 
 export async function GET(request) {
-  const { searchParams, origin } = new URL(request.url)
-  const lng = searchParams.get('lng')
-  const checkId = searchParams.get('checkId')
-  const chapterNumber = searchParams.get('chapterNumber')
+  const { searchParams, pathname, origin } = new URL(request.url)
+  const pathSegments = pathname.split('/')
+  const checkId = pathSegments[pathSegments.length - 2]
 
-  if (!lng || !checkId || !chapterNumber) {
-    return Response.json({ error: 'Missing required parameters' }, { status: 400 })
+  let chapterNumber = searchParams.get('chapterNumber')
+  const lng = searchParams.get('lng')
+
+  if (!checkId) {
+    return new Response(
+      JSON.stringify({ error: 'Missing required parameter: checkId' }),
+      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    )
   }
-  const link = `${origin}/${lng}/checks/${checkId}/${chapterNumber}`
-  return Response.json({ link })
+
+  chapterNumber = chapterNumber || '1'
+
+  let link
+  if (lng) {
+    link = `${origin}/${lng}/checks/${checkId}/${chapterNumber}`
+  } else {
+    link = `${origin}/checks/${checkId}/${chapterNumber}`
+  }
+
+  return new Response(JSON.stringify({ link }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  })
 }
