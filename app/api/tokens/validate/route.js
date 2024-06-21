@@ -158,8 +158,19 @@ import { supabaseService } from '@/app/supabase/service'
  *                 additionalProperties:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Note'
- * 
+ *                     type: object
+ *                     properties:
+ *                       note:
+ *                         type: string
+ *                         description: Note content
+ *                       id:
+ *                         type: integer
+ *                         description: Unique identifier for the note
+ *                       created_at:
+ *                         type: string
+ *                         format: date-time
+ *                         description: Timestamp when the note was created
+
  * /api/tokens/validate:
  *   get:
  *     summary: Validate user token
