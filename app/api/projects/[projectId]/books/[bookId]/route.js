@@ -74,6 +74,32 @@ import { supabaseService } from '@/app/supabase/service'
  *           description: Unauthorized
  *         '500':
  *           description: Internal Server Error
+ *     delete:
+ *       summary: Delete a book by ID
+ *       tags:
+ *         - Books
+ *       parameters:
+ *         - in: path
+ *           name: projectId
+ *           description: Project identifier
+ *           required: true
+ *           schema:
+ *             type: string
+ *         - in: path
+ *           name: bookId
+ *           description: Book identifier
+ *           required: true
+ *           schema:
+ *             type: string
+ *       responses:
+ *         '200':
+ *           description: Book deleted successfully
+  *         '401':
+ *           description: Unauthorized
+ *         '403':
+ *           description: Forbidden
+ *         '500':
+ *           description: Internal Server Error
  */
 
 export async function GET(req, { params: { bookId } }) {
