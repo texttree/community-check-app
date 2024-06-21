@@ -27,7 +27,8 @@ import path from 'path'
  *               checkId:
  *                 type: string
  *                 description: ID of the check
- *                 example: 1a2b3c4d
+ *                 format: uuid
+ *                 example: "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
  *     responses:
  *       200:
  *         description: The material was created or updated
