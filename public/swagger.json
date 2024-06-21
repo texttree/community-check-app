@@ -20,7 +20,8 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": "1a2b3c4d"
+            "format": "uuid",
+            "example": "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
           },
           "name": {
             "type": "string",
@@ -388,40 +389,44 @@
         ],
         "parameters": [
           {
-            "in": "query",
-            "name": "lng",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Language code"
-          },
-          {
-            "in": "query",
+            "in": "path",
             "name": "checkId",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid",
+              "example": "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
             },
             "description": "Check ID"
           },
           {
-            "in": "query",
-            "name": "chapterNumber",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Chapter number"
-          },
-          {
-            "in": "query",
+            "in": "path",
             "name": "inspectorId",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid",
+              "example": "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
             },
             "description": "Inspector ID"
+          },
+          {
+            "in": "query",
+            "name": "chapterNumber",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Chapter number (default is 1)"
+          },
+          {
+            "in": "query",
+            "name": "lng",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Language"
           }
         ],
         "responses": {
@@ -434,7 +439,7 @@
                   "properties": {
                     "link": {
                       "type": "string",
-                      "example": "https://example.com/en/checks/123/1/inspectorId"
+                      "example": "https://example.com/en/checks/a1b2c3d4-e5f6-7890-abcd-1234567890ab/1/inspector123"
                     }
                   }
                 }
@@ -626,31 +631,34 @@
         ],
         "parameters": [
           {
-            "in": "query",
-            "name": "lng",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Language code"
-          },
-          {
-            "in": "query",
+            "in": "path",
             "name": "checkId",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid",
+              "example": "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
             },
             "description": "Check ID"
           },
           {
             "in": "query",
             "name": "chapterNumber",
-            "required": true,
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "1"
+            },
+            "description": "Chapter number (default is 1)"
+          },
+          {
+            "in": "query",
+            "name": "lng",
+            "required": false,
             "schema": {
               "type": "string"
             },
-            "description": "Chapter number"
+            "description": "Language"
           }
         ],
         "responses": {
@@ -663,7 +671,7 @@
                   "properties": {
                     "link": {
                       "type": "string",
-                      "example": "https://example.com/en/checks/123/1"
+                      "example": "https://example.com/en/checks/a1b2c3d4-e5f6-7890-abcd-1234567890ab/1"
                     }
                   }
                 }
@@ -740,7 +748,8 @@
                   "checkId": {
                     "type": "string",
                     "description": "ID of the check",
-                    "example": "1a2b3c4d"
+                    "format": "uuid",
+                    "example": "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
                   }
                 }
               }
