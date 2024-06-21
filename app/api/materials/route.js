@@ -4,6 +4,7 @@ import { MdToJson } from '@texttree/obs-format-convert-rcl'
 import { supabaseService } from '@/app/supabase/service'
 import axios from 'axios'
 import JSZip from 'jszip'
+import path from 'path'
 
 /**
  * @swagger
