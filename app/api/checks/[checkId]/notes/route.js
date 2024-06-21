@@ -32,6 +32,7 @@ import { supabaseService } from '@/app/supabase/service'
  *                 default: "1"
  *               inspectorId:
  *                 type: string
+ *                 format: uuid
  *                 default: null
  *     responses:
  *       201:
@@ -70,6 +71,7 @@ import { supabaseService } from '@/app/supabase/service'
  *                 type: string
  *               inspectorId:
  *                 type: string
+ *                 format: uuid
  *     responses:
  *       200:
  *         description: Note updated successfully

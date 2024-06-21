@@ -42,6 +42,7 @@ import { supabaseService } from '@/app/supabase/service'
  *                   description: The ID of the book
  *                 check_id:
  *                   type: string
+ *                   format: uuid
  *                   description: The ID of the created check
  *       400:
  *         description: Bad request, missing project_name, book_name, or check_name

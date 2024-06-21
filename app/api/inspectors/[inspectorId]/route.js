@@ -14,6 +14,7 @@ import { supabaseService } from '@/app/supabase/service'
  *         required: true
  *         schema:
  *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: Returns true if there are notes for the inspector
