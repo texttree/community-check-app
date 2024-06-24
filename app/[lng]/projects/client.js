@@ -45,14 +45,14 @@ const ProjectPage = ({ lng }) => {
   }
 
   return (
-    <div className="bg-gray-200 py-8">
+    <div>
       <div className="max-w-6xl mx-auto p-4">
         <TabGroup>
-          <TabList className="bg-deep-space flex p-2 w-full border border-th-secondary-300 rounded-xl shadow-md">
+          <TabList className="bg-ming-blue flex p-2 w-full border border-th-secondary-300 rounded-xl shadow-md">
             <Tab
               className={({ selected }) =>
                 selected
-                  ? 'bg-deep-space text-white cursor-pointer text-2xl font-bold  px-9 py-2 rounded-md'
+                  ? 'bg-ming-blue text-white cursor-pointer text-2xl font-bold  px-9 py-2 rounded-md'
                   : 'text-blue-100 hover:bg-white/[0.12] hover:text-white px-4 py-2 rounded-md'
               }
             >
