@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /api/checks/{checkId}/url:
+ * /api/checks/{checkId}/url?chapterNumber=1&lng=en:
  *   get:
  *     summary: Generate link for public check page
  *     tags:
@@ -44,10 +44,8 @@
  *         description: Internal server error
  */
 
-export async function GET(request) {
-  const { searchParams, pathname, origin } = new URL(request.url)
-  const pathSegments = pathname.split('/')
-  const checkId = pathSegments[pathSegments.length - 2]
+export async function GET(request, { params: { checkId } }) {
+  const { searchParams, origin } = new URL(request.url)
 
   let chapterNumber = searchParams.get('chapterNumber')
   const lng = searchParams.get('lng')
