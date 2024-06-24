@@ -15,7 +15,7 @@
       }
     },
     "schemas": {
-      "Fast Check": {
+      "Complex create": {
         "type": "object",
         "properties": {
           "id": {
@@ -254,7 +254,7 @@
       "name": "Token"
     },
     {
-      "name": "Fast"
+      "name": "Complex create"
     },
     {
       "name": "Projects"
@@ -381,7 +381,7 @@
         }
       }
     },
-    "/api/checks/{checkId}/{inspectorId}/url": {
+    "/api/checks/{checkId}/{inspectorId}/url?chapterNumber=1&lng=en": {
       "get": {
         "summary": "Generate link for personal check page",
         "tags": [
@@ -493,6 +493,7 @@
                   },
                   "inspectorId": {
                     "type": "string",
+                    "format": "uuid",
                     "default": null
                   }
                 }
@@ -550,7 +551,8 @@
                     "type": "string"
                   },
                   "inspectorId": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                   }
                 }
               }
@@ -623,7 +625,7 @@
         }
       }
     },
-    "/api/checks/{checkId}/url": {
+    "/api/checks/{checkId}/url?chapterNumber=1&lng=en": {
       "get": {
         "summary": "Generate link for public check page",
         "tags": [
@@ -700,7 +702,8 @@
             "name": "inspectorId",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1631,11 +1634,11 @@
         }
       }
     },
-    "/api/projects/fast": {
+    "/api/projects/complex-create": {
       "post": {
-        "summary": "Create a fast project, books and check",
+        "summary": "Complex create project, books and check",
         "tags": [
-          "Fast"
+          "Complex create"
         ],
         "requestBody": {
           "required": true,
@@ -1682,6 +1685,7 @@
                     },
                     "check_id": {
                       "type": "string",
+                      "format": "uuid",
                       "description": "The ID of the created check"
                     }
                   }
