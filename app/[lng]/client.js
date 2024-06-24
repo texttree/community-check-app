@@ -102,8 +102,8 @@ const Index = ({ lng }) => {
             <Link className="flex-grow" href="/doc">{`${currentDomain}/doc`}</Link>
           </div>
         </div>
-        <div className="mx-auto my-4 h-auto w-full md:w-2/5 flex flex-col md:flex-row justify-between items-center bg-ming-blue rounded-lg px-6 py-4">
-          <p className="text-white text-center text-sm md:text-base mb-4 md:mb-0">
+        <div className="mx-auto my-4 h-auto w-full md:w-2/5 flex  flex-row justify-between items-center bg-ming-blue rounded-lg px-6 py-4">
+          <p className="text-white text-center text-sm md:text-base">
             Начните проверку прямо сейчас
           </p>
           <Link
