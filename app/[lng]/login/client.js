@@ -62,10 +62,14 @@ export default function FormComponent({ lng, redirectedFrom }) {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="relative flex items-center justify-center">
-        <div className="absolute -left-44 top-48 transform -translate-y-2/3">
-          <Image src="/Paul.svg" alt="Paul" width={550} height={550} />
-        </div>
-        <div className="relative ml-80 w-96 h-80 p-8 bg-white shadow-lg rounded-lg transform -translate-y-16">
+        <Image
+          src="/Paul.svg"
+          alt="Paul"
+          width={550}
+          height={550}
+          className="hidden md:block absolute md:-left-44 md:top-48 md:transform md:-translate-y-2/3"
+        />
+        <div className="w-full p-8 bg-white shadow-lg rounded-lg md:ml-80 md:w-96 md:h-80 md:translate-y-0 md:shadow-none mb-44">
           <h2 className="text-center text-3xl font-bold text-gray-900 mb-6">
             {t('signAccount')}
           </h2>
@@ -96,10 +100,10 @@ export default function FormComponent({ lng, redirectedFrom }) {
                 />
               </div>
             </div>
-            <div className="mt-6 flex justify-between">
+            <div className="mt-6 flex flex-col space-y-2 md:flex-row md:justify-between md:space-y-0">
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-ming-blue hover:bg-dark-slate-gray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-2"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-ming-blue hover:bg-dark-slate-gray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-0 md:mr-2"
                 disabled={loading}
               >
                 {loading ? 'Загрузка...' : 'Войти'}
