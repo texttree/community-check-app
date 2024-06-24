@@ -191,6 +191,10 @@ const ProjectPage = ({ lng }) => {
               }
               errorMessage={errorMessage}
               lng={lng}
+              showProject={true}
+              showBook={modalOptions.showBook}
+              showCheck={modalOptions.showCheck}
+              windowTitle={modalOptions.windowTitle}
             />
           </div>
         </>
