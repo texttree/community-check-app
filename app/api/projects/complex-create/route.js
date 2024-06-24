@@ -2,11 +2,11 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * /api/projects/fast:
+ * /api/projects/complex-create:
  *   post:
- *     summary: Create a fast project, books and check
+ *     summary: Complex create project, books and check
  *     tags:
- *       - Fast
+ *       - Complex create
  *     requestBody:
  *       required: true
  *       content:

@@ -5,7 +5,7 @@ import { supabaseService } from '@/app/supabase/service'
  * components:
  *   schemas:
  * 
- *     Fast Check:
+ *     Complex create:
  *       type: object
  *       properties:
  *         id:
