@@ -34,10 +34,10 @@ const ProjectPage = ({ lng }) => {
 
   const handleAddFastCheck = async (data) => {
     try {
-      const response = await axios.post('/api/projects/fast', {
-        project_name: data.projectName,
-        book_name: data.book,
-        check_name: data.check,
+      const response = await axios.post('/api/projects/complex-create', {
+        project_name: projectName,
+        book_name: book,
+        check_name: check,
       })
       if (response.status === 201) {
         router.push(
