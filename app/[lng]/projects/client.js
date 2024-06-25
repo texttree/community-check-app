@@ -18,10 +18,12 @@ const ProjectPage = ({ lng }) => {
 
   const openAddModal = () => {
     setShowAddModal(true)
+    document.body.style.overflow = 'hidden'
   }
 
   const closeAddModal = () => {
     setShowAddModal(false)
+    document.body.style.overflow = ''
   }
 
   const handleAddProject = async (projectName, book, check) => {
@@ -36,6 +38,7 @@ const ProjectPage = ({ lng }) => {
           `/${lng}/projects/${response.data.project_id}/${response.data.book_id}/${response.data.check_id}`
         )
         setShowAddModal(false)
+        document.body.style.overflow = ''
       } else {
         console.error('Failed to add project:', response.data)
       }
@@ -66,7 +69,7 @@ const ProjectPage = ({ lng }) => {
   }, [menuRef])
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
+    <div className="max-w-6xl mx-auto p-4 relative">
       <TabGroup>
         <TabList className="bg-ming-blue flex p-2 w-full border border-th-secondary-300 rounded-xl shadow-md">
           <Tab
@@ -141,12 +144,19 @@ const ProjectPage = ({ lng }) => {
           </TabPanel>
         </TabPanels>
       </TabGroup>
-      <AddProjectModal
-        isOpen={showAddModal}
-        onClose={closeAddModal}
-        onAddProject={handleAddProject}
-        lng={lng}
-      />
+      {showAddModal && (
+        <>
+          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-lg z-50"></div>
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <AddProjectModal
+              isOpen={showAddModal}
+              onClose={closeAddModal}
+              onAddProject={handleAddProject}
+              lng={lng}
+            />
+          </div>
+        </>
+      )}
     </div>
   )
 }

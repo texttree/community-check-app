@@ -21,32 +21,34 @@ const AddProjectModal = ({ isOpen, onClose, onAddProject, lng }) => {
     <>
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg">
-            <h2 className="text-2xl font-bold mb-4"> {t('quickCreateCheck')}</h2>
+          <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4 text-center">
+              {t('quickCreateCheck')}
+            </h2>
             <input
               type="text"
               placeholder={t('titleProject')}
-              className="border border-gray-300 rounded-md px-4 py-2 mb-4"
+              className="border border-gray-300 rounded-md px-4 py-2 mb-4 w-full"
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
             />
             <input
               type="text"
               placeholder={t('titleBook')}
-              className="border border-gray-300 rounded-md px-4 py-2 mb-4"
+              className="border border-gray-300 rounded-md px-4 py-2 mb-4 w-full"
               value={book}
               onChange={(e) => setBook(e.target.value)}
             />
             <input
               type="text"
               placeholder={t('titleCheck')}
-              className="border border-gray-300 rounded-md px-4 py-2 mb-4"
+              className="border border-gray-300 rounded-md px-4 py-2 mb-4 w-full"
               value={check}
               onChange={(e) => setCheck(e.target.value)}
             />
             <div className="flex justify-end">
               <button
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md mr-2"
+                className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md mr-2"
                 onClick={handleAddProject}
               >
                 {t('create')}
