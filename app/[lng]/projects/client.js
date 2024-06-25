@@ -26,7 +26,7 @@ const ProjectPage = ({ lng }) => {
     document.body.style.overflow = ''
   }
 
-  const handleAddProject = async (data) => {
+  const handleAddFastCheck = async (data) => {
     try {
       const response = await axios.post('/api/projects/fast', {
         project_name: data.projectName,
@@ -151,7 +151,7 @@ const ProjectPage = ({ lng }) => {
             <AddDialogModal
               isOpen={showAddModal}
               onClose={closeAddModal}
-              onAddProject={handleAddProject}
+              onAddProject={handleAddFastCheck}
               lng={lng}
               showProject={true}
               showBook={true}
