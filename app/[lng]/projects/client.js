@@ -32,7 +32,7 @@ const ProjectPage = ({ lng }) => {
     document.body.style.overflow = ''
   }
 
-  const handleAddProject = async (data) => {
+  const handleAddFastCheck = async (data) => {
     try {
       const response = await axios.post('/api/projects/complex-create', {
         project_name: projectName,
