@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useTranslation } from '@/app/i18n/client'
 import axios from 'axios'
 import Projects from '@/app/components/Projects'
-import AddProjectModal from '@/app/components/AddProjectModal'
+import AddDialogModal from '@/app/components/AddDialogModal'
 import { useRouter } from 'next/navigation'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 
@@ -26,12 +26,12 @@ const ProjectPage = ({ lng }) => {
     document.body.style.overflow = ''
   }
 
-  const handleAddProject = async (projectName, book, check) => {
+  const handleAddProject = async (data) => {
     try {
       const response = await axios.post('/api/projects/fast', {
-        project_name: projectName,
-        book_name: book,
-        check_name: check,
+        project_name: data.projectName,
+        book_name: data.book,
+        check_name: data.check,
       })
       if (response.status === 201) {
         router.push(
@@ -148,11 +148,15 @@ const ProjectPage = ({ lng }) => {
         <>
           <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-lg z-50"></div>
           <div className="fixed inset-0 flex items-center justify-center z-50">
-            <AddProjectModal
+            <AddDialogModal
               isOpen={showAddModal}
               onClose={closeAddModal}
               onAddProject={handleAddProject}
               lng={lng}
+              showProject={true}
+              showBook={true}
+              showCheck={true}
+              windowTitle="quickCreateCheck"
             />
           </div>
         </>
