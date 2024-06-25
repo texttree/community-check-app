@@ -13,12 +13,15 @@ const ProjectPage = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
   const [showAddModal, setShowAddModal] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
   const menuRef = useRef(null)
   const router = useRouter()
 
-  const openAddModal = () => {
+  const openAddModal = (windowTitle, showBook, showCheck) => {
     setShowAddModal(true)
     document.body.style.overflow = 'hidden'
+    setModalOptions({ windowTitle, showBook, showCheck })
+    setErrorMessage('')
   }
 
   const closeAddModal = () => {
@@ -47,6 +50,28 @@ const ProjectPage = ({ lng }) => {
     }
   }
 
+  const handleCreateProject = async (data) => {
+    setErrorMessage('')
+    const name = data.projectName.trim()
+
+    if (name) {
+      try {
+        const response = await axios.post('/api/projects', { name })
+        if (response.status === 201) {
+          router.push(`/${lng}/projects/${response.data}`)
+          setShowAddModal(false)
+          document.body.style.overflow = ''
+        } else {
+          throw new Error(t('errorCreateProject'))
+        }
+      } catch (error) {
+        setErrorMessage(error.message)
+      }
+    } else {
+      setErrorMessage(t('nameEmpty'))
+    }
+  }
+
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen)
   }
@@ -68,6 +93,12 @@ const ProjectPage = ({ lng }) => {
     }
   }, [menuRef])
 
+  const [modalOptions, setModalOptions] = useState({
+    windowTitle: '',
+    showBook: false,
+    showCheck: false,
+  })
+
   return (
     <div className="max-w-6xl mx-auto p-4 relative">
       <TabGroup>
@@ -85,12 +116,12 @@ const ProjectPage = ({ lng }) => {
         <TabPanels className="mt-2">
           <TabPanel className="bg-white p-4 rounded-md text-left">
             <div className="hidden md:flex justify-start space-x-4 mb-4">
-              <Link
-                href={`/${lng}/projects/new`}
+              <button
                 className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
+                onClick={() => openAddModal('createProject', false, false)}
               >
                 {t('createProject')}
-              </Link>
+              </button>
               <Link
                 href={`/${lng}/tokens`}
                 className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
@@ -99,7 +130,7 @@ const ProjectPage = ({ lng }) => {
               </Link>
               <button
                 className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
-                onClick={openAddModal}
+                onClick={() => openAddModal('quickCreateCheck', true, true)}
               >
                 {t('quickCreateCheck')}
               </button>
@@ -112,23 +143,22 @@ const ProjectPage = ({ lng }) => {
                 {isMenuOpen && (
                   <div className="absolute right-0 mt-2 w-56 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                     <div className="py-1">
-                      <Link
-                        href={`/${lng}/projects/new`}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
-                        onClick={closeMenu}
+                      <button
+                        onClick={() => openAddModal('createProject', false, false)}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
                       >
                         {t('createProject')}
-                      </Link>
+                      </button>
                       <Link
                         href={`/${lng}/tokens`}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
                         onClick={closeMenu}
                       >
                         {t('tokens')}
                       </Link>
                       <button
                         onClick={() => {
-                          openAddModal()
+                          openAddModal('quickCreateCheck', true, true)
                           closeMenu()
                         }}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
@@ -151,12 +181,17 @@ const ProjectPage = ({ lng }) => {
             <AddDialogModal
               isOpen={showAddModal}
               onClose={closeAddModal}
-              onAddProject={handleAddFastCheck}
+              onAddProject={
+                modalOptions.windowTitle === 'сreateProject'
+                  ? handleCreateProject
+                  : handleAddFastCheck
+              }
+              errorMessage={errorMessage}
               lng={lng}
               showProject={true}
-              showBook={true}
-              showCheck={true}
-              windowTitle="quickCreateCheck"
+              showBook={modalOptions.showBook}
+              showCheck={modalOptions.showCheck}
+              windowTitle={modalOptions.windowTitle}
             />
           </div>
         </>
