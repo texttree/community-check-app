@@ -114,14 +114,14 @@ const ProjectPage = ({ lng }) => {
                     <div className="py-1">
                       <Link
                         href={`/${lng}/projects/new`}
-                        className="block px-4 py-2 text-sm text-gray-700"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
                         onClick={closeMenu}
                       >
                         {t('createProject')}
                       </Link>
                       <Link
                         href={`/${lng}/tokens`}
-                        className="block px-4 py-2 text-sm text-gray-700"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
                         onClick={closeMenu}
                       >
                         {t('tokens')}
@@ -131,7 +131,7 @@ const ProjectPage = ({ lng }) => {
                           openAddModal()
                           closeMenu()
                         }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700"
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
                       >
                         {t('quickCreateCheck')}
                       </button>
