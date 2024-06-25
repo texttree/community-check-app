@@ -1,23 +1,13 @@
 'use client'
-
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useTranslation } from '@/app/i18n/client'
 import axios from 'axios'
 import Projects from '@/app/components/Projects'
 import AddProjectModal from '@/app/components/AddProjectModal'
 import { useRouter } from 'next/navigation'
-import {
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
-} from '@headlessui/react'
-import { Menu } from '@headlessui/react'
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 
 const ProjectPage = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -58,18 +48,22 @@ const ProjectPage = ({ lng }) => {
     setIsMenuOpen(!isMenuOpen)
   }
 
-  const handleClickOutside = (event) => {
-    if (menuRef.current && !menuRef.current.contains(event.target)) {
-      setIsMenuOpen(false)
-    }
+  const closeMenu = () => {
+    setIsMenuOpen(false)
   }
 
   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false)
+      }
+    }
+
     document.addEventListener('mousedown', handleClickOutside)
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [])
+  }, [menuRef])
 
   return (
     <div className="max-w-6xl mx-auto p-4">
@@ -107,53 +101,41 @@ const ProjectPage = ({ lng }) => {
                 {t('quickCreateCheck')}
               </button>
             </div>
-            <div className="md:hidden mb-4 flex justify-end" ref={menuRef}>
-              <Menu as="div" className="relative inline-block text-left">
-                <div>
-                  <MenuButton
-                    className="bg-ming-blue hover:bg-deep-space text-white px-3 py-1 rounded-full border border-th-secondary-300"
-                    onClick={handleMenuToggle}
-                  >
-                    {t('...')}
-                  </MenuButton>
-                </div>
+            <div className="md:hidden mb-4 flex justify-end">
+              <div className="relative inline-block text-left" ref={menuRef}>
+                <button onClick={handleMenuToggle}>
+                  <Image src="/menu.svg" alt="Menu" width={30} height={30} />
+                </button>
                 {isMenuOpen && (
-                  <MenuItems className="absolute right-0 mt-2 w-56 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                  <div className="absolute right-0 mt-2 w-56 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                     <div className="py-1">
-                      <MenuItem>
-                        {({ active }) => (
-                          <Link
-                            href={`/${lng}/projects/new`}
-                            className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} block px-4 py-2 text-sm`}
-                          >
-                            {t('createProject')}
-                          </Link>
-                        )}
-                      </MenuItem>
-                      <MenuItem>
-                        {({ active }) => (
-                          <Link
-                            href={`/${lng}/tokens`}
-                            className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} block px-4 py-2 text-sm`}
-                          >
-                            {t('tokens')}
-                          </Link>
-                        )}
-                      </MenuItem>
-                      <MenuItem>
-                        {({ active }) => (
-                          <button
-                            onClick={openAddModal}
-                            className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'} block w-full text-left px-4 py-2 text-sm`}
-                          >
-                            {t('quickCreateCheck')}
-                          </button>
-                        )}
-                      </MenuItem>
+                      <Link
+                        href={`/${lng}/projects/new`}
+                        className="block px-4 py-2 text-sm text-gray-700"
+                        onClick={closeMenu}
+                      >
+                        {t('createProject')}
+                      </Link>
+                      <Link
+                        href={`/${lng}/tokens`}
+                        className="block px-4 py-2 text-sm text-gray-700"
+                        onClick={closeMenu}
+                      >
+                        {t('tokens')}
+                      </Link>
+                      <button
+                        onClick={() => {
+                          openAddModal()
+                          closeMenu()
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700"
+                      >
+                        {t('quickCreateCheck')}
+                      </button>
                     </div>
-                  </MenuItems>
+                  </div>
                 )}
-              </Menu>
+              </div>
             </div>
             <Projects lng={lng} />
           </TabPanel>
