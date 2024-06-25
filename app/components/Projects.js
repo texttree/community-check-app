@@ -16,7 +16,7 @@ const Projects = ({ lng }) => {
       {error ? (
         <p className="text-red-600">{t('errorOccurred')}</p>
       ) : projects ? (
-        <div className="flex flex-wrap gap-4 mb-4">
+        <div className="grid grid-cols-3 gap-4 mb-4 md:flex md:flex-wrap md:gap-6">
           {projects.map((project) => (
             <div key={project.id} className="flex flex-col items-center">
               <Link href={`projects/${project.id}`}>
