@@ -2,8 +2,6 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * tags:
- *   - Books
  * /api/projects/{projectId}:
  *   get:
  *     summary: Returns a project by ID.
@@ -105,6 +103,7 @@ export async function POST(req, { params: { projectId } }) {
       {
         project_id: projectId,
         new_name: name,
+        user_id: userId,
       }
     )
 

@@ -2,23 +2,6 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * tags:
- *   - Projects
- * components:
- *   schemas:
- *     Project:
- *       type: object
- *       properties:
- *         id:
- *           type: number
- *           example: 1
- *         name:
- *           type: string
- *           example: RLOB
- *     Projects:
- *       type: array
- *       items:
- *         $ref: '#/components/schemas/Project'
  * /api/projects:
  *   get:
  *     summary: Get projects for the current user
@@ -31,6 +14,10 @@ import { supabaseService } from '@/app/supabase/service'
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Projects'
+ *       401:
+ *         description: Unauthorized, missing x-user-id header
+ *       500:
+ *         description: Internal server error
  *   post:
  *     summary: Create a new project
  *     tags:
@@ -46,19 +33,13 @@ import { supabaseService } from '@/app/supabase/service'
  *                 type: string
  *                 description: Name of the project
  *                 example: RLOB
- *             required:
- *               - name
  *     responses:
- *       201:
+ *       200:
  *         description: The newly created project
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: number
- *                   description: The ID of the newly created project
+ *               $ref: '#/components/schemas/Project'
  *       400:
  *         description: Invalid input, project name is missing or already exists
  *       401:
@@ -135,7 +116,7 @@ export async function POST(req) {
       return Response.json({ error }, { status: 400 })
     }
 
-    return Response.json(data, { status: 201 })
+    return Response.json(data, { status: 200 })
   } catch (error) {
     return Response.json({ error }, { status: 500 })
   }
@@ -172,7 +153,7 @@ export async function DELETE(req) {
       return Response.json({ error: error.message }, { status: 500 })
     }
 
-    return Response.json(null, { status: 200 })
+    return Response.json({ message: 'Project deleted successfully' }, { status: 200 })
   } catch (catchError) {
     console.error('Unexpected error:', catchError)
     return Response.json({ error: catchError.message }, { status: 500 })

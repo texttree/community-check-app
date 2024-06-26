@@ -31,24 +31,8 @@ import { supabaseService } from '@/app/supabase/service'
  *                 $ref: '#/components/schemas/Check'
  *       '401':
  *         description: Unauthorized
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Unauthorized
  *       '500':
  *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Internal server error
  *   post:
  *     summary: Creates a new check for a book
  *     tags:
@@ -99,34 +83,10 @@ import { supabaseService } from '@/app/supabase/service'
  *               $ref: '#/components/schemas/Check'
  *       '400':
  *         description: Bad request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Check name is required
  *       '401':
  *         description: Unauthorized
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Unauthorized
  *       '500':
  *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Internal server error
  */
 
 export async function GET(req, { params: { bookId } }) {
@@ -161,10 +121,10 @@ export async function POST(req, { params: { bookId } }) {
   }
   try {
     const { data: check, error } = await supabaseService.rpc('create_check', {
-      name,
-      material_link: url,
-      started_at: startDate,
-      finished_at: startDate,
+      check_name: name,
+      check_material_link: url,
+      check_started_at: startDate,
+      check_finished_at: startDate,
       book_id: parseInt(bookId),
       user_id: userId,
     })

@@ -2,30 +2,11 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * tags:
- *   - Checks
- * components:
- *   schemas:
- *     Check:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           example: "1a2b3c4d"
- *         name:
- *           type: string
- *           example: "Check 1"
- *         project_id:
- *           type: number
- *           example: 1
- *         book_id:
- *           type: number
- *           example: 1
- * /api/projects/fast:
+ * /api/projects/complex-create:
  *   post:
- *     summary: Create a fast project, books and check
+ *     summary: Complex create project, books and check
  *     tags:
- *       - Checks
+ *       - Complex create
  *     requestBody:
  *       required: true
  *       content:
@@ -61,6 +42,7 @@ import { supabaseService } from '@/app/supabase/service'
  *                   description: The ID of the book
  *                 check_id:
  *                   type: string
+ *                   format: uuid
  *                   description: The ID of the created check
  *       400:
  *         description: Bad request, missing project_name, book_name, or check_name
@@ -90,8 +72,14 @@ export async function POST(req) {
     if (error) {
       return Response.json({ error }, { status: 400 })
     }
-
-    return Response.json(data, { status: 201 })
+    return Response.json(
+      {
+        project_id: data.project_id,
+        book_id: data.book_id,
+        check_id: data.check_id,
+      },
+      { status: 201 }
+    )
   } catch (error) {
     return Response.json({ error }, { status: 500 })
   }

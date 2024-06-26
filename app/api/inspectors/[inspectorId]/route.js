@@ -6,51 +6,28 @@ import { supabaseService } from '@/app/supabase/service'
  *   get:
  *     tags:
  *       - Inspector
- *     summary: Returns true if there are notes for the inspector
- *     description: Returns true if there are notes for the inspector
+ *     summary: Check if there are notes for the inspector
+ *     description: Returns true if there are notes for the inspector, otherwise false.
  *     parameters:
  *       - in: path
  *         name: inspectorId
  *         required: true
  *         schema:
  *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: Returns true if there are notes for the inspector
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 has_notes:
- *                   type: boolean
+ *               type: boolean
  *       400:
- *         description: Missing required parameters
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
+ *         description: Missing required parameters or invalid request
  *       401:
  *         description: Unauthorized
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
  *       500:
  *         description: Internal Server Error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
  */
 
 export async function GET(req, { params: { inspectorId } }) {

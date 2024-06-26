@@ -2,26 +2,6 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * tags:
- *   - Books
- * components:
- *   schemas:
- *     Book:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *         name:
- *           type: string
- *         project_id:
- *           type: string
- *         created_at:
- *           type: string
- *           format: date-time
- *         updated_at:
- *           type: string
- *           format: date-time
- *
  * /api/projects/{projectId}/books:
  *   get:
  *     summary: Get books
@@ -121,7 +101,7 @@ export async function POST(req, { params: { projectId } }) {
   try {
     const { data: project, error } = await supabaseService.rpc('create_book', {
       project_id: projectId,
-      name,
+      book_name: name,
       user_id: userId,
     })
 

@@ -2,22 +2,7 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * tags:
- *   name: Books
- *   description: Operations about books
- *
- * components:
- *   schemas:
- *     Book:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           description: Book identifier
- *         name:
- *           type: string
- *           description: Book name
- *
+
  * paths:
  *   /api/projects/{projectId}/books/{bookId}:
  *     get:
@@ -87,6 +72,32 @@ import { supabaseService } from '@/app/supabase/service'
  *           description: Bad Request
  *         '401':
  *           description: Unauthorized
+ *         '500':
+ *           description: Internal Server Error
+ *     delete:
+ *       summary: Delete a book by ID
+ *       tags:
+ *         - Books
+ *       parameters:
+ *         - in: path
+ *           name: projectId
+ *           description: Project identifier
+ *           required: true
+ *           schema:
+ *             type: string
+ *         - in: path
+ *           name: bookId
+ *           description: Book identifier
+ *           required: true
+ *           schema:
+ *             type: string
+ *       responses:
+ *         '200':
+ *           description: Book deleted successfully
+  *         '401':
+ *           description: Unauthorized
+ *         '403':
+ *           description: Forbidden
  *         '500':
  *           description: Internal Server Error
  */
