@@ -8,14 +8,24 @@ import Projects from '@/app/components/Projects'
 import AddDialogModal from '@/app/components/AddDialogModal'
 import { useRouter } from 'next/navigation'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
+import useSWR from 'swr'
+import { fetcher } from '@/helpers/fetcher'
 
 const ProjectPage = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
   const [showAddModal, setShowAddModal] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [projects, setProjects] = useState([])
   const menuRef = useRef(null)
   const router = useRouter()
+  const { data: projectsData, mutate, error } = useSWR('/api/projects', fetcher)
+
+  useEffect(() => {
+    if (projectsData) {
+      setProjects(projectsData)
+    }
+  }, [projectsData])
 
   const openAddModal = (windowTitle, showBook, showCheck) => {
     setShowAddModal(true)
@@ -32,9 +42,9 @@ const ProjectPage = ({ lng }) => {
   const handleAddFastCheck = async (data) => {
     try {
       const response = await axios.post('/api/projects/complex-create', {
-        project_name: projectName,
-        book_name: book,
-        check_name: check,
+        project_name: data.projectName,
+        book_name: data.book,
+        check_name: data.check,
       })
       if (response.status === 201) {
         router.push(
@@ -58,7 +68,7 @@ const ProjectPage = ({ lng }) => {
       try {
         const response = await axios.post('/api/projects', { name })
         if (response.status === 200) {
-          router.push(`/${lng}/projects/${response.data}`)
+          mutate()
           setShowAddModal(false)
           document.body.style.overflow = ''
         } else {
@@ -170,7 +180,7 @@ const ProjectPage = ({ lng }) => {
                 )}
               </div>
             </div>
-            <Projects lng={lng} />
+            <Projects lng={lng} projects={projects} error={error} />
           </TabPanel>
         </TabPanels>
       </TabGroup>
@@ -182,7 +192,7 @@ const ProjectPage = ({ lng }) => {
               isOpen={showAddModal}
               onClose={closeAddModal}
               onAddProject={
-                modalOptions.windowTitle === 'сreateProject'
+                modalOptions.windowTitle === 'createProject'
                   ? handleCreateProject
                   : handleAddFastCheck
               }

@@ -1,15 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import useSWR from 'swr'
 import { useTranslation } from '@/app/i18n/client'
-import { fetcher } from '@/helpers/fetcher'
 import Loader from '@/app/components/Loader'
 import Image from 'next/image'
 
-const Projects = ({ lng }) => {
+const Projects = ({ lng, projects, error }) => {
   const { t } = useTranslation(lng, 'common')
-  const { data: projects, error } = useSWR('/api/projects', fetcher)
 
   return (
     <>
