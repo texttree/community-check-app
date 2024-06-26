@@ -25,7 +25,7 @@ const ProjectPage = ({ lng }) => {
 
   const handleAddProject = async (projectName, book, check) => {
     try {
-      const response = await axios.post('/api/projects/fast', {
+      const response = await axios.post('/api/projects/complex-create', {
         project_name: projectName,
         book_name: book,
         check_name: check,

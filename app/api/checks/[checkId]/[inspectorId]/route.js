@@ -1,5 +1,78 @@
 import { supabaseService } from '@/app/supabase/service'
 
+/**
+ * @swagger
+ * /api/checks/{checkId}/{inspectorId}:
+ *   get:
+ *     tags:
+ *       - Notes
+ *     summary: Get notes by check id and inspector id
+ *     parameters:
+ *       - in: path
+ *         name: checkId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the check
+ *       - in: path
+ *         name: inspectorId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the inspector
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/NotesResponse'
+ *       400:
+ *         description: Missing required parameters
+ *       404:
+ *         description: No notes found for this inspector
+ *       500:
+ *         description: Internal server error
+ *   delete:
+ *     tags:
+ *       - Notes
+ *     summary: Delete note
+ *     parameters:
+ *       - in: path
+ *         name: checkId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the check
+ *       - in: path
+ *         name: inspectorId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID of the inspector
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               noteId:
+ *                 type: integer
+ *
+ *     responses:
+ *       200:
+ *         description: Note deleted successfully
+ *       400:
+ *         description: Missing required parameters
+ *       500:
+ *         description: Internal server error
+ */
+
 export async function GET(req, { params: { checkId, inspectorId } }) {
   if (!checkId || !inspectorId) {
     return Response.json({ error: 'Missing required parameters' }, { status: 400 })
@@ -16,17 +89,16 @@ export async function GET(req, { params: { checkId, inspectorId } }) {
         ascending: true,
         referencedTable: 'notes',
       })
-
     if (error) {
       throw error
     }
-
-    if (data.length === 0 || !data[0].notes) {
+    if (data.length === 0 || data[0].length === 0) {
       return Response.json(
         { error: 'No notes found for this inspector' },
         { status: 404 }
       )
     }
+
     let notes = {}
     data[0].notes.forEach((note) => {
       notes[note.chapter] ??= {}

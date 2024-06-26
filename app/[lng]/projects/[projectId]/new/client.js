@@ -23,7 +23,7 @@ const NewBookPage = ({ lng }) => {
       try {
         const response = await axios.post(`/api/projects/${projectId}/books`, { name })
         const data = response.data
-        router.push(`/${lng}/projects/${projectId}/${data.book_id}`)
+        router.push(`/${lng}/projects/${projectId}/${data.id}`)
       } catch (error) {
         console.error(error)
         setErrorMessage(error.message)

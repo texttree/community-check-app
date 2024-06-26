@@ -35,7 +35,7 @@ const BookDetailsPage = ({ lng }) => {
         startDate,
       })
       if (res.status === 201) {
-        const checkId = res.data
+        const checkId = res.data.id
         router.push(`/${lng}/projects/${projectId}/${bookId}/${checkId}`)
       }
     } catch (error) {

@@ -2,29 +2,6 @@ import { supabaseService } from '@/app/supabase/service'
 
 /**
  * @swagger
- * tags:
- *   name: Inspector
- *   description: Inspector operations
- * components:
- *   schemas:
- *     Inspector:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           format: uuid
- *           description: Inspector ID
- *         name:
- *           type: string
- *           description: Inspector name
- *         check_id:
- *           type: string
- *           format: uuid
- *           description: Check ID
- *         deleted_at:
- *           type: string
- *           format: date-time
- *           description: Inspector created datetime
  * /api/projects/{projectId}/books/{bookId}/checks/{checkId}/inspector:
  *   get:
  *     summary: Returns the list of inspectors for the check
@@ -35,6 +12,7 @@ import { supabaseService } from '@/app/supabase/service'
  *         name: checkId
  *         schema:
  *           type: string
+ *           format: uuid
  *         required: true
  *         description: The ID of the check
  *     responses:
@@ -105,21 +83,16 @@ import { supabaseService } from '@/app/supabase/service'
  *               id:
  *                 type: string
  *                 format: uuid
+ *                 description: ID of the inspector to delete
  *               delete_all_notes:
  *                 type: boolean
+ *                 description: Whether to delete all associated notes with the inspector
  *             required:
  *               - id
  *               - delete_all_notes
  *     responses:
  *       200:
  *         description: Inspector deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
  *       400:
  *         description: Bad request
  *       401:
@@ -139,7 +112,7 @@ export async function GET(req, { params: { checkId } }) {
   try {
     const { data, error } = await supabaseService
       .from('inspectors')
-      .select('*')
+      .select('id, name')
       .eq('check_id', checkId)
       .is('deleted_at', null)
 
@@ -185,7 +158,7 @@ export async function POST(req, { params: { checkId } }) {
           check_id: checkId,
         },
       ])
-      .select()
+      .select('id,name')
 
     if (error) {
       return Response.json({ error }, { status: 400 })
@@ -215,7 +188,7 @@ export async function DELETE(req) {
     })
 
     if (error) {
-      return Response.json({ error }, { status: 402 })
+      return Response.json({ error }, { status: 400 })
     }
 
     return Response.json({ message: 'Inspector deleted successfully' }, { status: 200 })

@@ -6,6 +6,40 @@ import axios from 'axios'
 import JSZip from 'jszip'
 import path from 'path'
 
+/**
+ * @swagger
+ * /api/materials:
+ *   post:
+ *     summary: Create or update material
+ *     tags:
+ *       - Material
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               materialLink:
+ *                 type: string
+ *                 description: Link to the material
+ *                 example: https://git.door43.org/ru_gl/ru_rlob/raw/branch/master/65-3JN.usfm
+ *               checkId:
+ *                 type: string
+ *                 description: ID of the check
+ *                 format: uuid
+ *                 example: "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
+ *     responses:
+ *       200:
+ *         description: The material was created or updated
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal Server Error
+ */
+
 export async function POST(req) {
   const userId = req.headers.get('x-user-id')
   const { materialLink, checkId } = await req.json()
@@ -59,8 +93,11 @@ export async function POST(req) {
     if (error) throw error
 
     return new Response(
-      JSON.stringify({ message: 'Content updated successfully', data }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
+      JSON.stringify({ message: 'The material was created or updated' }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }
     )
   } catch (error) {
     console.error(error)
