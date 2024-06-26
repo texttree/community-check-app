@@ -109,10 +109,11 @@
   "tokenSuccessCopy": "Token copied successfully",
   "tokenSuccessCreated": "Token generated successfully",
   "tokenSuccessDeleted": "Token deleted successfully",
-  "updatedInformation": "Information updated",
-  "updatedContent": "Material updated",
-  "updateInformation": "Update information",
+  "tokenWarning": "After the page is updated, the token will be unavailable. Please copy the token",
   "updateContent": "Update content",
+  "updatedContent": "Material updated",
+  "updatedInformation": "Information updated",
+  "updateInformation": "Update information",
   "welcomeTo": "Welcome to Community Check",
   "youLoggedIn": "You are already logged in."
 }

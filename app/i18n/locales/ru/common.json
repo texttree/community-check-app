@@ -109,10 +109,11 @@
   "tokenSuccessCopy": "Токен успешно скопирован",
   "tokenSuccessCreated": "Токен успешно сгенерирован",
   "tokenSuccessDeleted": "Токен успешно удален",
-  "updatedInformation": "Информация обновлена",
-  "updatedContent": "Материал обновлен",
-  "updateInformation": "Обновить информацию",
+  "tokenWarning": "После обновления страницы токен будет недоступен. Пожалуйста, скопируйте токен",
   "updateContent": "Обновить материал",
+  "updatedContent": "Материал обновлен",
+  "updatedInformation": "Информация обновлена",
+  "updateInformation": "Обновить информацию",
   "welcomeTo": "Добро пожаловать в Community Check",
   "youLoggedIn": "Вы уже вошли в систему."
 }
