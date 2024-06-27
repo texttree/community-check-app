@@ -3,17 +3,19 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 import axios from 'axios'
 import { fetcher } from '@/helpers/fetcher'
 import LeftArrow from '@/public/left.svg'
 import Loader from '@/app/components/Loader'
+import DeleteModal from '@/app/components/DeleteModal'
 import { useTranslation } from '@/app/i18n/client'
 
 const ProjectEditPage = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
   const [projectName, setProjectName] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const router = useRouter()
   const { projectId } = useParams()
 
@@ -47,9 +49,31 @@ const ProjectEditPage = ({ lng }) => {
     }
   }
 
+  const openDeleteModal = () => {
+    setShowDeleteModal(true)
+  }
+
+  const confirmDeleteProject = async () => {
+    try {
+      await axios.delete('/api/projects', {
+        data: { projectId: project.id },
+      })
+
+      mutate('/api/projects', (data) => data.filter((p) => p.id !== project.id))
+      setShowDeleteModal(false)
+      router.push('/' + lng + '/projects')
+    } catch (error) {
+      console.error('Failed to delete project:', error)
+    }
+  }
+
+  const cancelDeleteProject = () => {
+    setShowDeleteModal(false)
+  }
+
   return (
-    <div className="bg-gray-200 min-h-screen py-8">
-      <div className="max-w-5xl mx-auto p-6 bg-white shadow rounded">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-lg mx-auto p-6 bg-white shadow rounded-lg sm:max-w-3xl lg:max-w-5xl">
         <div className="mb-4">
           <Link
             href={'/' + lng + '/projects/' + projectId}
@@ -76,7 +100,7 @@ const ProjectEditPage = ({ lng }) => {
               />
               {errorMessage && <p className="text-red-600 mt-2">{errorMessage}</p>}
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end mb-8">
               <button
                 onClick={editProject}
                 className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
@@ -84,13 +108,16 @@ const ProjectEditPage = ({ lng }) => {
                 {t('accept')}
               </button>
             </div>
-            <div className="mt-8 border-t border-gray-300 w-full">
-              <h2 className="text-xl font-semibold mb-2">{t('deleteProject')}</h2>
-              <p className="text-gray-600 mb-4">
-                Lorem ipsum dolor sit amet consectetur. Neque sed tellus tincidunt
-                tincidunt interdum urna.
+            <div className="mt-8 border-t border-gray-300 w-full pt-4">
+              <h2 className="text-xl font-semibold mb-2">{t('deletingProject')}</h2>
+              <p className="text-red-600 mb-4">
+                Будьте внимательны. При удалении проекта будут удалены все книги, все
+                проверки, заметки, материалы и проверяющие, связанные с проектом.
               </p>
-              <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md">
+              <button
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+                onClick={openDeleteModal}
+              >
                 {t('deleteProject')}
               </button>
             </div>
@@ -99,6 +126,17 @@ const ProjectEditPage = ({ lng }) => {
           <Loader />
         )}
       </div>
+      {showDeleteModal && (
+        <DeleteModal
+          lng={lng}
+          isVisible={showDeleteModal}
+          message={`${t('confirmDeleteProject')}`}
+          onConfirm={confirmDeleteProject}
+          onCancel={cancelDeleteProject}
+          expectedText={project?.name}
+          requireTextMatch={true}
+        />
+      )}
     </div>
   )
 }
