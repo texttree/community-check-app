@@ -72,7 +72,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
     if (checkToDelete) {
       try {
         const response = await axios.delete(
-          `/api/projects/${projectId}/books/${bookId}/checks/${checkToDelete.id}` // Используем Axios для DELETE запроса
+          `/api/projects/${projectId}/books/${bookId}/checks/${checkToDelete.id}`
         )
 
         if (!response.data) {
@@ -80,7 +80,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
         }
 
         toast.success(t('checkDeleted'))
-        mutate(`/api/projects/${projectId}/books/${bookId}/checks`) // Обновляем данные после удаления
+        mutate(`/api/projects/${projectId}/books/${bookId}/checks`)
         mutateInfo()
       } catch (error) {
         toast.error(t('errorOccurred'))
@@ -98,7 +98,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
       {error ? (
         <p className="text-red-600">{t('errorOccurred')}</p>
       ) : checks !== undefined ? (
-        <div className="bg-white p-4 rounded-lg shadow-md mt-2">
+        <div className="bg-white p-4 rounded-lg shadow-md mt-2 overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
               <tr>
@@ -133,7 +133,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
                       disabled={
                         notesCounts[check.id] === undefined || notesCounts[check.id] === 0
                       }
-                      className="disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                     >
                       <Download className="h-5 w-5 mr-1" />
                     </button>
@@ -142,7 +142,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
                   <td className="border p-2 text-center">
                     <button
                       className="hidden sm:block bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-2 sm:py-1 rounded-md"
-                      onClick={() => openDeleteModal(book)}
+                      onClick={() => openDeleteModal(check)}
                     >
                       {t('delete')}
                     </button>
@@ -152,7 +152,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
                       alt="Delete Icon"
                       width={24}
                       height={24}
-                      onClick={() => openDeleteModal(book)}
+                      onClick={() => openDeleteModal(check)}
                       className="block sm:hidden h-5 w-5 cursor-pointer"
                     />
                   </td>

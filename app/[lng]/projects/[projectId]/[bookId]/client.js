@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
 import useSWR, { mutate } from 'swr'
@@ -12,6 +12,7 @@ import DeleteModal from '@/app/components/DeleteModal'
 import { useTranslation } from '@/app/i18n/client'
 import CheckList from '@/app/components/CheckList'
 import CheckModal from '@/app/components/CheckModal'
+import Image from 'next/image'
 
 const BookEditPage = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -19,6 +20,8 @@ const BookEditPage = ({ lng }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [newBookName, setNewBookName] = useState('')
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const menuRef = useRef(null)
 
   const router = useRouter()
   const { projectId, bookId } = useParams()
@@ -101,9 +104,30 @@ const BookEditPage = ({ lng }) => {
     setShowDeleteModal(false)
   }
 
+  const handleMenuToggle = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
+  const closeMenu = () => {
+    setIsMenuOpen(false)
+  }
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [menuRef])
+
   return (
     <div className="bg-gray-200 min-h-screen py-8">
-      <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-md">
+      <div className="max-w-6xl mx-auto p-4 sm:p-6 bg-white shadow-md rounded-md">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">
             <Link href={'/' + lng + '/projects/' + projectId}>
@@ -117,16 +141,45 @@ const BookEditPage = ({ lng }) => {
           <div className="flex space-x-2">
             <button
               onClick={openEditModal}
-              className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
+              className="hidden sm:block bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
             >
               {t('editBook')}
             </button>
             <button
-              className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
+              className="hidden sm:block bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
               onClick={() => setModalOpen(true)}
             >
               {t('startNewCheck')}
             </button>
+            <div className="sm:hidden flex justify-end items-center" ref={menuRef}>
+              <button onClick={handleMenuToggle}>
+                <Image src="/menu.svg" alt="Menu" width={30} height={30} />
+              </button>
+              {isMenuOpen && (
+                <div className="absolute right-0 mt-2 w-56 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                  <div className="py-1">
+                    <button
+                      onClick={() => {
+                        openEditModal()
+                        closeMenu()
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                    >
+                      {t('editBook')}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setModalOpen(true)
+                        closeMenu()
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                    >
+                      {t('startNewCheck')}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         {bookError ? (
