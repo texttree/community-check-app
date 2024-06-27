@@ -51,7 +51,7 @@ const ProjectDetailsPage = ({ lng }) => {
           <div className="flex items-center space-x-4">
             <Link
               href={`/${lng}/projects`}
-              className="text-gray-400 hover:text-gray-800 inline-flex items-center"
+              className="text-gray-400 hover:text-gray-600 inline-flex items-center"
             >
               <LeftArrow className="h-5 w-5 mr-1" />
               <span className="text-base font-bold">{t('projects')}</span>
