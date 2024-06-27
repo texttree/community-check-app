@@ -15,6 +15,7 @@ import Download from '@/public/download.svg'
 import Loader from '@/app/components/Loader'
 import { useTranslation } from '@/app/i18n/client'
 import DeleteModal from '@/app/components/DeleteModal'
+import Image from 'next/image'
 
 const CheckList = ({ projectId, bookId, lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -94,7 +95,6 @@ const CheckList = ({ projectId, bookId, lng }) => {
 
   return (
     <>
-      <h2 className="text-2xl font-semibold mb-2">{t('bookChecks')}</h2>
       {error ? (
         <p className="text-red-600">{t('errorOccurred')}</p>
       ) : checks !== undefined ? (
@@ -116,7 +116,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
                   <td className="border p-2 text-center">
                     <Link
                       href={`/${lng}/projects/${projectId}/${bookId}/${check.id}`}
-                      className="text-blue-600 hover:underline"
+                      className="text-ming-blue hover:underline"
                     >
                       {check.name}
                     </Link>
@@ -141,11 +141,20 @@ const CheckList = ({ projectId, bookId, lng }) => {
                   <td className="border p-2 text-center">{notesCounts[check.id] || 0}</td>
                   <td className="border p-2 text-center">
                     <button
-                      className="text-red-600 hover:text-red-800"
-                      onClick={() => openDeleteModal(check)}
+                      className="hidden sm:block bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-2 sm:py-1 rounded-md"
+                      onClick={() => openDeleteModal(book)}
                     >
                       {t('delete')}
                     </button>
+                    <Image
+                      key={check.id}
+                      src="/delete.svg"
+                      alt="Delete Icon"
+                      width={24}
+                      height={24}
+                      onClick={() => openDeleteModal(book)}
+                      className="block sm:hidden h-5 w-5 cursor-pointer"
+                    />
                   </td>
                 </tr>
               ))}
