@@ -32,6 +32,8 @@
   "delete": "Delete",
   "deleteBook": "Delete a book",
   "deleteCheck": "Delete a check",
+  "deleteProject": "Delete a project",
+  "deletingProject": "Deleting a project",
   "download": "Download",
   "downloadNotes": "Download notes",
   "edit": "Edit",
