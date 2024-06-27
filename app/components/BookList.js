@@ -13,6 +13,7 @@ import { useTranslation } from '@/app/i18n/client'
 
 import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
+import Image from 'next/image'
 
 const BookList = ({ projectId, lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -79,19 +80,18 @@ const BookList = ({ projectId, lng }) => {
   }
 
   const cancelDeleteBook = () => {
-    setShowDeleteModal(false) // Просто закрываем модальное окно
+    setShowDeleteModal(false)
   }
 
   return (
     <>
-      <h1 className="text-2xl font-semibold">{t('projectBooks')}</h1>
       {booksError ? (
         <ErrorMessage message={t('errorOccurred')} />
       ) : !books ? (
         <LoadingMessage />
       ) : (
         <div className="bg-white p-4 rounded-lg shadow-md mt-2">
-          <table className="w-full border-collapse">
+          <table className="min-w-full border-collapse">
             <thead>
               <tr>
                 <th className="border p-2 text-center">{t('titleInTable')}</th>
@@ -103,14 +103,9 @@ const BookList = ({ projectId, lng }) => {
             </thead>
             <tbody>
               {books.map((book) => (
-                <tr key={book.id}>
-                  <td className="border p-2 text-center">
-                    <Link
-                      href={`/projects/${projectId}/${book.id}`}
-                      className="text-blue-600 hover:underline"
-                    >
-                      {book.name}
-                    </Link>
+                <tr key={book.id} className="hover:bg-gray-100">
+                  <td className="border p-2 text-ming-blue hover:underline">
+                    <Link href={`/projects/${projectId}/${book.id}`}>{book.name}</Link>
                   </td>
                   <td className="border p-2 text-center">
                     {formatDate(book.created_at)}
@@ -131,11 +126,20 @@ const BookList = ({ projectId, lng }) => {
                   </td>
                   <td className="border p-2 text-center">
                     <button
-                      className="text-red-600 hover:text-red-800"
+                      className="hidden sm:block bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-2 sm:py-1 rounded-md"
                       onClick={() => openDeleteModal(book)}
                     >
                       {t('delete')}
                     </button>
+                    <Image
+                      key={book.name}
+                      src="/delete.svg"
+                      alt="Delete Icon"
+                      width={24}
+                      height={24}
+                      onClick={() => openDeleteModal(book)}
+                      className="block sm:hidden h-5 w-5 cursor-pointer"
+                    />
                   </td>
                 </tr>
               ))}
