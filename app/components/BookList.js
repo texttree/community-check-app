@@ -1,16 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-
 import Link from 'next/link'
 import axios from 'axios'
-
 import useSWR, { mutate } from 'swr'
 import toast from 'react-hot-toast'
-
 import DeleteModal from '@/app/components/DeleteModal'
 import { useTranslation } from '@/app/i18n/client'
-
 import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
 import Image from 'next/image'
@@ -70,7 +66,7 @@ const BookList = ({ projectId, lng }) => {
     if (bookToDelete) {
       try {
         await axios.delete(`/api/projects/${projectId}/books/${bookToDelete.id}`)
-        mutate(`/api/projects/${projectId}/books`) // Обновляем данные после удаления
+        mutate(`/api/projects/${projectId}/books`)
         toast.success(t('bookDeleted'))
       } catch (error) {
         toast.error(t('errorDeletingBook'))
@@ -90,7 +86,7 @@ const BookList = ({ projectId, lng }) => {
       ) : !books ? (
         <LoadingMessage />
       ) : (
-        <div className="bg-white p-4 rounded-lg shadow-md mt-2">
+        <div className="bg-white p-4 rounded-lg shadow-md mt-2 overflow-x-auto">
           <table className="min-w-full border-collapse">
             <thead>
               <tr>
