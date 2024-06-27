@@ -4,11 +4,13 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 import BookList from '@/app/components/BookList'
 import { fetcher } from '@/helpers/fetcher'
 import LeftArrow from '@/public/left.svg'
 import Loader from '@/app/components/Loader'
+import AddDialogModal from '@/app/components/AddDialogModal'
+import axios from 'axios'
 import { useTranslation } from '@/app/i18n/client'
 
 const ProjectDetailsPage = ({ lng }) => {
@@ -21,6 +23,8 @@ const ProjectDetailsPage = ({ lng }) => {
   )
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
   const menuRef = useRef(null)
 
   const handleMenuToggle = () => {
@@ -44,8 +48,43 @@ const ProjectDetailsPage = ({ lng }) => {
     }
   }, [menuRef])
 
+  const openAddModal = () => {
+    setShowAddModal(true)
+    document.body.style.overflow = 'hidden'
+    setErrorMessage('')
+  }
+
+  const closeAddModal = () => {
+    setShowAddModal(false)
+    document.body.style.overflow = ''
+  }
+
+  const handleCreateBook = async (data) => {
+    setErrorMessage('')
+    const bookName = data.book.trim()
+
+    if (bookName) {
+      try {
+        const response = await axios.post(`/api/projects/${projectId}/books`, {
+          name: bookName,
+        })
+        if (response.status === 201) {
+          mutate(`/api/projects/${projectId}/books`)
+          setShowAddModal(false)
+          document.body.style.overflow = ''
+        } else {
+          throw new Error(t('errorCreateBook'))
+        }
+      } catch (error) {
+        setErrorMessage(error.message)
+      }
+    } else {
+      setErrorMessage(t('nameEmpty'))
+    }
+  }
+
   return (
-    <div className=" py-8 min-h-screen">
+    <div className="py-8 min-h-screen">
       <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center space-x-4">
@@ -69,12 +108,12 @@ const ProjectDetailsPage = ({ lng }) => {
             >
               {t('editProject')}
             </Link>
-            <Link
-              href={`${projectId}/new`}
+            <button
+              onClick={openAddModal}
               className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
             >
               {t('createBook')}
-            </Link>
+            </button>
           </div>
           <div className="sm:hidden flex justify-end items-center" ref={menuRef}>
             <button onClick={handleMenuToggle}>
@@ -90,13 +129,15 @@ const ProjectDetailsPage = ({ lng }) => {
                   >
                     {t('editProject')}
                   </Link>
-                  <Link
-                    href={`${projectId}/new`}
+                  <button
+                    onClick={() => {
+                      openAddModal()
+                      closeMenu()
+                    }}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
-                    onClick={closeMenu}
                   >
                     {t('createBook')}
-                  </Link>
+                  </button>
                 </div>
               </div>
             )}
@@ -110,6 +151,24 @@ const ProjectDetailsPage = ({ lng }) => {
           <Loader />
         )}
       </div>
+      {showAddModal && (
+        <>
+          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-lg z-50"></div>
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <AddDialogModal
+              isOpen={showAddModal}
+              onClose={closeAddModal}
+              onAddProject={handleCreateBook}
+              errorMessage={errorMessage}
+              lng={lng}
+              showProject={false}
+              showBook={true}
+              showCheck={false}
+              windowTitle={t('createBook')}
+            />
+          </div>
+        </>
+      )}
     </div>
   )
 }
