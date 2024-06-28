@@ -1,5 +1,4 @@
 'use client'
-
 import { useState, useEffect, useRef } from 'react'
 
 import Link from 'next/link'
@@ -15,6 +14,10 @@ import LeftArrow from '@/public/left.svg'
 import Copy from '@/public/copy.svg'
 import { useTranslation } from '@/app/i18n/client'
 import DeleteModal from '@/app/components/DeleteModal'
+import CheckInfoForm from '@/app/components/CheckInfoForm'
+import MaterialLinkForm from '@/app/components/MaterialLinkForm'
+import InspectorForm from '@/app/components/InspectorForm'
+import InspectorTable from '@/app/components/InspectorTable'
 
 const CheckId = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -77,6 +80,7 @@ const CheckId = ({ lng }) => {
     }
     setShowDeleteModal(false)
   }
+
   const copyToClipboard = () => {
     const textToCopy = checkPageRef.current.innerText
 
@@ -89,6 +93,7 @@ const CheckId = ({ lng }) => {
       }
     )
   }
+
   useEffect(() => {
     if (check) {
       const currentDate = new Date().toISOString().slice(0, 16)
@@ -177,136 +182,59 @@ const CheckId = ({ lng }) => {
       : 'https://community-check-app.netlify.app'
 
   return (
-    <div className="bg-gray-200 py-8">
-      <div className="max-w-6xl mx-auto p-4">
-        <Link
-          href={`/${lng}/projects/${projectId}/${bookId}`}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md inline-flex items-center"
-        >
-          <LeftArrow className="h-5 w-5 mr-1" />
-          {t('back')}
-        </Link>
-        {checkName !== '' && (
-          <div className="flex my-4">
-            <Link href={`/${lng}/checks/${checkId}/${chapterNumber}`} ref={checkPageRef}>
-              {currentDomain}/{lng}/checks/{checkId}/{chapterNumber}
-            </Link>
-            <Copy className="h-5 w-5 ml-1" onClick={copyToClipboard}></Copy>
-          </div>
-        )}
-        <div className="mb-4">
-          <label className="block font-medium text-gray-700">{t('name')}</label>
-          <input
-            type="text"
-            value={checkName}
-            onChange={(e) => setCheckName(e.target.value)}
-            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block font-medium text-gray-700">{t('startingDate')}</label>
-          <input
-            type="datetime-local"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
-          />
-          <label className="block font-medium text-gray-700">{t('expirationDate')}</label>
-          <input
-            type="datetime-local"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
-          />
-        </div>
-        <button
-          className=" bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
-          onClick={updateCheckInfo}
-        >
-          {t('updateInformation')}
-        </button>
-        <label className="mt-6 block font-medium text-gray-700">{t('provideLink')}</label>
-        <input
-          type="text"
-          value={materialLink}
-          onChange={(e) => setMaterialLink(e.target.value)}
-          placeholder={t('linkResource')}
-          className="mt-1 mb-2 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full"
-        />
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
-          onClick={updateContent}
-        >
-          {t('updateContent')}
-        </button>
-
-        <div className="my-2 mt-6">
-          <label className="block font-medium text-gray-700">{t('nameInspector')}</label>
-          <input
-            type="text"
-            value={inspectorName}
-            onChange={(e) => setInspectorName(e.target.value)}
-            className="mt-1 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-auto"
-          />
-          <button
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 my-2 rounded-md"
-            onClick={createPersonalLink}
+    <div>
+      <div className="max-w-4xl mx-auto p-4 bg-white rounded-lg shadow-md">
+        <div className="flex items-center mb-4">
+          <Link
+            href={`/${lng}/projects/${projectId}/${bookId}`}
+            className="text-blue-500 hover:text-blue-600"
           >
-            {t('addPersonalLink')}
-          </button>
+            <LeftArrow className="h-5 w-5 mr-2 inline-block" />
+            {t('back')}
+          </Link>
+          <h1 className="text-xl font-semibold text-gray-900 ml-4">{t('quickCheck')}</h1>
         </div>
 
-        {inspectors?.length > 0 && (
-          <div>
-            <table className="w-full rounded-lg border border-gray-300">
-              <thead>
-                <tr>
-                  <th className="bg-white border border-gray-300 px-4 py-2">
-                    {t('nameInspector')}
-                  </th>
-                  <th className=" bg-white border border-gray-300 px-4 py-2">
-                    {t('personalLink')}
-                  </th>
-                  <th className="bg-white border border-gray-300 px-4 py-2">
-                    {t('actions')}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {inspectors.map((inspector) => (
-                  <tr key={inspector.id}>
-                    <td className=" bg-white border border-gray-300 px-4 py-2">
-                      {inspector.name}
-                    </td>
-                    <td className=" bg-white border border-gray-300 px-4 py-2">
-                      <div className="flex items-center">
-                        <Link
-                          href={`/${lng}/checks/${checkId}/${chapterNumber}/${inspector.id}`}
-                          ref={checkPageRef}
-                        >
-                          {currentDomain}/{lng}/{checkId}/{chapterNumber}/{inspector.id}
-                        </Link>
-                        <Copy
-                          className="h-5 w-5 ml-1 cursor-pointer"
-                          onClick={copyToClipboard}
-                        ></Copy>
-                      </div>
-                    </td>
-                    <td className="bg-white border border-gray-300 px-4 py-2">
-                      <button
-                        className="text-red-600 hover:text-red-800"
-                        onClick={() => deleteInspector(inspector.id)}
-                      >
-                        {t('delete')}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <CheckInfoForm
+          t={t}
+          checkName={checkName}
+          setCheckName={setCheckName}
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+          updateCheckInfo={updateCheckInfo}
+        />
+
+        <MaterialLinkForm
+          t={t}
+          materialLink={materialLink}
+          setMaterialLink={setMaterialLink}
+          updateContent={updateContent}
+        />
+
+        <InspectorForm
+          t={t}
+          inspectorName={inspectorName}
+          setInspectorName={setInspectorName}
+          createPersonalLink={createPersonalLink}
+        />
+
+        {inspectors && inspectors.length > 0 && (
+          <InspectorTable
+            t={t}
+            inspectors={inspectors}
+            lng={lng}
+            checkId={checkId}
+            chapterNumber={chapterNumber}
+            currentDomain={currentDomain}
+            copyToClipboard={copyToClipboard}
+            deleteInspector={deleteInspector}
+            checkPageRef={checkPageRef}
+          />
         )}
       </div>
+
       {showDeleteModal && (
         <DeleteModal
           lng={lng}
