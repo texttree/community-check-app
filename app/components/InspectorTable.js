@@ -12,7 +12,7 @@ const InspectorTable = ({
   deleteInspector,
   copyToClipboard,
 }) => (
-  <div className="overflow-x-auto">
+  <div className="overflow-x-auto mt-5 md:mt-0">
     <table className="min-w-full bg-white border-t rounded-lg shadow-md">
       <thead>
         <tr>
@@ -40,22 +40,24 @@ const InspectorTable = ({
                 </button>
               </div>
             </td>
-            <td className="px-2 sm:px-4 py-4  flex justify-end">
-              <button
-                onClick={() => deleteInspector(inspector.id)}
-                className="hidden sm:block bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-2 sm:py-1 rounded-md"
-              >
-                {t('delete')}
-              </button>
-              <Image
-                key={inspector.id}
-                src="/delete.svg"
-                alt="Delete Icon"
-                width={24}
-                height={24}
-                onClick={() => deleteInspector(inspector.id)}
-                className="block sm:hidden h-5 w-5 cursor-pointer"
-              />
+            <td className="px-2 sm:px-4 py-4">
+              <div className="flex justify-between items-center">
+                <button
+                  onClick={() => deleteInspector(inspector.id)}
+                  className="hidden sm:block bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-2 sm:py-1 rounded-md"
+                >
+                  {t('delete')}
+                </button>
+                <Image
+                  key={inspector.id}
+                  src="/delete.svg"
+                  alt="Delete Icon"
+                  width={24}
+                  height={24}
+                  onClick={() => deleteInspector(inspector.id)}
+                  className="block sm:hidden h-5 w-5 cursor-pointer"
+                />
+              </div>
             </td>
           </tr>
         ))}

@@ -183,7 +183,7 @@ const CheckId = ({ lng }) => {
       : 'https://community-check-app.netlify.app'
 
   return (
-    <TabGroup className="max-w-7xl  mx-auto">
+    <TabGroup className="max-w-7xl  mx-auto mb-5">
       <TabList className="bg-ming-blue flex p-2 border border-th-secondary-300 rounded-t-xl shadow-md">
         <Tab
           className={({ selected }) =>
@@ -228,7 +228,21 @@ const CheckId = ({ lng }) => {
           />
         )}
 
-        <div className="flex space-x-4">
+        <div className="flex flex-col space-y-4 md:hidden">
+          <MaterialLinkForm
+            t={t}
+            materialLink={materialLink}
+            setMaterialLink={setMaterialLink}
+            updateContent={updateContent}
+          />
+          <InspectorForm
+            t={t}
+            inspectorName={inspectorName}
+            setInspectorName={setInspectorName}
+            createPersonalLink={createPersonalLink}
+          />
+        </div>
+        <div className="hidden md:flex md:flex-row md:space-x-4">
           <MaterialLinkForm
             t={t}
             materialLink={materialLink}
