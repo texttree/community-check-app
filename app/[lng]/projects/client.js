@@ -112,7 +112,7 @@ const ProjectPage = ({ lng }) => {
   return (
     <div className="max-w-6xl mx-auto p-4 relative">
       <TabGroup>
-        <TabList className="bg-ming-blue flex p-2 w-full border border-th-secondary-300 rounded-xl shadow-md">
+        <TabList className="bg-ming-blue flex p-2 w-full border border-th-secondary-300 rounded-t-xl shadow-md">
           <Tab
             className={({ selected }) =>
               selected
@@ -123,8 +123,8 @@ const ProjectPage = ({ lng }) => {
             {t('projects')}
           </Tab>
         </TabList>
-        <TabPanels className="mt-2">
-          <TabPanel className="bg-white p-4 rounded-md text-left">
+        <TabPanels>
+          <TabPanel className="bg-white p-4 rounded-b-md text-left">
             <div className="hidden md:flex justify-start space-x-4 mb-4">
               <button
                 className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
@@ -151,7 +151,7 @@ const ProjectPage = ({ lng }) => {
                   <Image src="/menu.svg" alt="Menu" width={30} height={30} />
                 </button>
                 {isMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                  <div className="absolute right-0 mt-2 w-56 origin-top-right bg-white divide-y divide-gray-100 rounded-b-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                     <div className="py-1">
                       <button
                         onClick={() => openAddModal('createProject', false, false)}

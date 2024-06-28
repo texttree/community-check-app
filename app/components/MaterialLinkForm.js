@@ -1,6 +1,10 @@
 const MaterialLinkForm = ({ t, materialLink, setMaterialLink, updateContent }) => (
   <div className="mb-6 w-full flex flex-col">
+    <label htmlFor="materialLink" className="font-semibold mb-1">
+      {t('materialLink')}
+    </label>
     <input
+      id="materialLink"
       type="text"
       value={materialLink}
       onChange={(e) => setMaterialLink(e.target.value)}

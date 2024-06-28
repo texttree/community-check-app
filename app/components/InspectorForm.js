@@ -1,6 +1,10 @@
 const InspectorForm = ({ t, inspectorName, setInspectorName, createPersonalLink }) => (
   <div className="flex flex-col mb-6 w-full">
+    <label htmlFor="inspectorName" className="font-semibold mb-1">
+      {t('inspectorName')}
+    </label>
     <input
+      id="inspectorName"
       type="text"
       value={inspectorName}
       onChange={(e) => setInspectorName(e.target.value)}

@@ -18,6 +18,7 @@ import MaterialLinkForm from '@/app/components/MaterialLinkForm'
 import InspectorForm from '@/app/components/InspectorForm'
 import InspectorTable from '@/app/components/InspectorTable'
 import CheckPageLink from '@/app/components/CheckLinkCopy'
+import { Tab, TabGroup, TabList } from '@headlessui/react'
 
 const CheckId = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -182,8 +183,19 @@ const CheckId = ({ lng }) => {
       : 'https://community-check-app.netlify.app'
 
   return (
-    <div>
-      <div className="max-w-6xl mx-auto p-4 bg-white rounded-lg shadow-md">
+    <TabGroup className="max-w-7xl  mx-auto">
+      <TabList className="bg-ming-blue flex p-2 border border-th-secondary-300 rounded-t-xl shadow-md">
+        <Tab
+          className={({ selected }) =>
+            selected
+              ? 'bg-ming-blue text-white cursor-pointer text-lg sm:text-2xl font-bold px-4 sm:px-9 py-2 rounded-t-md w-full text-center'
+              : 'text-blue-100 hover:bg-white/[0.12] hover:text-white px-4 py-2 rounded-t-md w-full text-center'
+          }
+        >
+          {t('')}
+        </Tab>
+      </TabList>
+      <div className="max-w-7xl mx-auto p-4 bg-white rounded-b-md shadow-md">
         <div className="flex items-center mb-4">
           <Link
             href={`/${lng}/projects/${projectId}/${bookId}`}
@@ -257,7 +269,7 @@ const CheckId = ({ lng }) => {
           />
         )}
       </div>
-    </div>
+    </TabGroup>
   )
 }
 
