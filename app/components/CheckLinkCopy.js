@@ -8,12 +8,12 @@ const CheckPageLink = forwardRef(
       <Link
         href={`/${checkId}/${chapterNumber}`}
         ref={ref}
-        className="border p-2 rounded-md"
+        className="border p-2 mr-1 rounded-md flex-grow"
       >
         {currentDomain}/{lng}/checks/{checkId}/{chapterNumber}
       </Link>
       <button
-        className="bg-ming-blue hover:bg-deep-space text-white px-3 py-1 rounded-md ml-2 focus:outline-none"
+        className="bg-ming-blue hover:bg-deep-space text-white px-4 py-1 rounded-md ml-2 focus:outline-none"
         onClick={copyToClipboard}
       >
         {t('copy')}

@@ -183,11 +183,11 @@ const CheckId = ({ lng }) => {
 
   return (
     <div>
-      <div className="max-w-4xl mx-auto p-4 bg-white rounded-lg shadow-md">
+      <div className="max-w-6xl mx-auto p-4 bg-white rounded-lg shadow-md">
         <div className="flex items-center mb-4">
           <Link
             href={`/${lng}/projects/${projectId}/${bookId}`}
-            className="text-blue-500 hover:text-blue-600"
+            className="text-gray-400 hover:text-gray-600 inline-flex items-center"
           >
             <LeftArrow className="h-5 w-5 mr-2 inline-block" />
             {t('back')}
@@ -216,19 +216,20 @@ const CheckId = ({ lng }) => {
           />
         )}
 
-        <MaterialLinkForm
-          t={t}
-          materialLink={materialLink}
-          setMaterialLink={setMaterialLink}
-          updateContent={updateContent}
-        />
-
-        <InspectorForm
-          t={t}
-          inspectorName={inspectorName}
-          setInspectorName={setInspectorName}
-          createPersonalLink={createPersonalLink}
-        />
+        <div className="flex space-x-4">
+          <MaterialLinkForm
+            t={t}
+            materialLink={materialLink}
+            setMaterialLink={setMaterialLink}
+            updateContent={updateContent}
+          />
+          <InspectorForm
+            t={t}
+            inspectorName={inspectorName}
+            setInspectorName={setInspectorName}
+            createPersonalLink={createPersonalLink}
+          />
+        </div>
 
         {inspectors && inspectors.length > 0 && (
           <InspectorTable
