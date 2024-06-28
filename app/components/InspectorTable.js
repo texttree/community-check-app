@@ -1,39 +1,37 @@
 import Link from 'next/link'
 import Copy from '@/public/copy.svg'
-
 const InspectorTable = ({
   t,
   inspectors,
+  currentDomain,
   lng,
   checkId,
   chapterNumber,
-  currentDomain,
-  copyToClipboard,
   deleteInspector,
-  checkPageRef,
+  copyToClipboard,
 }) => (
-  <div className="mt-6">
-    <table className="w-full rounded-lg border border-gray-300">
+  <div className="overflow-x-auto">
+    <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
       <thead>
         <tr>
-          <th className="bg-gray-100 border border-gray-300 px-4 py-2">
-            {t('nameInspector')}
+          <th className="bg-gray-100 border-b border-gray-300 px-4 py-2 text-left">
+            {t('inspectorName')}
           </th>
-          <th className="bg-gray-100 border border-gray-300 px-4 py-2">
+          <th className="bg-gray-100 border-b border-gray-300 px-4 py-2 text-left">
             {t('personalLink')}
           </th>
-          <th className="bg-gray-100 border border-gray-300 px-4 py-2">{t('actions')}</th>
+          <th className="bg-gray-100 border-b border-gray-300 px-4 py-2"></th>
         </tr>
       </thead>
       <tbody>
         {inspectors.map((inspector) => (
           <tr key={inspector.id}>
-            <td className="bg-white border border-gray-300 px-4 py-2">
-              {inspector.name}
-            </td>
-            <td className="bg-white border border-gray-300 px-4 py-2">
+            <td className="border-b border-gray-300 px-4 py-2">{inspector.name}</td>
+            <td className="border-b border-gray-300 px-4 py-2">
               <div className="flex items-center">
-                <Link href={`/${lng}/checks/${checkId}/${chapterNumber}/${inspector.id}`}>
+                <Link
+                  href={`/community-check/${checkId}/${chapterNumber}/${inspector.id}`}
+                >
                   {currentDomain}/{lng}/checks/{checkId}/{chapterNumber}/{inspector.id}
                 </Link>
                 <button
@@ -44,7 +42,7 @@ const InspectorTable = ({
                 </button>
               </div>
             </td>
-            <td className="bg-white border border-gray-300 px-4 py-2">
+            <td className="border-b border-gray-300 px-4 py-2">
               <button
                 className="text-red-500 hover:text-red-700 focus:outline-none"
                 onClick={() => deleteInspector(inspector.id)}

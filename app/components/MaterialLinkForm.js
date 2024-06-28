@@ -1,16 +1,15 @@
 const MaterialLinkForm = ({ t, materialLink, setMaterialLink, updateContent }) => (
-  <div>
-    <label className="mt-6 block font-medium text-gray-700">{t('provideLink')}</label>
+  <div className="mb-6">
     <input
       type="text"
       value={materialLink}
       onChange={(e) => setMaterialLink(e.target.value)}
-      placeholder={t('linkResource')}
-      className="mt-1 mb-2 px-2 py-1 block rounded-lg border border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full"
+      placeholder={t('enterMaterialLink')}
+      className="border rounded-md px-3 py-2 w-full mb-4"
     />
     <button
-      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md inline-block"
       onClick={updateContent}
+      className="bg-ming-blue hover:bg-deep-space text-white font-semibold px-4 py-2 rounded-md"
     >
       {t('updateContent')}
     </button>

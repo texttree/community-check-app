@@ -11,13 +11,13 @@ import axios from 'axios'
 
 import { fetcher } from '@/helpers/fetcher'
 import LeftArrow from '@/public/left.svg'
-import Copy from '@/public/copy.svg'
 import { useTranslation } from '@/app/i18n/client'
 import DeleteModal from '@/app/components/DeleteModal'
 import CheckInfoForm from '@/app/components/CheckInfoForm'
 import MaterialLinkForm from '@/app/components/MaterialLinkForm'
 import InspectorForm from '@/app/components/InspectorForm'
 import InspectorTable from '@/app/components/InspectorTable'
+import CheckPageLink from '@/app/components/CheckLinkCopy'
 
 const CheckId = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -192,7 +192,7 @@ const CheckId = ({ lng }) => {
             <LeftArrow className="h-5 w-5 mr-2 inline-block" />
             {t('back')}
           </Link>
-          <h1 className="text-xl font-semibold text-gray-900 ml-4">{t('quickCheck')}</h1>
+          <h1 className="text-xl font-semibold text-gray-900 ml-4">{checkName}</h1>
         </div>
 
         <CheckInfoForm
@@ -205,6 +205,16 @@ const CheckId = ({ lng }) => {
           setEndDate={setEndDate}
           updateCheckInfo={updateCheckInfo}
         />
+        {checkName !== '' && (
+          <CheckPageLink
+            lng={lng}
+            checkId={checkId}
+            chapterNumber={chapterNumber}
+            currentDomain={currentDomain}
+            copyToClipboard={copyToClipboard}
+            t={t}
+          />
+        )}
 
         <MaterialLinkForm
           t={t}
@@ -233,19 +243,19 @@ const CheckId = ({ lng }) => {
             checkPageRef={checkPageRef}
           />
         )}
-      </div>
 
-      {showDeleteModal && (
-        <DeleteModal
-          lng={lng}
-          isVisible={showDeleteModal}
-          message={t('confirmDeleteInspector')}
-          onConfirm={confirmDeleteInspector}
-          onCancel={cancelDeleteInspector}
-          onKeep={keepInspector}
-          showKeepButton={true}
-        />
-      )}
+        {showDeleteModal && (
+          <DeleteModal
+            lng={lng}
+            isVisible={showDeleteModal}
+            message={t('confirmDeleteInspector')}
+            onConfirm={confirmDeleteInspector}
+            onCancel={cancelDeleteInspector}
+            onKeep={keepInspector}
+            showKeepButton={true}
+          />
+        )}
+      </div>
     </div>
   )
 }
