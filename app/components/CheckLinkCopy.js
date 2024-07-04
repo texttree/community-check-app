@@ -6,7 +6,11 @@ const CheckPageLink = forwardRef(
   ({ lng, checkId, chapterNumber, currentDomain, copyToClipboard, t }, ref) => (
     <div className="flex flex-col sm:flex-row my-4">
       <div className="overflow-hidden border p-2 mr-1 rounded-md sm:flex-grow">
-        <Link href={`/${checkId}/${chapterNumber}`} ref={ref} className="truncate block">
+        <Link
+          href={`/checks/${checkId}/${chapterNumber}`}
+          ref={ref}
+          className="truncate block"
+        >
           {currentDomain}/{lng}/checks/{checkId}/{chapterNumber}
         </Link>
       </div>

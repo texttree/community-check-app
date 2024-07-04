@@ -27,9 +27,7 @@ const InspectorTable = ({
             <td className="px-4 py-2 w-1/3 text-ming-blue">{inspector.name}</td>
             <td className="px-4 py-2">
               <div className="flex items-center">
-                <Link
-                  href={`/community-check/${checkId}/${chapterNumber}/${inspector.id}`}
-                >
+                <Link href={`/checks/${checkId}/${chapterNumber}/${inspector.id}`}>
                   {currentDomain}/{lng}/checks/{checkId}/{chapterNumber}/{inspector.id}
                 </Link>
                 <button
