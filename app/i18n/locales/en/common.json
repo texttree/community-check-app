@@ -21,9 +21,9 @@
   "confirmDeleteProject": "Are you sure you want to delete the project? Along with the project, all books, all checks, notes, materials and verifiers will be deleted. Enter the name of the project to confirm.",
   "contentNotLoaded": "The material for verification has not been uploaded",
   "copied": "Copied!",
+  "copy": "Copy",
   "copyError": "Unable to copy text",
   "copyToken": "Copy token",
-  "copy": "Copy",
   "create": "Create",
   "createBook": "Create a book",
   "createCheck": "Create a Check",
@@ -118,5 +118,6 @@
   "updatedInformation": "Information updated",
   "updateInformation": "Update information",
   "welcomeTo": "Welcome to Community Check",
-  "youLoggedIn": "You are already logged in."
+  "youLoggedIn": "You are already logged in.",
+  "сhapter": "Chapter"
 }
