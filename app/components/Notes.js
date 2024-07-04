@@ -1,20 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
+import { useState } from 'react'
 import toast from 'react-hot-toast'
 import axios from 'axios'
 import { useTranslation } from '../i18n/client'
 
-const Notes = ({ reference, materialId, checkId, lng }) => {
+const Notes = ({ reference, materialId, checkId, lng, toggleNoteInput }) => {
   const { t } = useTranslation(lng, 'common')
   const [error, setError] = useState(null)
   const [note, setNote] = useState('')
 
-  const [writeNote, setWriteNote] = useState(false)
-  useEffect(() => {
-    setWriteNote(false)
-  }, [reference.chapter])
   const addNote = () => {
     if (!note) {
       toast.error(t('errorEmptyNote'))
@@ -29,9 +24,9 @@ const Notes = ({ reference, materialId, checkId, lng }) => {
       .then((res) => {
         if (res.status === 201) {
           toast.success(t('noteSaved'))
-          setWriteNote(false)
           setNote('')
           setError(null)
+          toggleNoteInput(reference.verse)
         } else {
           throw new Error(t('errorSavingNote'))
         }
@@ -43,37 +38,26 @@ const Notes = ({ reference, materialId, checkId, lng }) => {
   }
 
   return (
-    <>
-      {writeNote ? (
-        <div className="flex items-center">
-          <textarea
-            value={note}
-            onChange={(e) => {
-              setNote(e.target.value)
-            }}
-            className="w-full border rounded p-1"
-            autoFocus
-          />
-          <button
-            onClick={addNote}
-            disabled={!note}
-            className="bg-blue-500 text-white py-1 px-2 rounded ml-2 disabled:opacity-50"
-          >
-            {t('save')}
-          </button>
-        </div>
-      ) : (
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => setWriteNote(true)}
-            className="bg-blue-500 text-white py-1 px-2 rounded  ml-2"
-          >
-            {t('note')}
-          </button>
-        </div>
-      )}
-      {error && <p className="text-red-500">{error}</p>}
-    </>
+    <div className="relative">
+      <div className="flex items-center mt-2">
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          className="w-full border rounded p-1"
+          autoFocus
+        />
+      </div>
+      <div className="flex justify-end mt-2">
+        <button
+          onClick={addNote}
+          disabled={!note}
+          className="bg-ming-blue text-white py-1 px-2 rounded disabled:opacity-50"
+        >
+          {t('save')}
+        </button>
+      </div>
+      {error && <p className="text-red-500 mt-2">{error}</p>}
+    </div>
   )
 }
 

@@ -26,6 +26,8 @@ const CheckDetail = ({ lng }) => {
   const [isCheckExpired, setIsCheckExpired] = useState(false)
   const [chapterLength, setChapterLength] = useState(0)
 
+  const [showNoteInputs, setShowNoteInputs] = useState({})
+
   const { data: info } = useSWR(checkId && `/api/checks/${checkId}/info`, fetcher, {
     onError: (error) => console.error('Failed to fetch check info:', error),
   })
@@ -71,13 +73,20 @@ const CheckDetail = ({ lng }) => {
     }
   }
 
+  const toggleNoteInput = (verseKey) => {
+    setShowNoteInputs((prevState) => ({
+      ...prevState,
+      [verseKey]: !prevState[verseKey],
+    }))
+  }
+
   if (info?.deleted_at) {
     return <CustomError statusCode={404} title={t('Check Deleted')} />
   }
 
   return (
     <div>
-      <TabGroup className="max-w-6xl  mx-auto">
+      <TabGroup className="max-w-6xl mx-auto">
         <TabList className="bg-ming-blue flex p-2 border border-th-secondary-300 rounded-t-xl shadow-md">
           <Tab
             className={({ selected }) =>
@@ -88,7 +97,7 @@ const CheckDetail = ({ lng }) => {
           ></Tab>
         </TabList>
         {isLoading && (
-          <div className="max-w-6xl mx-auto p-4 text-center">
+          <div className="max-w-6xl mx-auto p-4 text-center ">
             <Loader />
           </div>
         )}
@@ -98,22 +107,65 @@ const CheckDetail = ({ lng }) => {
           </div>
         )}
         {!isLoading && material?.content && (
-          <div className="max-w-6xl mx-auto p-4">
+          <div className="bg-white max-w-6xl mx-auto p-4">
             <CheckInfo checkId={checkId} lng={lng} />
             {(!isCheckExpired || info?.is_owner) && chapter?.verseObjects?.length > 0 && (
               <div className="mt-4">
                 {chapter?.verseObjects
                   .filter((verse) => verse.text !== '')
                   .map((verse) => (
-                    <div key={verse.verse} className="bg-gray-100 p-2 rounded-md my-1">
-                      <p className="text-lg font-semibold">{verse.verse}</p>
-                      <p className="text-gray-700">{verse.text}</p>
-                      <Notes
-                        lng={lng}
-                        checkId={checkId}
-                        materialId={material.id}
-                        reference={{ verse: verse.verse, chapter: currentChapterIndex }}
-                      />
+                    <div key={verse.verse} className="border-b p-2 my-1">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <p className="text-lg font-semibold">{verse.verse}</p>
+                          <p className="text-gray-700">{verse.text}</p>
+                        </div>
+                        <button
+                          onClick={() => toggleNoteInput(verse.verse)}
+                          className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                        >
+                          {showNoteInputs[verse.verse] ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                              />
+                            </svg>
+                          ) : (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                              />
+                            </svg>
+                          )}
+                        </button>
+                      </div>
+                      {showNoteInputs[verse.verse] && (
+                        <Notes
+                          lng={lng}
+                          checkId={checkId}
+                          materialId={material.id}
+                          reference={{ verse: verse.verse, chapter: currentChapterIndex }}
+                          toggleNoteInput={toggleNoteInput}
+                        />
+                      )}
                     </div>
                   ))}
               </div>
@@ -122,42 +174,42 @@ const CheckDetail = ({ lng }) => {
               <button
                 onClick={() => navigateToChapter(currentChapterIndex - 1)}
                 disabled={currentChapterIndex === 1}
-                className={`p-2 rounded-full ${currentChapterIndex === 1 ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50' : 'bg-gray-700 text-white'}`}
+                className={`p-2 rounded-full transition duration-300 ${currentChapterIndex === 1 ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50' : 'bg-gray-600 text-white hover:bg-gray-700 hover:text-white'}`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke="currentColor"
-                  class="size-6"
+                  className="w-6 h-6"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M15.75 19.5 8.25 12l7.5-7.5"
                   />
                 </svg>
               </button>
               <p className="text-xl font-bold">
-                {t('Chapter')} {currentChapterIndex}
+                {t('сhapter')} {currentChapterIndex}
               </p>
               <button
                 onClick={handleNextChapter}
                 disabled={currentChapterIndex === chapterLength}
-                className={`p-2 rounded-full ${currentChapterIndex === chapterLength ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50' : 'bg-gray-700 text-white'}`}
+                className={`p-2 rounded-full transition duration-300 ${currentChapterIndex === chapterLength ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50' : 'bg-gray-600 text-white hover:bg-gray-700 hover:text-white'}`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke="currentColor"
-                  class="size-6"
+                  className="w-6 h-6"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="m8.25 4.5 7.5 7.5-7.5 7.5"
                   />
                 </svg>
