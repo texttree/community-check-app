@@ -29,6 +29,14 @@ const AppBar = ({ lng }) => {
       }
     }
     getUser()
+
+    const authListener = supabaseClient.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => {
+      authListener.data.subscription.unsubscribe()
+    }
   }, [supabaseClient.auth])
 
   const handleLogout = async () => {
