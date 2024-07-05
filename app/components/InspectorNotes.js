@@ -20,13 +20,13 @@ const InspectorNotes = ({
   const [showInput, setShowInput] = useState(true)
   const [editNoteId, setEditNoteId] = useState(null)
   const [editNoteText, setEditNoteText] = useState('')
-  const [isEditing, setIsEditing] = useState(false) // State to track if editing mode is active
+  const [isEditing, setIsEditing] = useState(false)
   const menuRef = useRef(null)
 
   useEffect(() => {
     setEditNoteId(null)
     setEditNoteText('')
-  }, [reference.chapter])
+  }, [reference?.chapter])
 
   const addNote = () => {
     axios
@@ -42,7 +42,6 @@ const InspectorNotes = ({
           setNote('')
           setError(null)
           mutate()
-          setShowInput(false) // Hide input after saving
         } else {
           throw new Error(t('errorSavingNote'))
         }
@@ -66,7 +65,7 @@ const InspectorNotes = ({
           setEditNoteId(null)
           setEditNoteText('')
           setError(null)
-          setIsEditing(false) // Exit editing mode after update
+          setIsEditing(false)
           mutate()
         } else {
           throw new Error(t('errorUpdatingNote'))
@@ -97,26 +96,30 @@ const InspectorNotes = ({
 
   const handleMenuToggle = (noteId) => {
     if (editNoteId === noteId && !isEditing) {
-      setIsEditing(true) // Activate editing mode
-      setEditNoteId(noteId) // Show menu
+      setIsEditing(true)
+      setEditNoteId(noteId)
     } else {
       setEditNoteId(noteId)
       setEditNoteText(notes.find((note) => note.id === noteId)?.note || '')
-      setIsEditing(false) // Deactivate editing mode
+      setIsEditing(false)
     }
   }
 
+  const adjustTextareaHeight = (event) => {
+    event.target.style.height = 'auto'
+    event.target.style.height = `${Math.min(event.target.scrollHeight, 200)}px`
+  }
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
         menuRef.current &&
         !menuRef.current.contains(event.target) &&
         !event.target.classList.contains('editable-note') &&
-        !event.target.closest('.editable-note') // Check if clicked target or its parent is inside editable textarea
+        !event.target.closest('.editable-note')
       ) {
         setEditNoteId(null)
         setEditNoteText('')
-        setIsEditing(false) // Exit editing mode
+        setIsEditing(false)
       }
     }
 
@@ -127,36 +130,63 @@ const InspectorNotes = ({
   }, [])
 
   return (
-    <>
-      {notes?.length > 0
-        ? notes.map((noteItem) => (
-            <div key={noteItem.id} className="flex items-center justify-between">
+    <div className="mt-5">
+      <div className="mb-5">
+        <div>
+          <label htmlFor="notes" className="font-bold text-xl">
+            {t('Комментарии')}
+          </label>
+        </div>
+
+        {Array.isArray(notes) &&
+          notes.length > 0 &&
+          notes.map((noteItem, index) => (
+            <div
+              key={noteItem.id}
+              className={`flex items-center justify-between ${
+                index !== notes.length - 1 ? 'border-b pb-2 my-2' : ''
+              }`}
+            >
               {editNoteId === noteItem.id && isEditing ? (
                 <div className="flex w-full">
                   <textarea
                     value={editNoteText}
                     onChange={(e) => setEditNoteText(e.target.value)}
-                    className="w-full border rounded p-1 editable-note"
+                    className="w-full border rounded p-1 overflow-hidden resize-vertical"
                     autoFocus
+                    aria-label={t('editNote')}
+                    onInput={adjustTextareaHeight}
+                    style={{
+                      whiteSpace: 'pre-wrap',
+                      wordWrap: 'break-word',
+                      maxHeight: '200px',
+                    }}
                   />
                   <button
                     onClick={() => updateNote(noteItem.id)}
                     disabled={!editNoteText}
-                    className="bg-ming-blue hover:bg-deep-space text-white py-1 px-2 rounded ml-2 disabled:opacity-50"
+                    className="bg-ming-blue hover:bg-deep-space text-white h-10 py-1 px-2 rounded ml-2 my-4 disabled:opacity-50"
                   >
                     {t('save')}
                   </button>
                 </div>
               ) : (
                 <>
-                  <p className="text-gray-700">{noteItem.note}</p>
+                  <p
+                    className="text-gray-700"
+                    style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+                  >
+                    {noteItem.note}
+                  </p>
                   <div className="relative" ref={menuRef}>
                     <button
                       onClick={() => handleMenuToggle(noteItem.id)}
                       className="text-gray-500 cursor-pointer focus:outline-none"
+                      aria-label={t('menu')}
                     >
                       ...
                     </button>
+
                     {editNoteId === noteItem.id && !isEditing && (
                       <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 shadow-lg rounded-md z-10">
                         <button
@@ -181,15 +211,23 @@ const InspectorNotes = ({
                 </>
               )}
             </div>
-          ))
-        : null}
-      {showInput ? (
+          ))}
+      </div>
+      {showInput && (
         <div className="flex items-center">
           <textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            className="w-full border rounded p-1"
+            className="w-full border rounded p-1 overflow-hidden resize-vertical"
             autoFocus
+            aria-label={t('newNote')}
+            onInput={adjustTextareaHeight}
+            style={{
+              whiteSpace: 'pre-wrap',
+              wordWrap: 'break-word',
+              minHeight: '60px',
+              maxHeight: '200px',
+            }}
           />
           <button
             onClick={addNote}
@@ -199,9 +237,9 @@ const InspectorNotes = ({
             {t('save')}
           </button>
         </div>
-      ) : null}
+      )}
       {error && <p className="text-red-500">{error}</p>}
-    </>
+    </div>
   )
 }
 

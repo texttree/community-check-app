@@ -108,43 +108,43 @@ const CheckInspectorDetail = ({ lng }) => {
 
   return (
     <div>
-      <TabGroup className="max-w-6xl mx-auto">
-        <TabList className="bg-ming-blue flex p-2 border border-th-secondary-300 rounded-t-xl shadow-md">
+      <TabGroup className="mx-auto mb-5 max-w-6xl">
+        <TabList className="flex p-2 border rounded-t-xl bg-ming-blue border-th-secondary-300 shadow-md">
           <Tab
             className={({ selected }) =>
               selected
-                ? 'bg-ming-blue text-white cursor-pointer text-lg sm:text-2xl font-bold px-4 sm:px-9 py-2 rounded-t-md w-full text-center'
-                : 'text-blue-100 hover:bg-white/[0.12] hover:text-white px-4 py-2 rounded-t-md w-full text-center'
+                ? 'w-full px-4 py-2 text-lg font-bold text-center cursor-pointer text-white rounded-t-md sm:px-9 sm:text-2xl bg-ming-blue'
+                : 'w-full px-4 py-2 text-center text-blue-100 rounded-t-md hover:bg-white/[0.12] hover:text-white'
             }
           ></Tab>
         </TabList>
         {isLoading && (
-          <div className="max-w-6xl mx-auto p-4 text-center">
+          <div className="p-4 mx-auto text-center max-w-6xl">
             <Loader />
           </div>
         )}
 
         {!isLoading && !material?.content && (
-          <div className="max-w-6xl mx-auto p-4 text-center">
+          <div className="p-4 mx-auto text-center max-w-6xl">
             <p className="text-2xl text-red-500">{t('contentNotLoaded')}</p>
           </div>
         )}
 
         {!isInspectorDeletedLoading && isInspectorDeleted && (
-          <div className="max-w-6xl mx-auto p-4 text-center">
+          <div className="p-4 mx-auto text-center max-w-6xl">
             <p className="text-2xl text-red-500">{t('inspectorDeleted')}</p>
           </div>
         )}
 
         {!isLoading && material?.content && !isInspectorDeleted && (
-          <div className="bg-white max-w-6xl mx-auto p-4">
+          <div className="p-4 mx-auto bg-white rounded-b-md max-w-6xl">
             <CheckInfo checkId={checkId} lng={lng} />
             {(!isCheckExpired || info?.is_owner) && chapter?.verseObjects?.length > 0 && (
               <div className="mt-4">
                 {chapter?.verseObjects
                   .filter((verse) => verse.text !== '')
                   .map((verse) => (
-                    <div key={verse.verse} className="border-b p-2 my-1">
+                    <div key={verse.verse} className="p-2 my-1 border-b">
                       <div className="flex items-start justify-between">
                         <div>
                           <p className="text-lg font-semibold">{verse.verse}</p>
@@ -200,56 +200,64 @@ const CheckInspectorDetail = ({ lng }) => {
                       )}
                     </div>
                   ))}
-                <div className="flex justify-center items-center mt-8 p-4 space-x-14">
-                  <button
-                    onClick={() => navigateToChapter(currentChapterIndex - 1)}
-                    disabled={currentChapterIndex === 1}
-                    className={`p-2 rounded-full transition duration-300 ${currentChapterIndex === 1 ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50' : 'bg-gray-600 text-white hover:bg-gray-700 hover:text-white'}`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15.75 19.5 8.25 12l7.5-7.5"
-                      />
-                    </svg>
-                  </button>
-                  <p className="text-xl font-bold">
-                    {t('сhapter')} {currentChapterIndex}
-                  </p>
-                  <button
-                    onClick={handleNextChapter}
-                    disabled={currentChapterIndex === chapterLength}
-                    className={`p-2 rounded-full transition duration-300 ${currentChapterIndex === chapterLength ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50' : 'bg-gray-600 text-white hover:bg-gray-700 hover:text-white'}`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                      />
-                    </svg>
-                  </button>
-                </div>
               </div>
             )}
           </div>
         )}
       </TabGroup>
+      <div className="flex items-center justify-center p-4 mt-8 mb-5 space-x-14">
+        <button
+          onClick={() => navigateToChapter(currentChapterIndex - 1)}
+          disabled={currentChapterIndex === 1}
+          className={`p-2 rounded-full transition duration-300 ${
+            currentChapterIndex === 1
+              ? 'cursor-not-allowed bg-gray-300 text-gray-500 opacity-50'
+              : 'bg-gray-600 text-white hover:bg-gray-700 hover:text-white'
+          }`}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5 8.25 12l7.5-7.5"
+            />
+          </svg>
+        </button>
+        <p className="text-xl font-bold">
+          {t('сhapter')} {currentChapterIndex}
+        </p>
+        <button
+          onClick={handleNextChapter}
+          disabled={currentChapterIndex === chapterLength}
+          className={`p-2 rounded-full transition duration-300 ${
+            currentChapterIndex === chapterLength
+              ? 'cursor-not-allowed bg-gray-300 text-gray-500 opacity-50'
+              : 'bg-gray-600 text-white hover:bg-gray-700 hover:text-white'
+          }`}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m8.25 4.5 7.5 7.5-7.5 7.5"
+            />
+          </svg>
+        </button>
+      </div>
     </div>
   )
 }
