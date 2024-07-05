@@ -69,7 +69,7 @@ export default function FormComponent({ lng, redirectedFrom }) {
           height={550}
           className="hidden md:block absolute md:-left-44 md:top-48 md:transform md:-translate-y-2/3"
         />
-        <div className="w-full p-8 bg-white shadow-lg rounded-lg md:ml-80 md:w-96 md:h-80 md:translate-y-0 md:shadow-none mb-44">
+        <div className="w-full p-8 bg-white shadow-lg rounded-lg md:ml-80 md:w-96 md:h-auto md:translate-y-0 md:shadow-none mb-44 mt-12 md:mt-0">
           <h2 className="text-center text-3xl font-bold text-gray-900 mb-6">
             {t('signAccount')}
           </h2>
@@ -89,7 +89,9 @@ export default function FormComponent({ lng, redirectedFrom }) {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Пароль</label>
+              <label className="block text-sm font-medium text-gray-700">
+                {t('password')}
+              </label>
               <div className="mt-1">
                 <input
                   type="password"
@@ -106,7 +108,7 @@ export default function FormComponent({ lng, redirectedFrom }) {
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-ming-blue hover:bg-dark-slate-gray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-0 md:mr-2"
                 disabled={loading}
               >
-                {loading ? 'Загрузка...' : 'Войти'}
+                {loading ? t('loading') : t('signIn')}
               </button>
               <button
                 type="button"
@@ -114,7 +116,7 @@ export default function FormComponent({ lng, redirectedFrom }) {
                 onClick={handleRegister}
                 disabled={loading}
               >
-                {loading ? 'Загрузка...' : 'Регистрация'}
+                {loading ? t('loading') : t('register')}
               </button>
             </div>
           </form>
