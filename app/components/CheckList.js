@@ -128,16 +128,20 @@ const CheckList = ({ projectId, bookId, lng }) => {
                     {formatDate(check.finished_at)}
                   </td>
                   <td className="border p-2 text-center">
-                    <button
-                      onClick={() => handleDownloadNotes(check)}
-                      disabled={
-                        notesCounts[check.name] === undefined ||
-                        notesCounts[check.name] === 0
-                      }
-                      className="disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                    >
-                      <Download className="h-5 w-5 mr-1" />
-                    </button>
+                    <div className="flex justify-center">
+                      <button
+                        onClick={() => handleDownloadNotes(check)}
+                        disabled={
+                          notesCounts[check.name] === undefined ||
+                          notesCounts[check.name] === 0
+                        }
+                        className="disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center w-full"
+                      >
+                        <div className="h-5 w-5">
+                          <Download className="h-5 w-5 mr-1" />
+                        </div>
+                      </button>
+                    </div>
                   </td>
                   <td className="border p-2 text-center">
                     {notesCounts[check.name] || 0}
