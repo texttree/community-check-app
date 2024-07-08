@@ -131,14 +131,18 @@ const CheckList = ({ projectId, bookId, lng }) => {
                     <button
                       onClick={() => handleDownloadNotes(check)}
                       disabled={
-                        notesCounts[check.id] === undefined || notesCounts[check.id] === 0
+                        notesCounts[check.name] === undefined ||
+                        notesCounts[check.name] === 0
                       }
                       className="disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                     >
                       <Download className="h-5 w-5 mr-1" />
                     </button>
                   </td>
-                  <td className="border p-2 text-center">{notesCounts[check.id] || 0}</td>
+                  <td className="border p-2 text-center">
+                    {notesCounts[check.name] || 0}
+                  </td>
+
                   <td className="border p-2 text-center">
                     <button
                       className="hidden sm:block bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-2 sm:py-1 rounded-md"
