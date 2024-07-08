@@ -110,7 +110,7 @@ const ProjectPage = ({ lng }) => {
   })
 
   return (
-    <div className="max-w-6xl mx-auto p-4 relative">
+    <div className="max-w-6xl mx-auto p-4">
       <TabGroup>
         <TabList className="bg-ming-blue flex p-2 w-full border border-th-secondary-300 rounded-t-xl shadow-md">
           <Tab
