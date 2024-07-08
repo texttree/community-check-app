@@ -1,14 +1,10 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-
 import toast from 'react-hot-toast'
-
 import useSWR from 'swr'
 import axios from 'axios'
-
 import { fetcher } from '@/helpers/fetcher'
 import LeftArrow from '@/public/left.svg'
 import { useTranslation } from '@/app/i18n/client'
@@ -82,17 +78,19 @@ const CheckId = ({ lng }) => {
     setShowDeleteModal(false)
   }
 
-  const copyToClipboard = () => {
-    const textToCopy = checkPageRef.current.innerText
-
-    navigator.clipboard.writeText(textToCopy).then(
-      () => {
-        toast.success(t('copied'))
-      },
-      (err) => {
-        toast.error(t('copyError'), err)
-      }
-    )
+  const copyToClipboard = (textToCopy) => {
+    if (textToCopy) {
+      navigator.clipboard.writeText(textToCopy).then(
+        () => {
+          toast.success(t('copied'))
+        },
+        (err) => {
+          toast.error(t('copyError'), err)
+        }
+      )
+    } else {
+      toast.error(t('copyError'))
+    }
   }
 
   useEffect(() => {
@@ -183,7 +181,7 @@ const CheckId = ({ lng }) => {
       : 'https://community-check-app.netlify.app'
 
   return (
-    <TabGroup className="max-w-7xl  mx-auto mb-5">
+    <TabGroup className="max-w-7xl mx-auto mb-5">
       <TabList className="bg-ming-blue flex p-2 border border-th-secondary-300 rounded-t-xl shadow-md">
         <Tab
           className={({ selected }) =>
@@ -225,6 +223,7 @@ const CheckId = ({ lng }) => {
             currentDomain={currentDomain}
             copyToClipboard={copyToClipboard}
             t={t}
+            ref={checkPageRef}
           />
         )}
 
