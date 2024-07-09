@@ -148,21 +148,23 @@ const CheckList = ({ projectId, bookId, lng }) => {
                   </td>
 
                   <td className="border p-2 text-center">
-                    <button
-                      className="hidden sm:block bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-2 sm:py-1 rounded-md"
-                      onClick={() => openDeleteModal(check)}
-                    >
-                      {t('delete')}
-                    </button>
-                    <Image
-                      key={check.id}
-                      src="/delete.svg"
-                      alt="Delete Icon"
-                      width={24}
-                      height={24}
-                      onClick={() => openDeleteModal(check)}
-                      className="block sm:hidden h-5 w-5 cursor-pointer"
-                    />
+                    <div className="flex justify-center">
+                      <button
+                        className="hidden sm:block bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-2 sm:py-1 rounded-md"
+                        onClick={() => openDeleteModal(check)}
+                      >
+                        {t('delete')}
+                      </button>
+                      <Image
+                        key={check.id}
+                        src="/delete.svg"
+                        alt="Delete Icon"
+                        width={24}
+                        height={24}
+                        onClick={() => openDeleteModal(check)}
+                        className="block sm:hidden h-5 w-5 cursor-pointer"
+                      />
+                    </div>
                   </td>
                 </tr>
               ))}
