@@ -8,12 +8,21 @@ import { useTranslation } from '@/app/i18n/client'
 import SwitchLanguage from './SwitchLanguage'
 import { createClient } from '@/app/supabase/client'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import toast from 'react-hot-toast'
 
 const AppBar = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
   const supabaseClient = createClient()
   const [user, setUser] = useState(null)
   const router = useRouter()
+
+  const [currentDomain, setCurrentDomain] = useState(
+    'https://community-check-app.netlify.app'
+  )
+
+  useEffect(() => {
+    setCurrentDomain(window.location.origin)
+  }, [])
 
   useEffect(() => {
     const getUser = async () => {
@@ -88,8 +97,8 @@ const AppBar = ({ lng }) => {
                 <p className="text-gray-700 mr-10 py-2 text-sm">{t('API')}</p>
                 <button
                   onClick={() => {
-                    navigator.clipboard.writeText('API_LINK_HERE')
-                    alert(t('apiLinkCopied'))
+                    navigator.clipboard.writeText(`${currentDomain}/doc`)
+                    toast.success(t('apiLinkCopied'))
                   }}
                   className="bg-gray-200 rounded-md hover:bg-deep-space hover:text-white stext-gray-700 block ml-8 px-2 py-1 text-xs"
                 >
