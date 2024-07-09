@@ -40,7 +40,7 @@ const AppBar = ({ lng }) => {
     }
     getUser()
 
-    const authListener = supabaseClient.auth.onAuthStateChange((event, session) => {
+    const authListener = supabaseClient.auth.onAuthStateChange((session) => {
       setUser(session?.user ?? null)
     })
 
