@@ -60,7 +60,7 @@ const CheckModal = ({ isOpen, onClose, onSubmit, lng }) => {
           </button>
           <button
             onClick={handleSubmit}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+            className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
           >
             {t('create')}
           </button>

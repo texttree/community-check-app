@@ -122,11 +122,8 @@ const ProjectEditPage = ({ lng }) => {
                 </button>
               </div>
               <div className="mt-8 border-t border-gray-300 w-full pt-4">
-                <h2 className="text-xl font-semibold mb-2">{t('deletingProject')}</h2>
-                <p className="text-red-600 mb-4">
-                  Будьте внимательны. При удалении проекта будут удалены все книги, все
-                  проверки, заметки, материалы и проверяющие, связанные с проектом.
-                </p>
+                <h2 className="text-xl font-semibold mb-2">{t('deleteProject')}</h2>
+                <p className="text-red-600 mb-4">{t('warningDeleteProject')}</p>
                 <button
                   className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
                   onClick={openDeleteModal}

@@ -199,7 +199,7 @@ const CheckDetail = ({ lng }) => {
           </svg>
         </button>
         <p className="text-xl font-bold">
-          {t('сhapter')} {currentChapterIndex}
+          {t('chapter')} {currentChapterIndex}
         </p>
         <button
           onClick={handleNextChapter}

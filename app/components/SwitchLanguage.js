@@ -2,11 +2,14 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
+import { useTranslation } from '@/app/i18n/client'
+
 import { languages } from '../i18n/settings'
 import Link from 'next/link'
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
 
 const SwitchLanguage = ({ lng }) => {
+  const { t } = useTranslation(lng, 'common')
   const [isOpen, setIsOpen] = useState(false)
   const pathName = usePathname()
 
@@ -35,7 +38,7 @@ const SwitchLanguage = ({ lng }) => {
               d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5a17.92 17.92 0 0 1-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
             ></path>
           </svg>
-          <span className="ml-3 mr-12 text-sm text-gray-600">Language</span>{' '}
+          <span className="ml-3 mr-12 text-sm text-gray-600"> {t('language')}</span>{' '}
           <MenuButton
             className={`bg-gray-200 ml-8 mt-2${
               isOpen ? 'bg-ming-blue text-white' : 'bg-gray-200 text-gray-600'

@@ -30,10 +30,7 @@ const Index = ({ lng }) => {
           Community Check
         </h1>
         <p className="mx-auto max-w-2xl mb-10 text-sm md:text-lg text-center">
-          Lorem ipsum dolor sit amet consectetur. Eget aliquam diam nunc eget mauris.
-          Faucibus volutpat aliquam elementum faucibus proin massa vel elit. Ut
-          sollicitudin nibh pharetra ullamcorper ullamcorper. Nunc tortor suspendisse
-          tortor pretium massa mi odio vulputate cursus.
+          {t('aboutComCheck')}
         </p>
 
         <div className="mb-10 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
@@ -47,10 +44,8 @@ const Index = ({ lng }) => {
                 className="md:w-20 md:h-20"
               />
             </div>
-            <h2 className="font-semibold text-lg md:text-xl">Проверка текста</h2>
-            <p className="flex-grow">
-              Пожалуйста, войдите, чтобы получить доступ к полному функционалу.
-            </p>
+            <h2 className="font-semibold text-lg md:text-xl">{t('checkText')}</h2>
+            <p className="flex-grow">{t('loginToAccess')}</p>
           </div>
 
           <div className="w-full h-auto p-4 md:p-6 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col">
@@ -63,10 +58,8 @@ const Index = ({ lng }) => {
                 className="md:w-20 md:h-20"
               />
             </div>
-            <h2 className="font-semibold text-lg md:text-xl">Комментирование</h2>
-            <p className="flex-grow">
-              Пожалуйста, войдите, чтобы получить доступ к полному функционалу.
-            </p>
+            <h2 className="font-semibold text-lg md:text-xl">{t('comment')}</h2>
+            <p className="flex-grow">{t('loginToAccess')}</p>
           </div>
 
           <div className="w-full h-auto p-4 md:p-6 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col">
@@ -79,12 +72,8 @@ const Index = ({ lng }) => {
                 className="md:w-20 md:h-20"
               />
             </div>
-            <h2 className="font-semibold text-lg md:text-xl">
-              Создание и курирование больших проектов
-            </h2>
-            <p className="flex-grow">
-              Пожалуйста, войдите, чтобы получить доступ к полному функционалу.
-            </p>
+            <h2 className="font-semibold text-lg md:text-xl">{t('curingProject')}</h2>
+            <p className="flex-grow">{t('loginToAccess')}</p>
           </div>
           <div className="w-full h-auto p-4 md:p-6 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col">
             <div className="flex items-center mb-4">
@@ -97,14 +86,14 @@ const Index = ({ lng }) => {
               />
             </div>
             <h2 className="font-semibold text-lg md:text-xl">
-              Интеграция с большими проектами
+              {t('integrationProjects')}
             </h2>
             <Link className="flex-grow" href="/doc">{`${currentDomain}/doc`}</Link>
           </div>
         </div>
         <div className="mx-auto my-4 h-auto w-full md:w-2/5 flex  flex-row justify-between items-center bg-ming-blue rounded-lg px-6 py-4">
           <p className="text-white text-center text-sm md:text-base">
-            Начните проверку прямо сейчас
+            {t('startCheсking')}
           </p>
           <Link
             href="/login"

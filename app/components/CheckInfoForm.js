@@ -24,7 +24,7 @@ const CheckInfoForm = ({
     </div>
     <div className="flex flex-col items-start w-full mb-4 md:mb-0 md:mr-4">
       <label htmlFor="startDate" className="font-semibold mb-1">
-        {t('startDate')}
+        {t('dateStartCheck')}
       </label>
       <input
         id="startDate"
@@ -36,7 +36,7 @@ const CheckInfoForm = ({
     </div>
     <div className="flex flex-col items-start w-full mb-4 md:mb-0 md:mr-4">
       <label htmlFor="endDate" className="font-semibold mb-1">
-        {t('endDate')}
+        {t('dateFinishCheck')}
       </label>
       <input
         id="endDate"

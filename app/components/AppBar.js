@@ -102,7 +102,7 @@ const AppBar = ({ lng }) => {
                   }}
                   className="bg-gray-200 rounded-md hover:bg-deep-space hover:text-white stext-gray-700 block ml-8 px-2 py-1 text-xs"
                 >
-                  {t('Копировать')}
+                  {t('copy')}
                 </button>
               </div>
             </div>
