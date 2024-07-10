@@ -856,6 +856,12 @@
               }
             }
           },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
           "500": {
             "description": "Server error"
           }
@@ -947,6 +953,7 @@
           {
             "in": "path",
             "name": "checkId",
+            "required": true,
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -975,7 +982,7 @@
             "description": "Unauthorized"
           },
           "500": {
-            "description": "Server error"
+            "description": "Internal server error"
           }
         }
       }
