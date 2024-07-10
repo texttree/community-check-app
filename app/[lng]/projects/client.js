@@ -110,58 +110,58 @@ const ProjectPage = ({ lng }) => {
   })
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
+    <div className="max-w-3xl mx-auto p-2 text-sm">
       <TabGroup>
-        <TabList className="bg-ming-blue flex p-2 w-full border border-th-secondary-300 rounded-t-xl shadow-md">
+        <TabList className="bg-ming-blue flex p-1 w-full border border-th-secondary-300 rounded-t-xl shadow-md">
           <Tab
             className={({ selected }) =>
               selected
-                ? 'bg-ming-blue text-white cursor-pointer text-2xl font-bold px-9 py-2 rounded-md'
-                : 'text-blue-100 hover:bg-white/[0.12] hover:text-white px-4 py-2 rounded-md'
+                ? 'bg-ming-blue text-white cursor-pointer text-lg font-bold px-4 py-1 rounded-md'
+                : 'text-blue-100 hover:bg-white/[0.12] hover:text-white px-2 py-1 rounded-md'
             }
           >
             {t('projects')}
           </Tab>
         </TabList>
         <TabPanels>
-          <TabPanel className="bg-white p-4 rounded-b-md text-left">
-            <div className="hidden md:flex justify-start space-x-4 mb-4">
+          <TabPanel className="bg-white p-2 rounded-b-md text-left">
+            <div className="hidden md:flex justify-start space-x-2 mb-2">
               <button
-                className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
+                className="bg-ming-blue hover:bg-deep-space text-white px-2 py-1 rounded-md"
                 onClick={() => openAddModal('createProject', false, false)}
               >
                 {t('createProject')}
               </button>
               <Link
                 href={`/${lng}/tokens`}
-                className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
+                className="bg-ming-blue hover:bg-deep-space text-white px-2 py-1 rounded-md"
               >
                 {t('tokens')}
               </Link>
               <button
-                className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
+                className="bg-ming-blue hover:bg-deep-space text-white px-2 py-1 rounded-md"
                 onClick={() => openAddModal('quickCreateCheck', true, true)}
               >
                 {t('quickCreateCheck')}
               </button>
             </div>
-            <div className="md:hidden mb-4 flex justify-end">
+            <div className="md:hidden mb-2 flex justify-end">
               <div className="relative inline-block text-left" ref={menuRef}>
                 <button onClick={handleMenuToggle}>
-                  <Image src="/menu.svg" alt="Menu" width={30} height={30} />
+                  <Image src="/menu.svg" alt="Menu" width={20} height={20} />
                 </button>
                 {isMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 origin-top-right bg-white divide-y divide-gray-100 rounded-b-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                  <div className="absolute right-0 mt-1 w-40 origin-top-right bg-white divide-y divide-gray-100 rounded-b-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                     <div className="py-1">
                       <button
                         onClick={() => openAddModal('createProject', false, false)}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                        className="block w-full text-left px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
                       >
                         {t('createProject')}
                       </button>
                       <Link
                         href={`/${lng}/tokens`}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                        className="block w-full text-left px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
                         onClick={closeMenu}
                       >
                         {t('tokens')}
@@ -171,7 +171,7 @@ const ProjectPage = ({ lng }) => {
                           openAddModal('quickCreateCheck', true, true)
                           closeMenu()
                         }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                        className="block w-full text-left px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
                       >
                         {t('quickCreateCheck')}
                       </button>
