@@ -38,7 +38,12 @@ const Notes = ({ reference, materialId, checkId, lng, toggleNoteInput }) => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative mt-4">
+      <div className="my-2">
+        <label htmlFor="notes" className="font-bold text-xl">
+          {t('Комментарии')}
+        </label>
+      </div>
       <div className="flex items-center mt-2">
         <textarea
           value={note}
