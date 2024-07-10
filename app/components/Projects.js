@@ -11,20 +11,20 @@ const Projects = ({ lng, projects, error }) => {
   return (
     <>
       {error ? (
-        <p className="text-red-600">{t('errorOccurred')}</p>
+        <p className="text-red-600 text-sm">{t('errorOccurred')}</p>
       ) : projects ? (
-        <div className="grid grid-cols-3 gap-4 mb-4 md:flex md:flex-wrap md:gap-6">
+        <div className="grid grid-cols-3 gap-2 mb-2 md:flex md:flex-wrap md:gap-4">
           {projects.map((project) => (
             <div key={project.id} className="flex flex-col items-center">
               <Link href={`projects/${project.id}`}>
                 <Image
                   src="/folder.svg"
                   alt="folder icon"
-                  width={120}
-                  height={120}
+                  width={80}
+                  height={80}
                   className="rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105"
                 />
-                <p className="text-xl font-semibold text-raisin-black mt-2 text-center">
+                <p className="text-lg font-semibold text-raisin-black mt-1 text-center">
                   {project.name}
                 </p>
               </Link>

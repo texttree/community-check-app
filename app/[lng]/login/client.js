@@ -65,17 +65,17 @@ export default function FormComponent({ lng, redirectedFrom }) {
         <Image
           src="/Paul.svg"
           alt="Paul"
-          width={550}
-          height={550}
-          className="hidden md:block absolute md:-left-44 md:top-48 md:transform md:-translate-y-2/3"
+          width={400}
+          height={400}
+          className="hidden md:block absolute md:-left-32 md:top-40 md:transform md:-translate-y-2/3"
         />
-        <div className="w-full p-8 bg-white shadow-lg rounded-lg md:ml-80 md:w-96 md:h-auto md:translate-y-0 md:shadow-none mb-44 mt-12 md:mt-0">
-          <h2 className="text-center text-3xl font-bold text-gray-900 mb-6">
+        <div className="w-full p-4 bg-white shadow-lg rounded-lg md:ml-64 md:w-80 md:h-auto md:translate-y-0 md:shadow-none mb-32 mt-8 md:mt-0">
+          <h2 className="text-center text-2xl font-bold text-gray-900 mb-4">
             {t('signAccount')}
           </h2>
-          <form className="space-y-6" onSubmit={handleLogin}>
+          <form className="space-y-4" onSubmit={handleLogin}>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-xs font-medium text-gray-700">
                 {t('email')}
               </label>
               <div className="mt-1">
@@ -84,12 +84,12 @@ export default function FormComponent({ lng, redirectedFrom }) {
                   placeholder="email"
                   value={email}
                   onChange={({ target: { value } }) => setEmail(value)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-xs font-medium text-gray-700">
                 {t('password')}
               </label>
               <div className="mt-1">
@@ -98,21 +98,21 @@ export default function FormComponent({ lng, redirectedFrom }) {
                   placeholder="password"
                   value={password}
                   onChange={({ target: { value } }) => setPassword(value)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-xs"
                 />
               </div>
             </div>
-            <div className="mt-6 flex flex-col space-y-2 md:flex-row md:justify-between md:space-y-0">
+            <div className="mt-4 flex flex-col space-y-2 md:flex-row md:justify-between md:space-y-0">
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-ming-blue hover:bg-dark-slate-gray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-0 md:mr-2"
+                className="w-full flex justify-center py-1 px-2 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-ming-blue hover:bg-dark-slate-gray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-0 md:mr-2"
                 disabled={loading}
               >
                 {loading ? t('loading') : t('signIn')}
               </button>
               <button
                 type="button"
-                className="w-full flex justify-center py-2 px-4 border border-transparent border-gray-300 rounded-md shadow-sm text-sm font-medium text-deep-space bg-white hover:bg-dark-slate-gray hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                className="w-full flex justify-center py-1 px-2 border border-transparent border-gray-300 rounded-md shadow-sm text-xs font-medium text-deep-space bg-white hover:bg-dark-slate-gray hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                 onClick={handleRegister}
                 disabled={loading}
               >
@@ -120,7 +120,7 @@ export default function FormComponent({ lng, redirectedFrom }) {
               </button>
             </div>
           </form>
-          {error && <p className="mt-2 text-center text-sm text-red-600">{error}</p>}
+          {error && <p className="mt-2 text-center text-xs text-red-600">{error}</p>}
         </div>
       </div>
     </div>
