@@ -88,10 +88,11 @@ const Index = ({ lng }) => {
             <h2 className="font-semibold text-base md:text-lg">
               {t('integrationProjects')}
             </h2>
-            <Link
-              className="flex-grow text-xs md:text-sm"
-              href="/doc"
-            >{`${currentDomain}/doc`}</Link>
+            <p className="flex-grow text-xs md:text-sm">
+              <Link className="text-ming-blue hover:underline" href="/doc">
+                {`${currentDomain}/doc`}
+              </Link>
+            </p>
           </div>
         </div>
         <div className="mx-auto my-4 h-auto w-full md:w-3/5 flex flex-row justify-between items-center bg-ming-blue rounded-lg px-4 py-2">
