@@ -5,6 +5,13 @@ import AppBar from '@/app/components/AppBar'
 import { languages } from '@/app/i18n/settings'
 
 import '@/styles/globals.css'
+import { Montserrat } from 'next/font/google'
+
+const montserrat = Montserrat({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export async function generateStaticParams() {
   return languages.map((lng) => ({ lng }))
@@ -17,7 +24,7 @@ export const metadata = {
 
 export default function RootLayout({ children, params: { lng } }) {
   return (
-    <html lang={lng} dir={dir(lng)}>
+    <html lang={lng} dir={dir(lng)} className={montserrat.className}>
       <body className="bg-bright-gray">
         <div>
           <div className="w-full">
