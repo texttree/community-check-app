@@ -63,7 +63,7 @@ export default function FormComponent({ lng, redirectedFrom }) {
     <div className="flex items-center justify-center min-h-screen">
       <div className="relative flex items-center justify-center">
         <Image
-          src="/Paul.svg"
+          src="/Paul.png"
           alt="Paul"
           width={400}
           height={400}
