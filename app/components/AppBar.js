@@ -20,7 +20,7 @@ const AppBar = ({ lng }) => {
     'https://community-check-app.netlify.app'
   )
   const [isCheckPage, setIsCheckPage] = useState(false)
-  const [isLoginPage, setIsLoginPage] = useState(false) 
+  const [isLoginPage, setIsLoginPage] = useState(false)
 
   useEffect(() => {
     setCurrentDomain(window.location.origin)
@@ -53,7 +53,7 @@ const AppBar = ({ lng }) => {
   useEffect(() => {
     const { pathname } = window.location
     setIsCheckPage(pathname.includes('/checks/'))
-    setIsLoginPage(pathname.includes('/login')) 
+    setIsLoginPage(pathname.includes('/login'))
   }, [])
 
   const handleLogout = async () => {
@@ -69,7 +69,7 @@ const AppBar = ({ lng }) => {
   return (
     <header className="bg-ming-blue p-4 flex justify-start items-center">
       <Menu as="div" className="relative inline-block text-left mr-4">
-        <MenuButton className="inline-flex items-center justify-center gap-x-1.5 rounded-md bg-gray-200 px-3 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+        <MenuButton className="inline-flex items-center justify-center gap-x-1.5 rounded-md bg-ming-blue px-3 py-1 text-sm font-semibold text-white shadow-sm hover:bg-ming-blue">
           <div className="flex items-center justify-center w-7 h-7">
             <Bar />
           </div>
