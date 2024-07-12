@@ -34,8 +34,42 @@ const Index = ({ lng }) => {
         </p>
 
         <div className="mb-8 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-          <div className="w-full h-auto p-2 md:p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col">
-            <div className="flex items-center mb-2">
+          {/* Блок для мобильной версии checkText */}
+          <div className="w-full h-auto p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col md:hidden">
+            <div className="flex items-center mb-4 pt-4">
+              <Image src="/icon-check.svg" alt="Check" width={80} height={80} />
+              <div className="ml-4 text-left">
+                <h2 className="font-semibold text-base">{t('checkText')}</h2>
+                <p className="pt-1 text-xs">{t('loginToAccess')}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Блок для мобильной версии comment */}
+          <div className="w-full h-auto p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col md:hidden">
+            <div className="flex items-center mb-4 pt-4">
+              <Image src="/icon-comment.svg" alt="Comment" width={80} height={80} />
+              <div className="ml-4 text-left">
+                <h2 className="font-semibold text-base">{t('comment')}</h2>
+                <p className="pt-1 text-xs">{t('loginToAccess')}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Блок для мобильной версии curingProject */}
+          <div className="w-full h-auto p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col md:hidden">
+            <div className="flex items-center mb-4 pt-4">
+              <Image src="/icon-project.svg" alt="Project" width={80} height={80} />
+              <div className="ml-4 text-left">
+                <h2 className="font-semibold text-base">{t('curingProject')}</h2>
+                <p className="pt-1 text-xs">{t('loginToAccess')}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Блоки для десктопной версии, скрытые в мобильной */}
+          <div className="w-full h-auto md:p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex-col md:flex md:visible hidden">
+            <div className="flex items-center mb-2 pt-4">
               <Image
                 src="/icon-check.svg"
                 alt="Check"
@@ -44,11 +78,11 @@ const Index = ({ lng }) => {
                 className="md:w-16 md:h-16"
               />
             </div>
-            <h2 className="font-semibold text-base md:text-lg">{t('checkText')}</h2>
-            <p className="flex-grow text-xs md:text-sm">{t('loginToAccess')}</p>
+            <h2 className="font-semibold md:text-lg">{t('checkText')}</h2>
+            <p className="flex-grow md:text-sm">{t('loginToAccess')}</p>
           </div>
 
-          <div className="w-full h-auto p-2 md:p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col">
+          <div className="w-full h-auto md:p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex-col md:flex md:visible hidden">
             <div className="flex items-center mb-2">
               <Image
                 src="/icon-comment.svg"
@@ -58,11 +92,11 @@ const Index = ({ lng }) => {
                 className="md:w-16 md:h-16"
               />
             </div>
-            <h2 className="font-semibold text-base md:text-lg">{t('comment')}</h2>
-            <p className="flex-grow text-xs md:text-sm">{t('loginToAccess')}</p>
+            <h2 className="font-semibold md:text-lg">{t('comment')}</h2>
+            <p className="flex-grow md:text-sm">{t('loginToAccess')}</p>
           </div>
 
-          <div className="w-full h-auto p-2 md:p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col">
+          <div className="w-full h-auto md:p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex-col md:flex md:visible hidden">
             <div className="flex items-center mb-2">
               <Image
                 src="/icon-project.svg"
@@ -72,10 +106,10 @@ const Index = ({ lng }) => {
                 className="md:w-16 md:h-16"
               />
             </div>
-            <h2 className="font-semibold text-base md:text-lg">{t('curingProject')}</h2>
-            <p className="flex-grow text-xs md:text-sm">{t('loginToAccess')}</p>
+            <h2 className="font-semibold md:text-lg">{t('curingProject')}</h2>
+            <p className="flex-grow md:text-sm">{t('loginToAccess')}</p>
           </div>
-          <div className="w-full h-auto p-2 md:p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col">
+          <div className="w-full h-auto md:p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex-col md:flex md:visible hidden">
             <div className="flex items-center mb-2">
               <Image
                 src="/icon-project.svg"
@@ -85,10 +119,8 @@ const Index = ({ lng }) => {
                 className="md:w-16 md:h-16"
               />
             </div>
-            <h2 className="font-semibold text-base md:text-lg">
-              {t('integrationProjects')}
-            </h2>
-            <p className="flex-grow text-xs md:text-sm">
+            <h2 className="font-semibold md:text-lg">{t('integrationProjects')}</h2>
+            <p className="flex-grow md:text-sm">
               <Link className="text-ming-blue hover:underline" href="/doc">
                 {`${currentDomain}/doc`}
               </Link>
@@ -98,7 +130,7 @@ const Index = ({ lng }) => {
       </div>
 
       <div className="fixed bottom-2 left-0 right-0 mx-auto h-auto w-10/12 md:w-2/5 flex flex-row justify-between items-center bg-ming-blue rounded-lg px-4 py-2">
-        <p className="text-white text-center text-xs md:text-sm">{t('startCheсking')}</p>
+        <p className="text-white text-center text-sm md:text-md">{t('startCheсking')}</p>
         <Link
           href="/login"
           className="px-4 py-1 h-8 text-ming-blue rounded bg-white hover:bg-gray-200 text-center flex items-center text-xs md:text-sm"
