@@ -67,14 +67,14 @@ const AppBar = ({ lng }) => {
   }
 
   return (
-    <header className="bg-ming-blue p-4 flex justify-start items-center">
+    <header className="bg-ming-blue p-4 flex justify-start items-center relative z-10">
       <Menu as="div" className="relative inline-block text-left mr-4">
         <MenuButton className="inline-flex items-center justify-center gap-x-1.5 rounded-md bg-ming-blue px-3 py-1 text-sm font-semibold text-white shadow-sm hover:bg-ming-blue">
           <div className="flex items-center justify-center w-7 h-7">
             <Bar />
           </div>
         </MenuButton>
-        <MenuItems className="absolute mt-2 w-56 p-2 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <MenuItems className="absolute mt-2 w-56 p-2 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-20">
           {user && !isCheckPage && (
             <MenuItem as="div" className="flex items-center space-x-4 p-2">
               <div>
