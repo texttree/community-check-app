@@ -19,6 +19,7 @@ module.exports = {
         'foil-silver': '#AEAEAE',
         'bright-gray': '#EDEDED',
         'raisin-black': '#262626',
+        'smoky-white': '#ECF1F1',
       },
       fontFamily: {
         montserrat: ['Montserrat', 'sans-serif'],
