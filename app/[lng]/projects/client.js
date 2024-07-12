@@ -124,7 +124,7 @@ const ProjectPage = ({ lng }) => {
           </Tab>
         </TabList>
         <TabPanels>
-          <TabPanel className="bg-white p-2 rounded-b-md text-left">
+          <TabPanel className="bg-white p-4 rounded-b-md text-left">
             <div className="hidden md:flex justify-start space-x-2 mb-2">
               <button
                 className="bg-ming-blue hover:bg-deep-space text-white px-2 py-1 rounded-md"
