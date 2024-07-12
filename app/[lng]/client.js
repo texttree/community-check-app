@@ -17,8 +17,8 @@ const Index = ({ lng }) => {
   }, [])
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
-      <div className="mx-auto p-2 text-center max-w-4xl">
+    <div className="flex flex-col items-center justify-center mb-8">
+      <div className="mx-auto p-2 md:p-16 text-center max-w-6xl">
         <Image
           src="/logo.svg"
           alt="Community Check Logo"
@@ -95,17 +95,16 @@ const Index = ({ lng }) => {
             </p>
           </div>
         </div>
-        <div className="mx-auto my-4 h-auto w-full md:w-3/5 flex flex-row justify-between items-center bg-ming-blue rounded-lg px-4 py-2">
-          <p className="text-white text-center text-xs md:text-sm">
-            {t('startCheсking')}
-          </p>
-          <Link
-            href="/login"
-            className="px-4 py-1 h-8 text-ming-blue rounded bg-white hover:bg-gray-200 text-center flex items-center text-xs md:text-sm"
-          >
-            {t('signIn')}
-          </Link>
-        </div>
+      </div>
+
+      <div className="fixed bottom-2 left-0 right-0 mx-auto h-auto w-10/12 md:w-2/5 flex flex-row justify-between items-center bg-ming-blue rounded-lg px-4 py-2">
+        <p className="text-white text-center text-xs md:text-sm">{t('startCheсking')}</p>
+        <Link
+          href="/login"
+          className="px-4 py-1 h-8 text-ming-blue rounded bg-white hover:bg-gray-200 text-center flex items-center text-xs md:text-sm"
+        >
+          {t('signIn')}
+        </Link>
       </div>
     </div>
   )
