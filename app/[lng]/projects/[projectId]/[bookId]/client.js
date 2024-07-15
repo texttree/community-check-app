@@ -128,7 +128,7 @@ const BookEditPage = ({ lng }) => {
 
   return (
     <div className="min-h-screen py-8">
-      <TabGroup className="max-w-6xl  mx-auto">
+      <TabGroup className="max-w-6xl mx-auto">
         <TabList className="bg-ming-blue flex p-2 border border-th-secondary-300 rounded-t-xl shadow-md">
           <Tab
             className={({ selected }) =>
@@ -176,7 +176,7 @@ const BookEditPage = ({ lng }) => {
                           openEditModal()
                           closeMenu()
                         }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                        className="block w-full text-left px-4 py-2 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
                       >
                         {t('editBook')}
                       </button>
@@ -185,7 +185,7 @@ const BookEditPage = ({ lng }) => {
                           setModalOpen(true)
                           closeMenu()
                         }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                        className="block w-full text-left px-4 py-2 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
                       >
                         {t('startNewCheck')}
                       </button>

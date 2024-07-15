@@ -38,7 +38,7 @@ const DeleteModal = ({
 
         {requireTextMatch && (
           <div className="mt-4">
-            <label className="block text-gray-700">
+            <label className="block text-raisin-black">
               {t('enterConfirm')} <strong>{expectedText}</strong>
             </label>
             <input
@@ -53,7 +53,7 @@ const DeleteModal = ({
 
         <div className="flex justify-end mt-4">
           <button
-            className="text-gray-500 hover:text-gray-700 px-3 py-1"
+            className="text-gray-500 hover:text-raisin-black px-3 py-1"
             onClick={onCancel}
           >
             {defaultCancelText}

@@ -2,3 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+.button-base {
+  @apply px-4 py-2 rounded-md text-sm font-medium focus:outline-none;
+}
+.button-compact {
+  @apply px-2 py-1 rounded-md text-sm font-medium focus:outline-none;
+}
+.button-primary {
+  @apply bg-ming-blue hover:bg-dark-slate-gray text-white disabled:bg-ming-blue/50 disabled:text-white/50;
+}
+
+.button-secondary {
+  @apply bg-smoky-white hover:bg-ghost-white text-ming-blue disabled:bg-smoky-white/50 disabled:text-ming-blue/50;
+}
+
+.button-danger {
+  @apply bg-red-500 hover:bg-red-600 text-white disabled:bg-red-500/50 disabled:text-white/50;
+}

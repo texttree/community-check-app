@@ -155,13 +155,13 @@ const ProjectPage = ({ lng }) => {
                     <div className="py-1">
                       <button
                         onClick={() => openAddModal('createProject', false, false)}
-                        className="block w-full text-left px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                        className="block w-full text-left px-2 py-1 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
                       >
                         {t('createProject')}
                       </button>
                       <Link
                         href={`/${lng}/tokens`}
-                        className="block w-full text-left px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                        className="block w-full text-left px-2 py-1 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
                         onClick={closeMenu}
                       >
                         {t('tokens')}
@@ -171,7 +171,7 @@ const ProjectPage = ({ lng }) => {
                           openAddModal('quickCreateCheck', true, true)
                           closeMenu()
                         }}
-                        className="block w-full text-left px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                        className="block w-full text-left px-2 py-1 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
                       >
                         {t('quickCreateCheck')}
                       </button>

@@ -173,7 +173,7 @@ const InspectorNotes = ({
               ) : (
                 <>
                   <p
-                    className="text-gray-700"
+                    className="text-raisin-black"
                     style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                   >
                     {noteItem.note}
@@ -195,13 +195,13 @@ const InspectorNotes = ({
                             setEditNoteText(noteItem.note)
                             setIsEditing(true)
                           }}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                          className="block w-full text-left px-4 py-2 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
                         >
                           {t('edit')}
                         </button>
                         <button
                           onClick={() => deleteNoteById(noteItem.id)}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                          className="block w-full text-left px-4 py-2 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
                         >
                           {t('delete')}
                         </button>

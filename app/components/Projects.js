@@ -24,9 +24,7 @@ const Projects = ({ lng, projects, error }) => {
                   height={80}
                   className="rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105"
                 />
-                <p className="text-lg font-semibold text-raisin-black mt-1 text-center">
-                  {project.name}
-                </p>
+                <p className="text-lg font-semibold mt-1 text-center">{project.name}</p>
               </Link>
             </div>
           ))}

@@ -202,7 +202,7 @@ const CheckId = ({ lng }) => {
             <LeftArrow className="h-5 w-5 mr-2 inline-block" />
             {t('back')}
           </Link>
-          <h1 className="text-xl font-semibold text-gray-900 ml-4">{checkName}</h1>
+          <h1 className="text-xl font-semibold text-raisin-black ml-4">{checkName}</h1>
         </div>
 
         <CheckInfoForm

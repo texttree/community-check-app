@@ -58,7 +58,7 @@ const BookEditPage = ({ lng }) => {
   }
 
   return (
-    <div className="bg-gray-200 min-h-screen py-8">
+    <div className="bg-bright-gray min-h-screen py-8">
       <div className="max-w-6xl mx-auto p-4">
         <Link href={'/' + lng + '/projects/' + projectId + `/${bookId}`}>
           <div className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md inline-flex items-center">

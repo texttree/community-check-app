@@ -34,7 +34,7 @@ const NewBookPage = ({ lng }) => {
   }
 
   return (
-    <div className="bg-gray-200 py-8">
+    <div className="bg-bright-gray py-8">
       <div className="max-w-6xl mx-auto p-4">
         <Link
           href={`/${lng}/projects/${projectId}`}

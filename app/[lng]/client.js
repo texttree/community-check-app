@@ -16,124 +16,88 @@ const Index = ({ lng }) => {
     setCurrentDomain(window.location.origin)
   }, [])
 
+  const cardContent = [
+    {
+      title: t('checkText'),
+      description: <p className="pt-2 text-sm">{t('checkTextDescription')}</p>,
+      image: '/icon-check.svg',
+      alt: 'Check',
+    },
+
+    {
+      title: t('comment'),
+      description: <p className="pt-2 text-sm">{t('commentDescription')}</p>,
+      image: '/icon-comment.svg',
+      alt: 'Comment',
+    },
+
+    {
+      title: t('curingProject'),
+      description: <p className="pt-2 text-sm">{t('curingProjectDescription')}</p>,
+      image: '/icon-project.svg',
+      alt: 'Project',
+    },
+
+    {
+      title: t('integrationProjects'),
+      description: (
+        <>
+          <p className="pt-2 text-sm">{t('integrationProjectsDescription')}</p>
+          <br />
+          <Link className="text-ming-blue hover:underline text-sm" href="/doc">
+            {`${currentDomain}/doc`}
+          </Link>
+        </>
+      ),
+      image: '/icon-api.svg',
+      alt: 'About',
+    },
+  ]
   return (
-    <div className="flex flex-col items-center justify-center mb-8">
-      <div className="mx-auto p-2 md:p-16 text-center max-w-6xl">
+    <div className="flex flex-col items-center justify-center mb-32 md:mb-24">
+      <div className="mx-auto p-2 text-center max-w-6xl text-sm md:text-base">
         <Image
           src="/logo.svg"
           alt="Community Check Logo"
-          className="mx-auto mb-4 -mt-8 md:-mt-16"
+          className="mx-auto mb-8"
           width={60}
           height={60}
         />
-        <h1 className="font-bold text-3xl md:text-6xl mb-2 text-ming-blue font-montserrat">
+        <h1 className="mb-9 font-[600] text-3xl sm:text-4xl md:text-6xl lg:text-8xl text-ming-blue font-montserrat">
           Community Check
         </h1>
-        <p className="mx-auto max-w-xl mb-6 text-xs md:text-sm text-center">
-          {t('aboutComCheck')}
-        </p>
+        <div className="mx-auto max-w-xl mb-9 text-base text-center">
+          <p>{t('aboutComCheck')}</p>
+          <ul className="mt-4 hidden">
+            <li className="mb-3 italic">{t('features.one')}</li>
+            <li className="mb-3 italic">{t('features.two')}</li>
+            <li className="mb-3 italic">{t('features.three')}</li>
+          </ul>
+        </div>
 
-        <div className="mb-8 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-          {/* Блок для мобильной версии checkText */}
-          <div className="w-full h-auto p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col md:hidden">
-            <div className="flex items-center mb-4 pt-4">
-              <Image src="/icon-check.svg" alt="Check" width={80} height={80} />
-              <div className="ml-4 text-left">
-                <h2 className="font-semibold text-base">{t('checkText')}</h2>
-                <p className="pt-1 text-xs">{t('loginToAccess')}</p>
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+          {cardContent.map((card) => (
+            <div
+              key={card.title}
+              className="w-full h-auto p-5 md:p-4 text-left rounded-lg bg-white flex flex-col"
+            >
+              <div className="flex flex-row md:flex-col gap-6">
+                <Image src={card.image} alt={card.alt} width={60} height={60} />
+                <div className="">
+                  <h2 className="font-semibold text-base">{card.title}</h2>
+                  {card.description}
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Блок для мобильной версии comment */}
-          <div className="w-full h-auto p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col md:hidden">
-            <div className="flex items-center mb-4 pt-4">
-              <Image src="/icon-comment.svg" alt="Comment" width={80} height={80} />
-              <div className="ml-4 text-left">
-                <h2 className="font-semibold text-base">{t('comment')}</h2>
-                <p className="pt-1 text-xs">{t('loginToAccess')}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Блок для мобильной версии curingProject */}
-          <div className="w-full h-auto p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex flex-col md:hidden">
-            <div className="flex items-center mb-4 pt-4">
-              <Image src="/icon-project.svg" alt="Project" width={80} height={80} />
-              <div className="ml-4 text-left">
-                <h2 className="font-semibold text-base">{t('curingProject')}</h2>
-                <p className="pt-1 text-xs">{t('loginToAccess')}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Блоки для десктопной версии, скрытые в мобильной */}
-          <div className="w-full h-auto md:p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex-col md:flex md:visible hidden">
-            <div className="flex items-center mb-2 pt-4">
-              <Image
-                src="/icon-check.svg"
-                alt="Check"
-                width={60}
-                height={60}
-                className="md:w-16 md:h-16"
-              />
-            </div>
-            <h2 className="font-semibold md:text-lg">{t('checkText')}</h2>
-            <p className="flex-grow md:text-sm">{t('loginToAccess')}</p>
-          </div>
-
-          <div className="w-full h-auto md:p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex-col md:flex md:visible hidden">
-            <div className="flex items-center mb-2">
-              <Image
-                src="/icon-comment.svg"
-                alt="Comment"
-                width={60}
-                height={60}
-                className="md:w-16 md:h-16"
-              />
-            </div>
-            <h2 className="font-semibold md:text-lg">{t('comment')}</h2>
-            <p className="flex-grow md:text-sm">{t('loginToAccess')}</p>
-          </div>
-
-          <div className="w-full h-auto md:p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex-col md:flex md:visible hidden">
-            <div className="flex items-center mb-2">
-              <Image
-                src="/icon-project.svg"
-                alt="Project"
-                width={60}
-                height={60}
-                className="md:w-16 md:h-16"
-              />
-            </div>
-            <h2 className="font-semibold md:text-lg">{t('curingProject')}</h2>
-            <p className="flex-grow md:text-sm">{t('loginToAccess')}</p>
-          </div>
-          <div className="w-full h-auto md:p-4 text-left border border-gray-200 rounded-lg bg-white shadow flex-col md:flex md:visible hidden">
-            <div className="flex items-center mb-2">
-              <Image
-                src="/icon-project.svg"
-                alt="Project"
-                width={60}
-                height={60}
-                className="md:w-16 md:h-16"
-              />
-            </div>
-            <h2 className="font-semibold md:text-lg">{t('integrationProjects')}</h2>
-            <p className="flex-grow md:text-sm">
-              <Link className="text-ming-blue hover:underline" href="/doc">
-                {`${currentDomain}/doc`}
-              </Link>
-            </p>
-          </div>
+          ))}
         </div>
       </div>
 
-      <div className="fixed bottom-2 left-0 right-0 mx-auto h-auto w-10/12 md:w-2/5 flex flex-row justify-between items-center bg-ming-blue rounded-lg px-4 py-2">
-        <p className="text-white text-center text-sm md:text-md">{t('startCheсking')}</p>
+      <div className="fixed bottom-8 mx-5 h-auto flex flex-row justify-between items-center bg-ming-blue rounded-lg px-6 py-4 shadow-lg">
+        <p className="text-white text-center">{t('startCheсking')}</p>
         <Link
           href="/login"
-          className="px-4 py-1 h-8 text-ming-blue rounded bg-white hover:bg-gray-200 text-center flex items-center text-xs md:text-sm"
+          className="px-4 py-1 ml-3 h-8 rounded bg-white hover:bg-bright-gray text-center flex items-center"
         >
           {t('signIn')}
         </Link>

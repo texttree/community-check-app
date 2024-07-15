@@ -86,7 +86,7 @@ const ProjectDetailsPage = ({ lng }) => {
 
   return (
     <div className="py-8 min-h-screen">
-      <TabGroup className="max-w-4xl  mx-auto">
+      <TabGroup className="max-w-4xl mx-auto">
         <TabList className="bg-ming-blue flex p-2 border border-th-secondary-300 rounded-t-xl shadow-md">
           <Tab
             className={({ selected }) =>
@@ -137,7 +137,7 @@ const ProjectDetailsPage = ({ lng }) => {
                   <div className="py-1">
                     <Link
                       href={`${projectId}/edit`}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                      className="block w-full text-left px-4 py-2 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
                       onClick={closeMenu}
                     >
                       {t('editProject')}
@@ -147,7 +147,7 @@ const ProjectDetailsPage = ({ lng }) => {
                         openAddModal()
                         closeMenu()
                       }}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black"
+                      className="block w-full text-left px-4 py-2 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
                     >
                       {t('createBook')}
                     </button>

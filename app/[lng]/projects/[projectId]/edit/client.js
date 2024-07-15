@@ -74,7 +74,7 @@ const ProjectEditPage = ({ lng }) => {
 
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
-      <TabGroup className="max-w-4xl  mx-auto">
+      <TabGroup className="max-w-4x mx-auto">
         <TabList className="bg-ming-blue flex p-2 border border-th-secondary-300 rounded-t-xl shadow-md">
           <Tab
             className={({ selected }) =>

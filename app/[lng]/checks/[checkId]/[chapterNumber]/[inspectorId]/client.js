@@ -148,11 +148,11 @@ const CheckInspectorDetail = ({ lng }) => {
                       <div className="flex items-start justify-between">
                         <div>
                           <p className="text-lg font-semibold">{verse.verse}</p>
-                          <p className="text-gray-700">{verse.text}</p>
+                          <p className="text-raisin-black">{verse.text}</p>
                         </div>
                         <button
                           onClick={() => toggleNoteInput(verse.verse)}
-                          className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                          className="text-gray-500 hover:text-raisin-black focus:outline-none"
                         >
                           {showNoteInputs[verse.verse] ? (
                             <svg

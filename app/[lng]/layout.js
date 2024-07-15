@@ -5,12 +5,20 @@ import AppBar from '@/app/components/AppBar'
 import { languages } from '@/app/i18n/settings'
 
 import '@/styles/globals.css'
-import { Montserrat } from 'next/font/google'
+import { Montserrat, Roboto } from 'next/font/google'
 
 const montserrat = Montserrat({
+  weight: ['600'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-montserrat',
+})
+
+const roboto = Roboto({
   weight: ['400', '700'],
   subsets: ['latin'],
   display: 'swap',
+  variable: '--font-roboto',
 })
 
 export async function generateStaticParams() {
@@ -24,17 +32,17 @@ export const metadata = {
 
 export default function RootLayout({ children, params: { lng } }) {
   return (
-    <html lang={lng} dir={dir(lng)} className={montserrat.className}>
-      <body className="bg-bright-gray">
-        <div>
-          <div className="w-full">
-            <AppBar lng={lng} />
-          </div>
-          <main>
-            <div className="pt-5 px-5 lg:px-8 mt-14 sm:mt-auto">{children}</div>
-          </main>
-          <Toaster />
+    <html
+      lang={lng}
+      dir={dir(lng)}
+      className={`${montserrat.variable} ${roboto.variable}`}
+    >
+      <body className="bg-bright-gray min-h-screen h-full flex flex-col text-raisin-black">
+        <div className="w-full">
+          <AppBar lng={lng} />
         </div>
+        <main className="p-8 flex-1 flex justify-center">{children}</main>
+        <Toaster />
       </body>
     </html>
   )
