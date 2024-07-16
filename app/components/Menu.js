@@ -39,7 +39,7 @@ const Menu = ({ children }) => {
   return (
     <>
       <div className="hidden md:flex space-x-2">{children}</div>
-      <div className="md:hidden flex justify-end">
+      <div className="md:hidden flex justify-end relative">
         <div className="relative inline-block text-left" ref={menuRef}>
           <button onClick={handleMenuToggle} className="p-2">
             <Image src="/menu.svg" alt="Menu" width={24} height={24} />

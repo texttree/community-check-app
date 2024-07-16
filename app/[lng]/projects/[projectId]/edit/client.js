@@ -10,7 +10,6 @@ import LeftArrow from '@/public/left.svg'
 import Loader from '@/app/components/Loader'
 import DeleteModal from '@/app/components/DeleteModal'
 import { useTranslation } from '@/app/i18n/client'
-import { Tab, TabGroup, TabList } from '@headlessui/react'
 
 const ProjectEditPage = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -73,82 +72,71 @@ const ProjectEditPage = ({ lng }) => {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
-      <TabGroup className="max-w-4x mx-auto">
-        <TabList className="bg-ming-blue flex p-2 border border-th-secondary-300 rounded-t-xl shadow-md">
-          <Tab
-            className={({ selected }) =>
-              selected
-                ? 'bg-ming-blue text-white cursor-pointer text-lg sm:text-2xl font-bold px-4 sm:px-9 py-2 rounded-t-md w-full text-center'
-                : 'text-blue-100 hover:bg-white/[0.12] hover:text-white px-4 py-2 rounded-t-md w-full text-center'
-            }
-          >
-            {t('')}
-          </Tab>
-        </TabList>
-        <div className="max-w-lg mx-auto p-6 bg-white shadow rounded-b-md sm:max-w-3xl lg:max-w-5xl">
-          <div className="mb-4">
+    <>
+      <div>
+        <div className="flex justify-between items-center border-b-0 sm:border-b p-4">
+          <div className="flex justify-start space-x-1 sm:space-x-4">
             <Link
               href={'/' + lng + '/projects/' + projectId}
-              className="text-gray-400 hover:text-gray-600 flex items-center"
+              className="text-gray-400 hover:text-gray-500 inline-flex items-center text-sm"
             >
-              <LeftArrow className="h-5 w-5 mr-1" />
-              {t('back')}
+              <LeftArrow className="h-4 w-4 mr-1" />
+              <span className="hidden sm:block">{t('project')}</span>
             </Link>
+            <h1 className="text-base sm:text-lg font-bold pl-0 sm:pl-3 border-0 sm:border-l">
+              {t('editProject')}
+            </h1>
           </div>
-          {error ? (
-            <p className="text-red-600">{t('errorOccurred')}</p>
-          ) : project ? (
-            <>
+        </div>
+        {error ? (
+          <p className="text-red-600">{t('errorOccurred')}</p>
+        ) : project ? (
+          <>
+            <div className="p-4">
               <div className="mb-4">
-                <label className="text-xl font-semibold block mb-2" htmlFor="projectName">
+                <label className="text-base font-bold block mb-2" htmlFor="projectName">
                   {t('name')}
                 </label>
                 <input
                   type="text"
                   id="projectName"
+                  autoFocus
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className="w-full input"
                 />
                 {errorMessage && <p className="text-red-600 mt-2">{errorMessage}</p>}
               </div>
-              <div className="flex justify-end mb-8">
-                <button
-                  onClick={editProject}
-                  className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md"
-                >
+              <div className="flex justify-start sm:justify-end mb-0">
+                <button onClick={editProject} className="button-base button-primary">
                   {t('accept')}
                 </button>
               </div>
-              <div className="mt-8 border-t border-gray-300 w-full pt-4">
-                <h2 className="text-xl font-semibold mb-2">{t('deleteProject')}</h2>
-                <p className="text-red-600 mb-4">{t('warningDeleteProject')}</p>
-                <button
-                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
-                  onClick={openDeleteModal}
-                >
-                  {t('deleteProject')}
-                </button>
-              </div>
-            </>
-          ) : (
-            <Loader />
-          )}
-        </div>
-        {showDeleteModal && (
-          <DeleteModal
-            lng={lng}
-            isVisible={showDeleteModal}
-            message={`${t('confirmDeleteProject')}`}
-            onConfirm={confirmDeleteProject}
-            onCancel={cancelDeleteProject}
-            expectedText={project?.name}
-            requireTextMatch={true}
-          />
+            </div>
+            <div className="border-t border-gray-300 w-full p-4 mb-2">
+              <h2 className="text-base font-bold mb-2">{t('deleteProject')}</h2>
+              <p className="text-sm mb-4">{t('warningDeleteProject')}</p>
+              <button className="button-base button-danger" onClick={openDeleteModal}>
+                {t('deleteProject')}
+              </button>
+            </div>
+          </>
+        ) : (
+          <Loader />
         )}
-      </TabGroup>
-    </div>
+      </div>
+      {showDeleteModal && (
+        <DeleteModal
+          lng={lng}
+          isVisible={showDeleteModal}
+          message={`${t('confirmDeleteProject')}`}
+          onConfirm={confirmDeleteProject}
+          onCancel={cancelDeleteProject}
+          expectedText={project?.name}
+          requireTextMatch={true}
+        />
+      )}
+    </>
   )
 }
 
