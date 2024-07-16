@@ -70,114 +70,104 @@ const TokenGeneration = ({ lng }) => {
   const areTokensExist = tokens && tokens.length > 0
 
   return (
-    <div className="sm:flex justify-center items-center flex-col mt-4 px-2 sm:px-6 lg:px-8">
-      <TabGroup>
-        <TabList className="bg-ming-blue flex p-2 w-full border border-th-secondary-300 rounded-xl shadow-md">
-          <Tab
-            className={({ selected }) =>
-              selected
-                ? 'bg-ming-blue text-white cursor-pointer text-lg sm:text-2xl font-bold px-4 sm:px-9 py-2 rounded-md'
-                : 'text-blue-100 hover:bg-white/[0.12] hover:text-white px-4 py-2 rounded-md'
-            }
-          >
-            {t('')}
-          </Tab>
-        </TabList>
-        <div className="w-full max-w-7xl mx-auto bg-white shadow-md rounded-lg p-4 sm:p-6">
-          <div className="flex items-center mb-4">
+    <div className="w-full">
+      <div className="overflow-hidden rounded-lg">
+        <div className="bg-ming-blue p-3.5 w-full"></div>
+        <div className="bg-white">
+          <div className="p-4 flex justify-start space-x-1 sm:space-x-4 mb-2 border-b">
             <Link
               href={`/${lng}/projects`}
-              className="text-gray-400 hover:text-gray-500 inline-flex items-center text-sm sm:text-base"
+              className="text-gray-400 hover:text-gray-500 inline-flex items-center text-sm"
             >
-              <LeftArrow className="h-4 w-4 sm:h-5 sm:w-5 mr-1" />
-              {t('personalArea')}
+              <LeftArrow className="h-4 w-4 mr-1" />
+              <span className="hidden sm:block">{t('projects')}</span>
             </Link>
+            <h2 className="text-base sm:text-lg font-bold pl-0 sm:pl-3 border-0 sm:border-l">
+              {t('tokens')}
+            </h2>
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold mb-4">{t('generateToken')}</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex flex-col sm:flex-row mb-4 w-full space-y-2 sm:space-y-0 sm:space-x-2">
-              <div className="flex-grow">
-                <input
-                  type="text"
-                  placeholder={t('tokenName')}
-                  className="border border-gray-300 px-4 py-2 rounded-md w-full text-sm sm:text-base"
-                  value={tokenName}
-                  onChange={(e) => setTokenName(e.target.value)}
-                />
-              </div>
-              <div className="flex-shrink-0">
-                <button
-                  className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md text-sm sm:text-base"
-                  onClick={handleGenerateToken}
-                >
-                  {t('generateToken')}
-                </button>
-              </div>
+          <div className="gap-4 p-4">
+            <div className="flex flex-col items-start sm:items-center sm:flex-row mb-4 w-full space-y-2 sm:space-y-0 sm:space-x-2">
+              <input
+                type="text"
+                placeholder={t('tokenName')}
+                className="w-full sm:w-auto sm:flex-grow input"
+                value={tokenName}
+                onChange={(e) => setTokenName(e.target.value)}
+              />
+              <button
+                className="button-primary button-base"
+                onClick={handleGenerateToken}
+              >
+                {t('generateToken')}
+              </button>
             </div>
 
             {token.token && (
-              <div className="mb-4 w-full">
-                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 items-start">
-                  <input
-                    type="text"
-                    value={token.token}
-                    className="border border-gray-300 px-4 py-2 rounded-md flex-grow w-full sm:w-auto text-sm sm:text-base"
-                    readOnly
-                  />
-                  <button
-                    className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md text-sm sm:text-base"
-                    onClick={handleCopyToken}
-                  >
-                    {t('copyToken')}
-                  </button>
-                </div>
-                <div className="text-sm text-red-500 my-2 text-left sm:text-left sm:mb-0">
+              <>
+                <div className="text-sm text-red-500 my-2 text-left sm:text-left sm:mb-2">
                   {t('tokenWarning')}
                 </div>
-              </div>
+                <div className="mb-4 w-full">
+                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 items-start">
+                    <input
+                      type="text"
+                      value={token.token}
+                      className="input sm:flex-grow w-full sm:w-auto"
+                      readOnly
+                    />
+                    <button
+                      className="button-primary button-base"
+                      onClick={handleCopyToken}
+                    >
+                      {t('copyToken')}
+                    </button>
+                  </div>
+                </div>
+              </>
             )}
           </div>
 
           {areTokensExist && (
             <div className="overflow-x-auto">
-              <table className="min-w-full bg-white text-sm sm:text-base">
+              <table className="min-w-full border-t sm:border-t-0 bg-white text-sm mb-20">
                 <thead>
-                  <tr>
-                    <th className="px-2 sm:px-4 py-2 border-b-2 border-gray-200 text-left leading-4 text-gray-600">
-                      {t('name')}
-                    </th>
-                    <th className="px-2 sm:px-4 py-2 border-b-2 border-gray-200 text-left leading-4 text-gray-600">
-                      {t('dateCreation')}
-                    </th>
-                    <th className="px-2 sm:px-4 py-2 border-b-2 border-gray-200 text-left leading-4 text-gray-600"></th>
+                  <tr className=" border-b text-left">
+                    <th className="p-2 sm:p-4">{t('name')}</th>
+                    <th className="hidden md:table-cell p-4">{t('dateCreation')}</th>
+                    <th className="p-2 sm:p-4 w-10 sm:w-auto"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {tokens.map((token) => (
-                    <tr key={token.name}>
-                      <td className="px-2 sm:px-4 py-2 border-b border-gray-200">
-                        {token.name}
-                      </td>
-                      <td className="px-2 sm:px-4 py-2 border-b border-gray-200">
+                    <tr key={token.name} className="border-b sm:hover:bg-ming-blue/10">
+                      <td className="p-2 sm:p-4 border-r sm:border-r-0">{token.name}</td>
+                      <td className="hidden md:table-cell p-4">
                         {new Date(token.created_at).toLocaleString()}
                       </td>
-                      <td className="px-2 sm:px-4 py-2 border-b border-gray-200 flex justify-end">
-                        <button
+                      <td className="p-2 sm:p-4 border-r sm:border-r-0 flex justify-center sm:justify-end">
+                        <div
                           onClick={() => handleDeleteToken(token.name)}
-                          className="hidden sm:block bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-2 sm:py-1 rounded-md"
+                          className="text-red-500 bg-bright-gray px-2 py-1 rounded-md text-sm font-medium focus:outline-none cursor-pointer sm:bg-red-500 sm:hover:bg-red-600 sm:text-white"
                         >
-                          {t('delete')}
-                        </button>
-                        <Image
-                          key={token.name}
-                          src="/delete.svg"
-                          alt="Delete Icon"
-                          width={24}
-                          height={24}
-                          onClick={() => handleDeleteToken(token.name)}
-                          className="block sm:hidden h-5 w-5 cursor-pointer"
-                        />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            onClick={() => handleDeleteToken(token.name)}
+                            className="block sm:hidden h-4 w-4 cursor-pointer"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                            />
+                          </svg>
+
+                          <span className="hidden sm:block">{t('delete')}</span>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -186,7 +176,7 @@ const TokenGeneration = ({ lng }) => {
             </div>
           )}
         </div>
-      </TabGroup>
+      </div>
     </div>
   )
 }
