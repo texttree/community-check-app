@@ -55,7 +55,7 @@ const Index = ({ lng }) => {
   ]
   return (
     <div className="flex flex-col items-center justify-center mb-32 md:mb-24">
-      <div className="mx-auto p-2 text-center max-w-6xl text-sm md:text-base">
+      <div className="mx-auto text-center max-w-6xl text-sm md:text-base">
         <Image
           src="/logo.svg"
           alt="Community Check Logo"

@@ -7,15 +7,13 @@ import axios from 'axios'
 import Projects from '@/app/components/Projects'
 import AddDialogModal from '@/app/components/AddDialogModal'
 import { useRouter } from 'next/navigation'
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
 
 const ProjectPage = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
-  const [showAddModal, setShowAddModal] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
   const [projects, setProjects] = useState([])
   const menuRef = useRef(null)
   const router = useRouter()
@@ -28,57 +26,61 @@ const ProjectPage = ({ lng }) => {
   }, [projectsData])
 
   const openAddModal = (windowTitle, showBook, showCheck) => {
-    setShowAddModal(true)
+    setShowModal(true)
     document.body.style.overflow = 'hidden'
     setModalOptions({ windowTitle, showBook, showCheck })
-    setErrorMessage('')
   }
 
   const closeAddModal = () => {
-    setShowAddModal(false)
+    setShowModal(false)
     document.body.style.overflow = ''
   }
 
   const handleAddFastCheck = async (data) => {
+    const project = data.project.trim()
+    const book = data.book.trim()
+    const check = data.check.trim()
+    if (!project || !book || !check) {
+      return { error: t('emptyField') }
+    }
     try {
       const response = await axios.post('/api/projects/complex-create', {
-        project_name: data.projectName,
-        book_name: data.book,
-        check_name: data.check,
+        project_name: project,
+        book_name: book,
+        check_name: check,
       })
       if (response.status === 201) {
         router.push(
           `/${lng}/projects/${response.data.project_id}/${response.data.book_id}/${response.data.check_id}`
         )
-        setShowAddModal(false)
+        setShowModal(false)
         document.body.style.overflow = ''
+        return { error: false }
       } else {
-        console.error('Failed to add project:', response.data)
+        return { error: `Failed to add project: ${response.data}` }
       }
     } catch (error) {
-      console.error('Error adding project:', error)
+      return { error: `Error adding project: ${error}` }
     }
   }
 
   const handleCreateProject = async (data) => {
-    setErrorMessage('')
-    const name = data.projectName.trim()
-
-    if (name) {
-      try {
-        const response = await axios.post('/api/projects', { name })
-        if (response.status === 200) {
-          mutate()
-          setShowAddModal(false)
-          document.body.style.overflow = ''
-        } else {
-          throw new Error(t('errorCreateProject'))
-        }
-      } catch (error) {
-        setErrorMessage(error.message)
+    const name = data.project.trim()
+    if (!name) {
+      return { error: t('nameEmpty') }
+    }
+    try {
+      const response = await axios.post('/api/projects', { name })
+      if (response.status === 200) {
+        mutate()
+        setShowModal(false)
+        document.body.style.overflow = ''
+        return { error: false }
+      } else {
+        throw new Error(t('errorCreateProjectName'))
       }
-    } else {
-      setErrorMessage(t('nameEmpty'))
+    } catch (error) {
+      return { error: error.message }
     }
   }
 
@@ -110,51 +112,44 @@ const ProjectPage = ({ lng }) => {
   })
 
   return (
-    <div className="max-w-3xl mx-auto p-2 text-sm">
-      <TabGroup>
-        <TabList className="bg-ming-blue flex p-1 w-full border border-th-secondary-300 rounded-t-xl shadow-md">
-          <Tab
-            className={({ selected }) =>
-              selected
-                ? 'bg-ming-blue text-white cursor-pointer text-lg font-bold px-4 py-1 rounded-md'
-                : 'text-blue-100 hover:bg-white/[0.12] hover:text-white px-2 py-1 rounded-md'
-            }
-          >
-            {t('projects')}
-          </Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel className="bg-white p-4 rounded-b-md text-left">
-            <div className="hidden md:flex justify-start space-x-2 mb-2">
+    <div className="w-full">
+      <div className="bg-ming-blue text-white text-base px-4 py-1 text-center min-w-36 md:min-w-52 inline-block rounded-t-lg">
+        {t('projects')}
+      </div>
+      <div className="overflow-hidden rounded-br-lg rounded-tr-lg rounded-bl-lg">
+        <div className="bg-ming-blue p-3.5 w-full"></div>
+        <div>
+          <div className="bg-white">
+            <div className="hidden p-4 md:flex justify-start space-x-2 mb-2 border-b">
               <button
-                className="bg-ming-blue hover:bg-deep-space text-white px-2 py-1 rounded-md"
+                className="button-primary button-base"
                 onClick={() => openAddModal('createProject', false, false)}
               >
                 {t('createProject')}
               </button>
-              <Link
-                href={`/${lng}/tokens`}
-                className="bg-ming-blue hover:bg-deep-space text-white px-2 py-1 rounded-md"
-              >
+              <Link href={`/${lng}/tokens`} className="button-primary button-base">
                 {t('tokens')}
               </Link>
               <button
-                className="bg-ming-blue hover:bg-deep-space text-white px-2 py-1 rounded-md"
+                className="button-primary button-base"
                 onClick={() => openAddModal('quickCreateCheck', true, true)}
               >
                 {t('quickCreateCheck')}
               </button>
             </div>
-            <div className="md:hidden mb-2 flex justify-end">
+            <div className="md:hidden pr-2 pt-2 flex justify-end">
               <div className="relative inline-block text-left" ref={menuRef}>
-                <button onClick={handleMenuToggle}>
-                  <Image src="/menu.svg" alt="Menu" width={20} height={20} />
+                <button onClick={handleMenuToggle} className="p-2">
+                  <Image src="/menu.svg" alt="Menu" width={24} height={24} />
                 </button>
                 {isMenuOpen && (
                   <div className="absolute right-0 mt-1 w-40 origin-top-right bg-white divide-y divide-gray-100 rounded-b-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                     <div className="py-1">
                       <button
-                        onClick={() => openAddModal('createProject', false, false)}
+                        onClick={() => {
+                          openAddModal('createProject', false, false)
+                          closeMenu()
+                        }}
                         className="block w-full text-left px-2 py-1 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
                       >
                         {t('createProject')}
@@ -181,31 +176,25 @@ const ProjectPage = ({ lng }) => {
               </div>
             </div>
             <Projects lng={lng} projects={projects} error={error} />
-          </TabPanel>
-        </TabPanels>
-      </TabGroup>
-      {showAddModal && (
-        <>
-          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-lg z-50"></div>
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <AddDialogModal
-              isOpen={showAddModal}
-              onClose={closeAddModal}
-              onAddProject={
-                modalOptions.windowTitle === 'createProject'
-                  ? handleCreateProject
-                  : handleAddFastCheck
-              }
-              errorMessage={errorMessage}
-              lng={lng}
-              showProject={true}
-              showBook={modalOptions.showBook}
-              showCheck={modalOptions.showCheck}
-              windowTitle={modalOptions.windowTitle}
-            />
           </div>
-        </>
-      )}
+        </div>
+        {showModal && (
+          <AddDialogModal
+            isOpen={showModal}
+            onClose={closeAddModal}
+            onAddProject={
+              modalOptions.windowTitle === 'createProject'
+                ? handleCreateProject
+                : handleAddFastCheck
+            }
+            lng={lng}
+            showProject={true}
+            showBook={modalOptions.showBook}
+            showCheck={modalOptions.showCheck}
+            windowTitle={modalOptions.windowTitle}
+          />
+        )}
+      </div>
     </div>
   )
 }

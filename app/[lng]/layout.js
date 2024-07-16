@@ -38,10 +38,10 @@ export default function RootLayout({ children, params: { lng } }) {
       className={`${montserrat.variable} ${roboto.variable}`}
     >
       <body className="bg-bright-gray min-h-screen h-full flex flex-col text-raisin-black">
-        <div className="w-full">
+        <div className="w-full bg-ming-blue py-4 pl-2 pr-4">
           <AppBar lng={lng} />
         </div>
-        <main className="p-8 flex-1 flex justify-center">{children}</main>
+        <main className="px-5 py-8 flex flex-1 w-full max-w-6xl mx-auto">{children}</main>
         <Toaster />
       </body>
     </html>

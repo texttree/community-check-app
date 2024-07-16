@@ -11,74 +11,97 @@ const AddDialogModal = ({
   showCheck,
   windowTitle,
 }) => {
-  const [projectName, setProjectName] = useState('')
+  const [project, setProject] = useState('')
   const [book, setBook] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
   const [check, setCheck] = useState('')
   const { t } = useTranslation(lng, 'common')
 
-  const handleAddProject = () => {
-    onAddProject({ projectName, book, check })
-    setProjectName('')
-    setBook('')
-    setCheck('')
-    onClose()
+  const handleAddProject = async () => {
+    try {
+      setLoading(true)
+      const result = await onAddProject({ project, book, check })
+      if (result.error) {
+        setError(result.error)
+      } else {
+        setProject('')
+        setBook('')
+        setCheck('')
+        setError(null)
+        onClose()
+      }
+      console.log(result)
+    } catch (err) {
+      console.log(err)
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4 text-center">{t(windowTitle)}</h2>
-            {showProject && (
-              <>
-                <input
-                  type="text"
-                  placeholder={t('titleProject')}
-                  className="border border-gray-300 rounded-md px-4 py-2 mb-4 w-full"
-                  value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
-                />
-              </>
-            )}
-            {showBook && (
-              <>
-                <input
-                  type="text"
-                  placeholder={t('titleBook')}
-                  className="border border-gray-300 rounded-md px-4 py-2 mb-4 w-full"
-                  value={book}
-                  onChange={(e) => setBook(e.target.value)}
-                />
-              </>
-            )}
-            {showCheck && (
-              <>
-                <input
-                  type="text"
-                  placeholder={t('titleCheck')}
-                  className="border border-gray-300 rounded-md px-4 py-2 mb-4 w-full"
-                  value={check}
-                  onChange={(e) => setCheck(e.target.value)}
-                />
-              </>
-            )}
-            <div className="flex justify-end">
-              <button
-                className="bg-ming-blue hover:bg-deep-space text-white px-4 py-2 rounded-md mr-2"
-                onClick={handleAddProject}
-              >
-                {t('create')}
-              </button>
-              <button
-                className="bg-gray-300 hover:bg-gray-400 text-raisin-black px-4 py-2 rounded-md"
-                onClick={onClose}
-              >
-                {t('cancel')}
-              </button>
+        <>
+          <div className="fixed inset-0 bg-black/10 backdrop-blur-lg z-40"></div>
+          <div className="fixed inset-0 flex items-center justify-center z-40">
+            <div className="bg-white p-5 rounded-lg shadow-lg w-96 m-4">
+              <h2 className="text-lg font-bold mb-5">{t(windowTitle)}</h2>
+              {showProject && (
+                <>
+                  <input
+                    type="text"
+                    placeholder={t('titleProject')}
+                    className="input mb-2.5 w-full"
+                    value={project}
+                    autoFocus
+                    onChange={(e) => setProject(e.target.value)}
+                  />
+                </>
+              )}
+              {showBook && (
+                <>
+                  <input
+                    type="text"
+                    placeholder={t('titleBook')}
+                    className="input mb-2.5 w-full"
+                    value={book}
+                    onChange={(e) => setBook(e.target.value)}
+                  />
+                </>
+              )}
+              {showCheck && (
+                <>
+                  <input
+                    type="text"
+                    placeholder={t('titleCheck')}
+                    className="input mb-2.5 w-full"
+                    value={check}
+                    onChange={(e) => setCheck(e.target.value)}
+                  />
+                </>
+              )}
+              <div className="flex mt-2.5 justify-end gap-2.5">
+                <button
+                  className="button-primary button-base"
+                  onClick={handleAddProject}
+                  disabled={loading}
+                >
+                  {t('create')}
+                </button>
+                <button
+                  className="button-secondary button-base"
+                  onClick={onClose}
+                  disabled={loading}
+                >
+                  {t('cancel')}
+                </button>
+              </div>
+              {error && <p className="mt-6 text-center text-xs text-red-600">{error}</p>}
             </div>
           </div>
-        </div>
+        </>
       )}
     </>
   )

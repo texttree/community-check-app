@@ -60,7 +60,7 @@ export default function FormComponent({ lng, redirectedFrom }) {
   }
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center w-full">
       <div className="relative flex items-center justify-center m-4">
         <Image
           src="/Paul.png"
@@ -81,7 +81,7 @@ export default function FormComponent({ lng, redirectedFrom }) {
                   type="email"
                   value={email}
                   onChange={({ target: { value } }) => setEmail(value)}
-                  className="block w-full bg-neutral-100 p-2 border border-neutral-300 rounded-md shadow-sm focus:outline-none"
+                  className="block w-full bg-neutral-100 p-2 border border-neutral-300 rounded-md shadow-sm focus:outline-none focus:border-neutral-400"
                 />
               </div>
             </div>

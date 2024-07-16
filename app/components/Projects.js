@@ -9,22 +9,25 @@ const Projects = ({ lng, projects, error }) => {
   const { t } = useTranslation(lng, 'common')
 
   return (
-    <>
+    <div className="p-4">
       {error ? (
         <p className="text-red-600 text-sm">{t('errorOccurred')}</p>
       ) : projects ? (
-        <div className="grid grid-cols-3 gap-2 mb-2 md:flex md:flex-wrap md:gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2.5 mb-2 md:gap-6">
           {projects.map((project) => (
-            <div key={project.id} className="flex flex-col items-center">
+            <div
+              key={project.id}
+              className="flex flex-col items-center hover:underline md:w-[112px] w-[76px]"
+            >
               <Link href={`projects/${project.id}`}>
                 <Image
                   src="/folder.svg"
                   alt="folder icon"
-                  width={80}
-                  height={80}
-                  className="rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105"
+                  width={112}
+                  height={107}
+                  className=""
                 />
-                <p className="text-lg font-semibold mt-1 text-center">{project.name}</p>
+                <p className="text-sm mt-1 text-center">{project.name}</p>
               </Link>
             </div>
           ))}
@@ -32,7 +35,7 @@ const Projects = ({ lng, projects, error }) => {
       ) : (
         <Loader />
       )}
-    </>
+    </div>
   )
 }
 
