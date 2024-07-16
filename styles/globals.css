@@ -23,3 +23,11 @@
 .input {
   @apply border border-neutral-300 rounded-md outline-none focus:border-neutral-400 px-4 py-2 bg-white text-sm;
 }
+
+.text-cell {
+  @apply bg-bright-gray px-2 py-1 rounded sm:bg-transparent sm:px-0 sm:py-0 sm:rounded-none
+}
+
+.link-cell {
+  @apply hover:underline text-ming-blue bg-smoky-white px-2 py-1 rounded sm:bg-transparent sm:px-0 sm:py-0 sm:rounded-none;
+}

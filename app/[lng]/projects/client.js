@@ -1,7 +1,6 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useTranslation } from '@/app/i18n/client'
 import axios from 'axios'
 import Projects from '@/app/components/Projects'
@@ -9,13 +8,12 @@ import AddDialogModal from '@/app/components/AddDialogModal'
 import { useRouter } from 'next/navigation'
 import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
+import Menu from '@/app/components/Menu'
 
 const ProjectPage = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
   const [showModal, setShowModal] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [projects, setProjects] = useState([])
-  const menuRef = useRef(null)
   const router = useRouter()
   const { data: projectsData, mutate, error } = useSWR('/api/projects', fetcher)
 
@@ -84,27 +82,6 @@ const ProjectPage = ({ lng }) => {
     }
   }
 
-  const handleMenuToggle = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
-
-  const closeMenu = () => {
-    setIsMenuOpen(false)
-  }
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsMenuOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [menuRef])
-
   const [modalOptions, setModalOptions] = useState({
     windowTitle: '',
     showBook: false,
@@ -120,60 +97,24 @@ const ProjectPage = ({ lng }) => {
         <div className="bg-ming-blue p-3.5 w-full"></div>
         <div>
           <div className="bg-white">
-            <div className="hidden p-4 md:flex justify-start space-x-2 mb-2 border-b">
-              <button
-                className="button-primary button-base"
-                onClick={() => openAddModal('createProject', false, false)}
-              >
-                {t('createProject')}
-              </button>
-              <Link href={`/${lng}/tokens`} className="button-primary button-base">
-                {t('tokens')}
-              </Link>
-              <button
-                className="button-primary button-base"
-                onClick={() => openAddModal('quickCreateCheck', true, true)}
-              >
-                {t('quickCreateCheck')}
-              </button>
-            </div>
-            <div className="md:hidden pr-2 pt-2 flex justify-end">
-              <div className="relative inline-block text-left" ref={menuRef}>
-                <button onClick={handleMenuToggle} className="p-2">
-                  <Image src="/menu.svg" alt="Menu" width={24} height={24} />
+            <div className="p-2 border-b-0 md:p-4 md:flex justify-start mb-2 md:border-b">
+              <Menu>
+                <button
+                  className="button-primary button-base"
+                  onClick={() => openAddModal('createProject', false, false)}
+                >
+                  {t('createProject')}
                 </button>
-                {isMenuOpen && (
-                  <div className="absolute right-0 mt-1 w-40 origin-top-right bg-white divide-y divide-gray-100 rounded-b-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                    <div className="py-1">
-                      <button
-                        onClick={() => {
-                          openAddModal('createProject', false, false)
-                          closeMenu()
-                        }}
-                        className="block w-full text-left px-2 py-1 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
-                      >
-                        {t('createProject')}
-                      </button>
-                      <Link
-                        href={`/${lng}/tokens`}
-                        className="block w-full text-left px-2 py-1 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
-                        onClick={closeMenu}
-                      >
-                        {t('tokens')}
-                      </Link>
-                      <button
-                        onClick={() => {
-                          openAddModal('quickCreateCheck', true, true)
-                          closeMenu()
-                        }}
-                        className="block w-full text-left px-2 py-1 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
-                      >
-                        {t('quickCreateCheck')}
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+                <Link href={`/${lng}/tokens`} className="button-primary button-base">
+                  {t('tokens')}
+                </Link>
+                <button
+                  className="button-primary button-base"
+                  onClick={() => openAddModal('quickCreateCheck', true, true)}
+                >
+                  {t('quickCreateCheck')}
+                </button>
+              </Menu>
             </div>
             <Projects lng={lng} projects={projects} error={error} />
           </div>

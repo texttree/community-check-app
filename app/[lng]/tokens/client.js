@@ -3,8 +3,6 @@
 import { useState } from 'react'
 import axios from 'axios'
 import useSWR from 'swr'
-import { TabGroup, TabList, Tab } from '@headlessui/react'
-import Image from 'next/image'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import LeftArrow from '@/public/left.svg'
@@ -130,22 +128,26 @@ const TokenGeneration = ({ lng }) => {
 
           {areTokensExist && (
             <div className="overflow-x-auto">
-              <table className="min-w-full border-t sm:border-t-0 bg-white text-sm mb-20">
+              <table className="min-w-full border-t sm:border-t-0 bg-white text-sm mb-8">
                 <thead>
-                  <tr className=" border-b text-left">
-                    <th className="p-2 sm:p-4">{t('name')}</th>
+                  <tr className="border-b text-left">
+                    <th className="pl-4 py-2 pr-2 sm:pr-4 sm:py-4">{t('name')}</th>
                     <th className="hidden md:table-cell p-4">{t('dateCreation')}</th>
-                    <th className="p-2 sm:p-4 w-10 sm:w-auto"></th>
+                    <th className="pr-4 py-2 pl-2 sm:pl-4 sm:py-4 w-10 sm:w-auto"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {tokens.map((token) => (
                     <tr key={token.name} className="border-b sm:hover:bg-ming-blue/10">
-                      <td className="p-2 sm:p-4 border-r sm:border-r-0">{token.name}</td>
-                      <td className="hidden md:table-cell p-4">
-                        {new Date(token.created_at).toLocaleString()}
+                      <td className="pl-4 py-2 pr-2 sm:pr-4 sm:py-4 border-r sm:border-r-0">
+                        <span className="text-cell">{token.name} </span>
                       </td>
-                      <td className="p-2 sm:p-4 border-r sm:border-r-0 flex justify-center sm:justify-end">
+                      <td className="hidden md:table-cell p-4">
+                        <span className="text-cell">
+                          {new Date(token.created_at).toLocaleString()}
+                        </span>{' '}
+                      </td>
+                      <td className="pr-4 py-2 pl-2 sm:pl-4 sm:py-4 flex justify-center sm:justify-end">
                         <div
                           onClick={() => handleDeleteToken(token.name)}
                           className="text-red-500 bg-bright-gray px-2 py-1 rounded-md text-sm font-medium focus:outline-none cursor-pointer sm:bg-red-500 sm:hover:bg-red-600 sm:text-white"
@@ -156,7 +158,6 @@ const TokenGeneration = ({ lng }) => {
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            onClick={() => handleDeleteToken(token.name)}
                             className="block sm:hidden h-4 w-4 cursor-pointer"
                           >
                             <path
