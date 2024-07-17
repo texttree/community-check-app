@@ -273,7 +273,7 @@ const CheckId = ({ lng }) => {
         {showDeleteModal && (
           <DeleteModal
             lng={lng}
-            isVisible={showDeleteModal}
+            isOpen={showDeleteModal}
             message={t('confirmDeleteInspector')}
             onConfirm={confirmDeleteInspector}
             onCancel={cancelDeleteInspector}

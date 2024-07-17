@@ -166,7 +166,7 @@ const BookList = ({ projectId, lng }) => {
       {showDeleteModal && (
         <DeleteModal
           lng={lng}
-          isVisible={showDeleteModal}
+          isOpen={showDeleteModal}
           message={t('confirmDeleteBook')}
           onConfirm={confirmDeleteBook}
           onCancel={cancelDeleteBook}

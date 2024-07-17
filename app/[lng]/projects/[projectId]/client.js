@@ -8,7 +8,7 @@ import BookList from '@/app/components/BookList'
 import { fetcher } from '@/helpers/fetcher'
 import LeftArrow from '@/public/left.svg'
 import Loader from '@/app/components/Loader'
-import AddDialogModal from '@/app/components/AddDialogModal'
+import AddModal from '@/app/components/AddModal'
 import axios from 'axios'
 import { useTranslation } from '@/app/i18n/client'
 import Menu from '@/app/components/Menu'
@@ -92,7 +92,7 @@ const ProjectDetailsPage = ({ lng }) => {
         )}
       </div>
       {showAddModal && (
-        <AddDialogModal
+        <AddModal
           isOpen={showAddModal}
           onClose={closeAddModal}
           onAddProject={handleCreateBook}

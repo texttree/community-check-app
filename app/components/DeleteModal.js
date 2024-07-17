@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 import { useTranslation } from '@/app/i18n/client'
+import Modal from './Modal'
 
 const DeleteModal = ({
   lng,
-  isVisible,
+  isOpen,
   onConfirm,
   onCancel,
   onKeep,
@@ -23,57 +24,50 @@ const DeleteModal = ({
 
   const [inputText, setInputText] = useState('')
 
-  const isTextMatch = () => {
-    return inputText === expectedText
-  }
+  const isTextMatch = () => inputText === expectedText
 
-  if (!isVisible) {
+  if (!isOpen) {
     return null
   }
 
   return (
-    <>
-      <div className="fixed inset-0 bg-black/10 backdrop-blur-lg z-40"></div>
-      <div className="fixed inset-0 flex items-center justify-center z-40">
-        <div className="bg-white p-5 rounded-lg shadow-lg m-4">
-          <p className="text-base">{message}</p>
-          {requireTextMatch && (
-            <div className="mt-4">
-              <label className="block text-raisin-black">
-                {t('enterConfirm')} <strong>{expectedText}</strong>
-              </label>
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                className="input w-full"
-                placeholder={t('enterName')}
-              />
-            </div>
-          )}
-
-          <div className="flex justify-end mt-4">
-            <button className="button-base button-secondary" onClick={onCancel}>
-              {defaultCancelText}
-            </button>
-
-            {showKeepButton && (
-              <button className="button-base button-danger ml-2" onClick={onKeep}>
-                {defaultKeepText}
-              </button>
-            )}
-
-            <button
-              className={`button-base button-danger ml-2 disabled:cursor-not-allowed`}
-              onClick={onConfirm}
-              disabled={requireTextMatch && !isTextMatch()}
-            >
-              {defaultConfirmText}
-            </button>
-          </div>
+    <Modal title={t('delete')}>
+      <p className="text-base">{message}</p>
+      {requireTextMatch && (
+        <div className="mt-4">
+          <label className="block mb-2">
+            {t('enterConfirm')} <strong>{expectedText}</strong>
+          </label>
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            className="input w-full"
+            placeholder={t('enterName')}
+          />
         </div>
+      )}
+
+      <div className="flex justify-end mt-4">
+        <button className="button-base button-secondary" onClick={onCancel}>
+          {defaultCancelText}
+        </button>
+
+        {showKeepButton && (
+          <button className="button-base button-danger ml-2" onClick={onKeep}>
+            {defaultKeepText}
+          </button>
+        )}
+
+        <button
+          className={`button-base button-danger ml-2 disabled:cursor-not-allowed`}
+          onClick={onConfirm}
+          disabled={requireTextMatch && !isTextMatch()}
+        >
+          {defaultConfirmText}
+        </button>
       </div>
-    </>
+    </Modal>
   )
 }
 

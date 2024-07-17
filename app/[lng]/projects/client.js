@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useTranslation } from '@/app/i18n/client'
 import axios from 'axios'
 import Projects from '@/app/components/Projects'
-import AddDialogModal from '@/app/components/AddDialogModal'
+import AddModal from '@/app/components/AddModal'
 import { useRouter } from 'next/navigation'
 import useSWR from 'swr'
 import { fetcher } from '@/helpers/fetcher'
@@ -120,7 +120,7 @@ const ProjectPage = ({ lng }) => {
           </div>
         </div>
         {showModal && (
-          <AddDialogModal
+          <AddModal
             isOpen={showModal}
             onClose={closeAddModal}
             onAddProject={

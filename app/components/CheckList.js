@@ -178,7 +178,7 @@ const CheckList = ({ projectId, bookId, lng }) => {
       {showDeleteModal && (
         <DeleteModal
           lng={lng}
-          isVisible={showDeleteModal}
+          isOpen={showDeleteModal}
           message={t('confirmDeleteCheck')}
           onConfirm={confirmDeleteCheck}
           onCancel={cancelDeleteCheck}

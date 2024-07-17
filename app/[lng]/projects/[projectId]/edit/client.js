@@ -55,9 +55,7 @@ const ProjectEditPage = ({ lng }) => {
 
   const confirmDeleteProject = async () => {
     try {
-      await axios.delete('/api/projects', {
-        data: { projectId: project.id },
-      })
+      await axios.delete('/api/projects/' + projectId)
 
       mutate('/api/projects', (data) => data.filter((p) => p.id !== project.id))
       setShowDeleteModal(false)
@@ -128,7 +126,7 @@ const ProjectEditPage = ({ lng }) => {
       {showDeleteModal && (
         <DeleteModal
           lng={lng}
-          isVisible={showDeleteModal}
+          isOpen={showDeleteModal}
           message={`${t('confirmDeleteProject')}`}
           onConfirm={confirmDeleteProject}
           onCancel={cancelDeleteProject}
