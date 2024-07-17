@@ -162,18 +162,15 @@ const BookList = ({ projectId, lng }) => {
           </table>
         </div>
       )}
-
-      {showDeleteModal && (
-        <DeleteModal
-          lng={lng}
-          isOpen={showDeleteModal}
-          message={t('confirmDeleteBook')}
-          onConfirm={confirmDeleteBook}
-          onCancel={cancelDeleteBook}
-          expectedText={bookToDelete?.name}
-          requireTextMatch={true}
-        />
-      )}
+      <DeleteModal
+        lng={lng}
+        isOpen={showDeleteModal}
+        message={t('confirmDeleteBook')}
+        onConfirm={confirmDeleteBook}
+        onCancel={cancelDeleteBook}
+        expectedText={bookToDelete?.name}
+        requireTextMatch={true}
+      />
     </>
   )
 }

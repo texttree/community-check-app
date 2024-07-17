@@ -269,18 +269,15 @@ const CheckId = ({ lng }) => {
             checkPageRef={checkPageRef}
           />
         )}
-
-        {showDeleteModal && (
-          <DeleteModal
-            lng={lng}
-            isOpen={showDeleteModal}
-            message={t('confirmDeleteInspector')}
-            onConfirm={confirmDeleteInspector}
-            onCancel={cancelDeleteInspector}
-            onKeep={keepInspector}
-            showKeepButton={true}
-          />
-        )}
+        <DeleteModal
+          lng={lng}
+          isOpen={showDeleteModal}
+          message={t('confirmDeleteInspector')}
+          onConfirm={confirmDeleteInspector}
+          onCancel={cancelDeleteInspector}
+          onKeep={keepInspector}
+          showKeepButton={true}
+        />
       </div>
     </TabGroup>
   )

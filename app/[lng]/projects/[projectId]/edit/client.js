@@ -123,17 +123,15 @@ const ProjectEditPage = ({ lng }) => {
           <Loader />
         )}
       </div>
-      {showDeleteModal && (
-        <DeleteModal
-          lng={lng}
-          isOpen={showDeleteModal}
-          message={`${t('confirmDeleteProject')}`}
-          onConfirm={confirmDeleteProject}
-          onCancel={cancelDeleteProject}
-          expectedText={project?.name}
-          requireTextMatch={true}
-        />
-      )}
+      <DeleteModal
+        lng={lng}
+        isOpen={showDeleteModal}
+        message={`${t('confirmDeleteProject')}`}
+        onConfirm={confirmDeleteProject}
+        onCancel={cancelDeleteProject}
+        expectedText={project?.name}
+        requireTextMatch={true}
+      />
     </>
   )
 }

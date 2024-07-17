@@ -8,14 +8,18 @@ import toast from 'react-hot-toast'
 import LeftArrow from '@/public/left.svg'
 import { fetcher } from '@/helpers/fetcher'
 import { useTranslation } from '@/app/i18n/client'
+import DeleteModal from '@/app/components/DeleteModal'
+import Loader from '@/app/components/Loader'
 
 const TokenGeneration = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [token, setToken] = useState({ name: '', token: '' })
   const [tokenName, setTokenName] = useState('')
+  const [deletedTokenName, setDeletedTokenName] = useState('')
 
-  const { data: tokens, mutate: mutateTokens } = useSWR(`/api/tokens`, fetcher)
+  const { data: tokens, isLoading, mutate: mutateTokens } = useSWR(`/api/tokens`, fetcher)
 
   const handleGenerateToken = async () => {
     if (tokenName.trim() === '') {
@@ -32,6 +36,7 @@ const TokenGeneration = ({ lng }) => {
       }
 
       setToken({ name: tokenName.trim(), token })
+      setTokenName('')
       mutateTokens()
       toast.success(t('tokenSuccessCreated'))
     } catch (error) {
@@ -125,8 +130,12 @@ const TokenGeneration = ({ lng }) => {
               </>
             )}
           </div>
-
-          {areTokensExist && (
+          {isLoading ? (
+            <Loader
+              className="flex flex-col gap-4 pb-4 px-4"
+              line={['h-5 w-full', 'h-5 w-full', 'h-5 w-full']}
+            />
+          ) : areTokensExist ? (
             <div className="overflow-x-auto">
               <table className="min-w-full border-t sm:border-t-0 bg-white text-sm mb-8">
                 <thead>
@@ -140,16 +149,19 @@ const TokenGeneration = ({ lng }) => {
                   {tokens.map((token) => (
                     <tr key={token.name} className="border-b sm:hover:bg-ming-blue/10">
                       <td className="pl-4 py-2 pr-2 sm:pr-4 sm:py-4 border-r sm:border-r-0">
-                        <span className="text-cell">{token.name} </span>
+                        <span className="text-cell">{token.name}</span>
                       </td>
                       <td className="hidden md:table-cell p-4">
                         <span className="text-cell">
                           {new Date(token.created_at).toLocaleString()}
-                        </span>{' '}
+                        </span>
                       </td>
                       <td className="pr-4 py-2 pl-2 sm:pl-4 sm:py-4 flex justify-center sm:justify-end">
                         <div
-                          onClick={() => handleDeleteToken(token.name)}
+                          onClick={() => {
+                            setShowDeleteModal(true)
+                            setDeletedTokenName(token.name)
+                          }}
                           className="text-red-500 bg-bright-gray px-2 py-1 rounded-md text-sm font-medium focus:outline-none cursor-pointer sm:bg-red-500 sm:hover:bg-red-600 sm:text-white"
                         >
                           <svg
@@ -175,9 +187,21 @@ const TokenGeneration = ({ lng }) => {
                 </tbody>
               </table>
             </div>
+          ) : (
+            <p className="py-6 px-4">{t('noTokens')}</p>
           )}
         </div>
       </div>
+      <DeleteModal
+        lng={lng}
+        isOpen={showDeleteModal}
+        message={`${t('confirmDeleteToken', { name: deletedTokenName })}`}
+        onConfirm={() => {
+          handleDeleteToken(deletedTokenName)
+          setShowDeleteModal(false)
+        }}
+        onCancel={() => setShowDeleteModal(false)}
+      />
     </div>
   )
 }

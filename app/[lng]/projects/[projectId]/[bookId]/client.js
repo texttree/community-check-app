@@ -16,7 +16,9 @@ import Menu from '@/app/components/Menu'
 
 const BookEditPage = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
+
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showCheckModal, setShowCheckModal] = useState(false)
 
   const router = useRouter()
   const { projectId, bookId } = useParams()
@@ -25,8 +27,6 @@ const BookEditPage = ({ lng }) => {
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}`,
     fetcher
   )
-
-  const [isModalOpen, setModalOpen] = useState(false)
 
   const handleCreateCheck = async ({ name, url, startDate }) => {
     if (!name || !url || !startDate) {
@@ -51,12 +51,6 @@ const BookEditPage = ({ lng }) => {
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
     fetcher
   )
-
-  useEffect(() => {
-    if (bookError) {
-      console.error(bookError)
-    }
-  }, [bookError])
 
   const confirmDeleteBook = async () => {
     try {
@@ -131,8 +125,8 @@ const BookEditPage = ({ lng }) => {
         requireTextMatch={true}
       />
       <CheckModal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
+        isOpen={showCheckModal}
+        onClose={() => setShowCheckModal(false)}
         onSubmit={handleCreateCheck}
         lng={lng}
       />

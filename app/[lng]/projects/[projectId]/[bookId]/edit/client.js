@@ -135,7 +135,7 @@ const BookEditPage = ({ lng }) => {
         message={`${t('confirmDeleteBook')}`}
         onConfirm={confirmDeleteBook}
         onCancel={cancelDeleteBook}
-        expectedText={project?.name}
+        expectedText={book?.name}
         requireTextMatch={true}
       />
     </>
