@@ -85,7 +85,7 @@ const TokenGeneration = ({ lng }) => {
               <LeftArrow className="h-4 w-4 mr-1" />
               <span className="hidden sm:block">{t('projects')}</span>
             </Link>
-            <h2 className="text-base sm:text-lg font-bold pl-0 sm:pl-3 border-0 sm:border-l">
+            <h2 className="text-base sm:text-lg font-medium pl-0 sm:pl-3 border-0 sm:border-l">
               {t('tokens')}
             </h2>
           </div>
@@ -162,7 +162,7 @@ const TokenGeneration = ({ lng }) => {
                             setShowDeleteModal(true)
                             setDeletedTokenName(token.name)
                           }}
-                          className="text-red-500 bg-bright-gray px-2 py-1 rounded-md text-sm font-medium focus:outline-none cursor-pointer sm:bg-red-500 sm:hover:bg-red-600 sm:text-white"
+                          className="text-red-500 bg-bright-gray px-2 py-1 rounded-md text-sm font-normal focus:outline-none cursor-pointer sm:bg-red-500 sm:hover:bg-red-600 sm:text-white"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"

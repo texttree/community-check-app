@@ -83,8 +83,8 @@ const Index = ({ lng }) => {
             >
               <div className="flex flex-row md:flex-col gap-6">
                 <Image src={card.image} alt={card.alt} width={60} height={60} />
-                <div className="">
-                  <h2 className="font-semibold text-base">{card.title}</h2>
+                <div>
+                  <h2 className="font-bold text-base">{card.title}</h2>
                   {card.description}
                 </div>
               </div>
@@ -94,7 +94,7 @@ const Index = ({ lng }) => {
       </div>
 
       <div className="fixed bottom-8 mx-5 h-auto flex flex-row justify-between items-center bg-ming-blue rounded-lg px-6 py-4 shadow-lg">
-        <p className="text-white text-center">{t('startCheсking')}</p>
+        <p className="text-white font-medium text-center">{t('startCheсking')}</p>
         <Link
           href="/login"
           className="px-4 py-1 ml-3 h-8 rounded bg-white hover:bg-bright-gray text-center flex items-center"

@@ -96,7 +96,7 @@ const BookEditPage = ({ lng }) => {
             </button>
           </Menu>
         </div>
-        <div className="">
+        <div>
           {checkListError ? (
             <p className="text-red-600 p-4 mb-4">{t('errorOccurred')}</p>
           ) : checkList ? (

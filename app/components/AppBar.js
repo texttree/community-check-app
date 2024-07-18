@@ -69,7 +69,7 @@ const AppBar = ({ lng }) => {
   return (
     <header className="flex justify-start items-center relative z-10 max-w-6xl mx-auto">
       <Menu as="div" className="relative inline-block text-left mr-2">
-        <MenuButton className="inline-flex items-center justify-center gap-x-1.5 bg-transparent px-3 py-1 text-sm font-semibold text-white">
+        <MenuButton className="inline-flex items-center justify-center gap-x-1.5 bg-transparent px-3 py-1 text-sm font-medium text-white">
           <div className="flex items-center justify-center w-7 h-7">
             <Bar />
           </div>

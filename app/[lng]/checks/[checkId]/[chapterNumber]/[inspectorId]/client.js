@@ -147,7 +147,7 @@ const CheckInspectorDetail = ({ lng }) => {
                     <div key={verse.verse} className="p-2 my-1 border-b">
                       <div className="flex items-start justify-between">
                         <div>
-                          <p className="text-lg font-semibold">{verse.verse}</p>
+                          <p className="text-lg font-medium">{verse.verse}</p>
                           <p className="text-raisin-black">{verse.text}</p>
                         </div>
                         <button

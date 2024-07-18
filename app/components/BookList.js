@@ -135,7 +135,7 @@ const BookList = ({ projectId, lng }) => {
                   <td className="pr-4 py-2 pl-2 sm:pl-4 sm:py-4 flex justify-center sm:justify-end">
                     <div
                       onClick={() => openDeleteModal(book)}
-                      className="text-red-500 bg-bright-gray px-2 py-1 rounded-md text-sm font-medium focus:outline-none cursor-pointer sm:bg-red-500 sm:hover:bg-red-600 sm:text-white"
+                      className="text-red-500 bg-bright-gray px-2 py-1 rounded-md text-sm font-normal focus:outline-none cursor-pointer sm:bg-red-500 sm:hover:bg-red-600 sm:text-white"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

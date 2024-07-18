@@ -73,7 +73,7 @@ export default function FormComponent({ lng, redirectedFrom }) {
           <h2 className="text-2xl font-bold mb-4">{t('signIn')}</h2>
           <form className="space-y-4" onSubmit={handleLogin}>
             <div>
-              <label className="block text-xs font-medium text-raisin-black">
+              <label className="block text-xs font-normal text-raisin-black">
                 {t('email')}
               </label>
               <div className="mt-1">
@@ -86,7 +86,7 @@ export default function FormComponent({ lng, redirectedFrom }) {
               </div>
             </div>
             <div>
-              <label className="block text-xs font-medium text-raisin-black">
+              <label className="block text-xs font-normal text-raisin-black">
                 {t('password')}
               </label>
               <div className="mt-1">

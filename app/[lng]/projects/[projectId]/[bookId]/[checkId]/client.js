@@ -1,4 +1,5 @@
 'use client'
+
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -13,12 +14,13 @@ import CheckInfoForm from '@/app/components/CheckInfoForm'
 import MaterialLinkForm from '@/app/components/MaterialLinkForm'
 import InspectorForm from '@/app/components/InspectorForm'
 import InspectorTable from '@/app/components/InspectorTable'
-import CheckPageLink from '@/app/components/CheckLinkCopy'
-import { Tab, TabGroup, TabList } from '@headlessui/react'
+import Loader from '@/app/components/Loader'
+import { useRouter } from 'next/navigation'
 
-const CheckId = ({ lng }) => {
+const CheckEditPage = ({ lng }) => {
   const { t } = useTranslation(lng, 'common')
   const { projectId, bookId, checkId } = useParams()
+  const { push } = useRouter()
   const [startDate, setStartDate] = useState(new Date().toISOString().slice(0, 16))
   const [endDate, setEndDate] = useState(new Date().toISOString().slice(0, 16))
   const [materialLink, setMaterialLink] = useState('')
@@ -30,7 +32,7 @@ const CheckId = ({ lng }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [selectedInspectorId, setSelectedInspectorId] = useState(null)
 
-  const { data: check } = useSWR(
+  const { data: check, mutate: mutateCheck } = useSWR(
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`,
     fetcher
   )
@@ -119,12 +121,15 @@ const CheckId = ({ lng }) => {
           checkId: checkId,
         })
         toast.success(t('updatedContent'))
+        return true
       } catch (error) {
         console.error(error)
         toast.error(error.message)
+        return false
       }
     } else {
       toast.error(t('provideLink'))
+      return false
     }
   }
 
@@ -136,6 +141,7 @@ const CheckId = ({ lng }) => {
         name: checkName,
       })
       toast.success(t('updatedInformation'))
+      mutateCheck()
     } catch (error) {
       console.error(error)
       toast.error(error.message)
@@ -181,106 +187,102 @@ const CheckId = ({ lng }) => {
       : 'https://community-check-app.netlify.app'
 
   return (
-    <TabGroup className="max-w-7xl mx-auto mb-5">
-      <TabList className="bg-ming-blue flex p-2 border border-th-secondary-300 rounded-t-xl shadow-md">
-        <Tab
-          className={({ selected }) =>
-            selected
-              ? 'bg-ming-blue text-white cursor-pointer text-lg sm:text-2xl font-bold px-4 sm:px-9 py-2 rounded-t-md w-full text-center'
-              : 'text-blue-100 hover:bg-white/[0.12] hover:text-white px-4 py-2 rounded-t-md w-full text-center'
-          }
-        >
-          {t('')}
-        </Tab>
-      </TabList>
-      <div className="max-w-7xl mx-auto p-4 bg-white rounded-b-md shadow-md">
-        <div className="flex items-center mb-4">
-          <Link
-            href={`/${lng}/projects/${projectId}/${bookId}`}
-            className="text-gray-400 hover:text-gray-600 inline-flex items-center"
-          >
-            <LeftArrow className="h-5 w-5 mr-2 inline-block" />
-            {t('back')}
-          </Link>
-          <h1 className="text-xl font-semibold text-raisin-black ml-4">{checkName}</h1>
+    <>
+      <div>
+        <div className="flex justify-between items-center border-b p-4">
+          <div className="flex justify-start space-x-1 sm:space-x-4">
+            <Link
+              href={`/${lng}/projects/${projectId}/${bookId}`}
+              className="text-gray-400 hover:text-gray-500 inline-flex items-center text-sm"
+            >
+              <LeftArrow className="h-4 w-4 mr-1" />
+              <span className="hidden sm:block">{t('checks')}</span>
+            </Link>
+            <h1 className="text-base sm:text-lg font-bold pl-0 sm:pl-3 border-0 sm:border-l">
+              {check ? check.name : <Loader line={['h-5 my-1 w-48']} />}
+            </h1>
+          </div>
         </div>
-
-        <CheckInfoForm
-          t={t}
-          checkName={checkName}
-          setCheckName={setCheckName}
-          startDate={startDate}
-          setStartDate={setStartDate}
-          endDate={endDate}
-          setEndDate={setEndDate}
-          updateCheckInfo={updateCheckInfo}
-        />
-        {checkName !== '' && (
-          <CheckPageLink
-            lng={lng}
-            checkId={checkId}
-            chapterNumber={chapterNumber}
-            currentDomain={currentDomain}
-            copyToClipboard={copyToClipboard}
+        <div className="p-4 border-b">
+          <CheckInfoForm
             t={t}
-            ref={checkPageRef}
-          />
-        )}
-
-        <div className="flex flex-col space-y-4 md:hidden">
-          <MaterialLinkForm
-            t={t}
-            materialLink={materialLink}
-            setMaterialLink={setMaterialLink}
-            updateContent={updateContent}
-          />
-          <InspectorForm
-            t={t}
-            inspectorName={inspectorName}
-            setInspectorName={setInspectorName}
-            createPersonalLink={createPersonalLink}
+            checkName={checkName}
+            setCheckName={setCheckName}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
+            updateCheckInfo={updateCheckInfo}
           />
         </div>
-        <div className="hidden md:flex md:flex-row md:space-x-4">
-          <MaterialLinkForm
-            t={t}
-            materialLink={materialLink}
-            setMaterialLink={setMaterialLink}
-            updateContent={updateContent}
-          />
-          <InspectorForm
-            t={t}
-            inspectorName={inspectorName}
-            setInspectorName={setInspectorName}
-            createPersonalLink={createPersonalLink}
-          />
+        <div className="p-4 border-b">
+          <h2 className="text-base font-bold mb-4">{t('LinkToCheck')}</h2>
+          {checkName !== '' ? (
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                onClick={() => push(`/checks/${checkId}/${chapterNumber}`)}
+                className="input w-full cursor-pointer"
+                value={`${currentDomain}/${lng}/checks/${checkId}/${chapterNumber}`}
+                readOnly
+              />
+              <button
+                className="button-base button-primary sm:ml-2 mt-2 sm:mt-0 self-start"
+                onClick={() =>
+                  copyToClipboard(
+                    `${currentDomain}/${lng}/checks/${checkId}/${chapterNumber}`
+                  )
+                }
+              >
+                {t('copy')}
+              </button>
+            </div>
+          ) : (
+            <Loader line={['h-6 my-2 w-full']} />
+          )}
         </div>
-
+        <div className="p-4">
+          <div className="flex flex-col gap-4 md:flex-row">
+            <MaterialLinkForm
+              t={t}
+              materialLink={materialLink}
+              setMaterialLink={setMaterialLink}
+              updateContent={updateContent}
+            />
+            <InspectorForm
+              t={t}
+              inspectorName={inspectorName}
+              setInspectorName={setInspectorName}
+              createPersonalLink={createPersonalLink}
+            />
+          </div>
+        </div>
         {inspectors && inspectors.length > 0 && (
-          <InspectorTable
-            t={t}
-            inspectors={inspectors}
-            lng={lng}
-            checkId={checkId}
-            chapterNumber={chapterNumber}
-            currentDomain={currentDomain}
-            copyToClipboard={copyToClipboard}
-            deleteInspector={deleteInspector}
-            checkPageRef={checkPageRef}
-          />
+          <div className="p-4">
+            <InspectorTable
+              t={t}
+              inspectors={inspectors}
+              lng={lng}
+              checkId={checkId}
+              chapterNumber={chapterNumber}
+              currentDomain={currentDomain}
+              copyToClipboard={copyToClipboard}
+              deleteInspector={deleteInspector}
+              checkPageRef={checkPageRef}
+            />
+          </div>
         )}
-        <DeleteModal
-          lng={lng}
-          isOpen={showDeleteModal}
-          message={t('confirmDeleteInspector')}
-          onConfirm={confirmDeleteInspector}
-          onCancel={cancelDeleteInspector}
-          onKeep={keepInspector}
-          showKeepButton={true}
-        />
       </div>
-    </TabGroup>
+      <DeleteModal
+        lng={lng}
+        isOpen={showDeleteModal}
+        message={t('confirmDeleteInspector')}
+        onConfirm={confirmDeleteInspector}
+        onCancel={cancelDeleteInspector}
+        onKeep={keepInspector}
+        showKeepButton={true}
+      />
+    </>
   )
 }
 
-export default CheckId
+export default CheckEditPage

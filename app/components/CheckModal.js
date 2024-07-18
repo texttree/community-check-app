@@ -45,7 +45,7 @@ const CheckModal = ({ isOpen, onClose, onSubmit, lng }) => {
         />
       </label>
       <label className="block mb-2">
-        {t('materialUrl')}:
+        {t('materialLink')}:
         <input
           type="text"
           value={url}
