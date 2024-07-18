@@ -5,6 +5,7 @@ import Modal from './Modal'
 const CheckModal = ({ isOpen, onClose, onSubmit, lng }) => {
   const [name, setName] = useState('')
   const [url, setUrl] = useState('')
+  const [error, setError] = useState(null)
   const [startDate, setStartDate] = useState(() => {
     const currentDate = new Date()
     const isoString = currentDate.toISOString()
@@ -15,8 +16,19 @@ const CheckModal = ({ isOpen, onClose, onSubmit, lng }) => {
   const { t } = useTranslation(lng, 'common')
 
   const handleSubmit = () => {
+    if (!name || !url || !startDate) {
+      return setError(t('allFieldsRequired'))
+    }
+    if (
+      !/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(
+        url
+      )
+    ) {
+      return setError(t('enterCorrectLink'))
+    }
     onSubmit({ name, url, startDate })
-    onClose()
+      .then((res) => (res.error ? setError(res.error) : onClose()))
+      .catch((err) => setError(err.message))
   }
 
   if (!isOpen) return null
@@ -58,6 +70,7 @@ const CheckModal = ({ isOpen, onClose, onSubmit, lng }) => {
           {t('create')}
         </button>
       </div>
+      {error && <p className="mt-6 text-center text-xs text-red-600">{error}</p>}
     </Modal>
   )
 }

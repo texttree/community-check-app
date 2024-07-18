@@ -5,8 +5,10 @@
   "activeChecks": "Active checks",
   "activity": "Activity (number of notes)",
   "addPersonalLink": "Add personal link",
+  "allFieldsRequired": "All fields are required",
   "apiLinkCopied": "API link copied",
   "back": "Back",
+  "book": "Book",
   "bookChecks": "Book checks",
   "bookDeleted": "Book deleted",
   "bookTitle": "Book title",
@@ -56,7 +58,6 @@
   "enterInspectorName": "Enter the inspector name",
   "enterName": "Enter the name",
   "errorCreateBook": "Error creating the book: there is already a book with that name",
-  "emptyField": "Fill in all fields",
   "errorCreateProjectName": "Error creating the project: there is already a project with that name",
   "errorCreatingInspector": "Error сreating the inspector",
   "errorDeletingBook": "Error deleting the book",
@@ -136,6 +137,7 @@
   "updatedInformation": "Information updated",
   "updateInformation": "Update information",
   "warningDeleteProject": "Be careful. When deleting the project, all books, checks, notes, materials and inspectors associated with the project will be deleted.",
+  "warningDeleteBook": "Be careful. When deleting the book, all checks, notes, materials and inspectors associated with the book will be deleted.",
   "welcomeTo": "Welcome to Community Check",
   "youLoggedIn": "You are already logged in."
 }

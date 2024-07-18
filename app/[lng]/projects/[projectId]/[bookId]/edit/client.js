@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
 
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 import axios from 'axios'
 
 import { fetcher } from '@/helpers/fetcher'
@@ -24,7 +24,7 @@ const BookEditPage = ({ lng }) => {
   const router = useRouter()
   const { projectId, bookId } = useParams()
 
-  const { data: book, error: bookError } = useSWR(
+  const { data: book, error } = useSWR(
     projectId && bookId && `/api/projects/${projectId}/books/${bookId}`,
     fetcher
   )
@@ -33,7 +33,7 @@ const BookEditPage = ({ lng }) => {
     if (book?.name) {
       setBookName(book.name)
     }
-  }, [book])
+  }, [book?.name])
 
   const editBook = async () => {
     setErrorMessage('')
@@ -65,7 +65,7 @@ const BookEditPage = ({ lng }) => {
         data.filter((b) => b.id !== book.id)
       )
       setShowDeleteModal(false)
-      router.push('/' + lng + '/projects/' + projectId + '/books')
+      router.push('/' + lng + '/projects/' + projectId)
     } catch (error) {
       console.error('Failed to delete book:', error)
     }
@@ -93,7 +93,7 @@ const BookEditPage = ({ lng }) => {
           </div>
         </div>
         {error ? (
-          <p className="text-red-600">{t('errorOccurred')}</p>
+          <p className="text-red-600 p-4 mb-6">{t('errorOccurred')}</p>
         ) : book ? (
           <>
             <div className="p-4">

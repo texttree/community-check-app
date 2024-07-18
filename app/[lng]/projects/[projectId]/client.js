@@ -86,7 +86,7 @@ const ProjectDetailsPage = ({ lng }) => {
           <BookList projectId={projectId} lng={lng} />
         ) : (
           <Loader
-            className="flex flex-col gap-4 pb-4 px-4"
+            className="flex flex-col gap-4 p-4"
             line={['h-5 w-full', 'h-5 w-full', 'h-5 w-full']}
           />
         )}

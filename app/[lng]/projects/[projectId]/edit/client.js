@@ -16,6 +16,7 @@ const ProjectEditPage = ({ lng }) => {
   const [projectName, setProjectName] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+
   const router = useRouter()
   const { projectId } = useParams()
 
@@ -87,7 +88,7 @@ const ProjectEditPage = ({ lng }) => {
           </div>
         </div>
         {error ? (
-          <p className="text-red-600">{t('errorOccurred')}</p>
+          <p className="text-red-600 p-4 mb-6">{t('errorOccurred')}</p>
         ) : project ? (
           <>
             <div className="p-4">
@@ -120,7 +121,10 @@ const ProjectEditPage = ({ lng }) => {
             </div>
           </>
         ) : (
-          <Loader />
+          <Loader
+            className="p-4 mb-6 flex flex-col gap-4"
+            line={['h-4 w-48', 'h-8 w-full', 'h-4 w-48', 'h-8 w-full']}
+          />
         )}
       </div>
       <DeleteModal

@@ -66,6 +66,7 @@ const AddModal = ({
             placeholder={t('titleBook')}
             className="input mb-2.5 w-full"
             value={book}
+            autoFocus={!showProject}
             onChange={(e) => setBook(e.target.value)}
           />
         </>

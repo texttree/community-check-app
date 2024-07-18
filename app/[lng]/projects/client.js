@@ -39,7 +39,7 @@ const ProjectPage = ({ lng }) => {
     const book = data.book.trim()
     const check = data.check.trim()
     if (!project || !book || !check) {
-      return { error: t('emptyField') }
+      return { error: t('allFieldsRequired') }
     }
     try {
       const response = await axios.post('/api/projects/complex-create', {

@@ -11,17 +11,47 @@ import { fetcher } from '@/helpers/fetcher'
 import { formatDate } from '@/helpers/formatDate'
 import Loader from './Loader'
 
-const ErrorMessage = ({ message }) => <span className="text-red-600">{message}</span>
+const ErrorMessage = ({ message }) => (
+  <span className="p-4 mb-8 text-red-600">{message}</span>
+)
+
+const BookChecksInfo = ({ projectId, bookId, showLastCheck }) => {
+  const { data: checks, error } = useSWR(
+    projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
+    fetcher
+  )
+
+  const getLatestCheckDate = (checks) => {
+    if (checks && checks.length > 0) {
+      const validDates = checks
+        .filter((check) => check.started_at !== null)
+        .map((check) => new Date(check.started_at))
+
+      if (validDates.length > 0) {
+        const latestDate = new Date(Math.max(...validDates))
+        return formatDate(latestDate)
+      } else {
+        return '-'
+      }
+    }
+    return '-'
+  }
+
+  if (error) {
+    return <ErrorMessage message={t('errorOccurred')} />
+  } else if (!checks) {
+    return <Loader className="" line={['h-5 w-full']} />
+  } else {
+    return (
+      <span className="text-cell">
+        {showLastCheck ? getLatestCheckDate(checks) : checks.length}
+      </span>
+    )
+  }
+}
 
 const BookList = ({ projectId, lng }) => {
   const { t } = useTranslation(lng, 'common')
-
-  const LoadingMessage = () => (
-    <Loader
-      className="flex flex-col gap-4 pb-4 px-4"
-      line={['h-5 w-full', 'h-5 w-full', 'h-5 w-full']}
-    />
-  )
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [bookToDelete, setBookToDelete] = useState(null)
@@ -30,37 +60,6 @@ const BookList = ({ projectId, lng }) => {
     projectId && `/api/projects/${projectId}/books`,
     fetcher
   )
-
-  const BookChecksInfo = ({ projectId, bookId, showLastCheck }) => {
-    const { data: checks, error } = useSWR(
-      projectId && bookId && `/api/projects/${projectId}/books/${bookId}/checks`,
-      fetcher
-    )
-
-    const getLatestCheckDate = (checks) => {
-      if (checks && checks.length > 0) {
-        const validDates = checks
-          .filter((check) => check.started_at !== null)
-          .map((check) => new Date(check.started_at))
-
-        if (validDates.length > 0) {
-          const latestDate = new Date(Math.max(...validDates))
-          return formatDate(latestDate)
-        } else {
-          return '-'
-        }
-      }
-      return '-'
-    }
-
-    if (error) {
-      return <ErrorMessage message={t('errorOccurred')} />
-    } else if (!checks) {
-      return <LoadingMessage />
-    } else {
-      return <span>{showLastCheck ? getLatestCheckDate(checks) : checks.length}</span>
-    }
-  }
 
   const openDeleteModal = (book) => {
     setBookToDelete(book)
@@ -89,13 +88,16 @@ const BookList = ({ projectId, lng }) => {
       {booksError ? (
         <ErrorMessage message={t('errorOccurred')} />
       ) : !books ? (
-        <LoadingMessage />
+        <Loader
+          className="flex flex-col gap-4 p-4"
+          line={['h-5 w-full', 'h-5 w-full', 'h-5 w-full']}
+        />
       ) : (
         <div className="overflow-x-auto">
           <table className="min-w-full border-t sm:border-t-0 bg-white text-sm mb-8">
             <thead>
               <tr className="border-b text-left">
-                <th className="pl-4 py-2 pr-2 sm:pr-4 sm:py-4">{t('titleInTable')}</th>
+                <th className="pl-4 py-2 pr-2 sm:pr-4 sm:py-4">{t('bookTitle')}</th>
                 <th className="p-2 sm:p-4">{t('dateCreation')}</th>
                 <th className="p-2 sm:p-4">{t('dateLastCheck')}</th>
                 <th className="p-2 sm:p-4">{t('numberChecks')}</th>
@@ -117,22 +119,18 @@ const BookList = ({ projectId, lng }) => {
                     <span className="text-cell">{formatDate(book.created_at)}</span>
                   </td>
                   <td className="p-2 sm:p-4 border-r sm:border-r-0">
-                    <span className="text-cell">
-                      <BookChecksInfo
-                        projectId={projectId}
-                        bookId={book.id}
-                        showLastCheck={true}
-                      />
-                    </span>
+                    <BookChecksInfo
+                      projectId={projectId}
+                      bookId={book.id}
+                      showLastCheck={true}
+                    />
                   </td>
                   <td className="p-2 sm:p-4 border-r sm:border-r-0">
-                    <span className="text-cell">
-                      <BookChecksInfo
-                        projectId={projectId}
-                        bookId={book.id}
-                        showLastCheck={false}
-                      />
-                    </span>{' '}
+                    <BookChecksInfo
+                      projectId={projectId}
+                      bookId={book.id}
+                      showLastCheck={false}
+                    />
                   </td>
                   <td className="pr-4 py-2 pl-2 sm:pl-4 sm:py-4 flex justify-center sm:justify-end">
                     <div

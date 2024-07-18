@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
 import useSWR, { mutate } from 'swr'
@@ -41,6 +41,7 @@ const BookEditPage = ({ lng }) => {
       if (res.status === 201) {
         const checkId = res.data.id
         router.push(`/${lng}/projects/${projectId}/${bookId}/${checkId}`)
+        return { error: false }
       }
     } catch (error) {
       return { error: error.message }
@@ -89,27 +90,20 @@ const BookEditPage = ({ lng }) => {
             </Link>
             <button
               className="button-base button-primary"
-              onClick={() => setModalOpen(true)}
+              onClick={() => setShowCheckModal(true)}
             >
               {t('startNewCheck')}
             </button>
           </Menu>
         </div>
-        {bookError ? (
-          <p className="text-red-600">{t('errorOccurred')}</p>
-        ) : book ? (
-          <></>
-        ) : (
-          <Loader />
-        )}
-        <div className="mt-8">
+        <div className="">
           {checkListError ? (
-            <p className="text-red-600">{t('errorOccurred')}</p>
+            <p className="text-red-600 p-4 mb-4">{t('errorOccurred')}</p>
           ) : checkList ? (
             <CheckList lng={lng} projectId={projectId} bookId={bookId} />
           ) : (
             <Loader
-              className="flex flex-col gap-4 pb-4 px-4"
+              className="flex flex-col gap-4 p-4"
               line={['h-5 w-full', 'h-5 w-full', 'h-5 w-full']}
             />
           )}

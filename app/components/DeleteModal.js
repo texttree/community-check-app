@@ -34,7 +34,7 @@ const DeleteModal = ({
     <Modal title={t('delete')}>
       <p className="text-base">{message}</p>
       {requireTextMatch && (
-        <div className="mt-4">
+        <div className="mt-4 border bg-red-50 border-red-200 p-4 rounded">
           <label className="block mb-2">
             {t('enterConfirm')} <strong>{expectedText}</strong>
           </label>
