@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useTranslation } from '../i18n/client'
+import { useTranslation } from '@/app/i18n/client'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 

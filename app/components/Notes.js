@@ -38,26 +38,16 @@ const Notes = ({ reference, materialId, checkId, lng, toggleNoteInput }) => {
   }
 
   return (
-    <div className="relative mt-4">
-      <div className="my-2">
-        <label htmlFor="notes" className="font-bold text-xl">
-          {t('Комментарии')}
-        </label>
-      </div>
-      <div className="flex items-center mt-2">
-        <textarea
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          className="w-full border rounded p-1"
-          autoFocus
-        />
-      </div>
+    <div className="mt-4">
+      <textarea
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        className="w-full h-24 md:h-16 input mt-2"
+        placeholder={t('notePlaceholder')}
+        autoFocus
+      />
       <div className="flex justify-end mt-2">
-        <button
-          onClick={addNote}
-          disabled={!note}
-          className="bg-ming-blue text-white py-1 px-2 rounded disabled:opacity-50"
-        >
+        <button onClick={addNote} disabled={!note} className="button-base button-primary">
           {t('save')}
         </button>
       </div>

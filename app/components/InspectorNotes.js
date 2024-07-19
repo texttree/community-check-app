@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import axios from 'axios'
 import { useTranslation } from '../i18n/client'
@@ -17,15 +17,14 @@ const InspectorNotes = ({
   const { t } = useTranslation(lng, 'common')
   const [error, setError] = useState(null)
   const [note, setNote] = useState('')
-  const [showInput, setShowInput] = useState(true)
-  const [editNoteId, setEditNoteId] = useState(null)
-  const [editNoteText, setEditNoteText] = useState('')
-  const [isEditing, setIsEditing] = useState(false)
-  const menuRef = useRef(null)
+  const [editNote, setEditNote] = useState(null)
+  const [isEditingFormOpened, setIsEditingFormOpened] = useState(false) // show edit form
+  const [isMenuOpen, setIsMenuOpen] = useState(false) // show menu
 
   useEffect(() => {
-    setEditNoteId(null)
-    setEditNoteText('')
+    setEditNote(null)
+    setIsMenuOpen(false)
+    setIsEditingFormOpened(false)
   }, [reference?.chapter])
 
   const addNote = () => {
@@ -52,20 +51,19 @@ const InspectorNotes = ({
       })
   }
 
-  const updateNote = (noteId) => {
+  const updateNote = () => {
     axios
-      .put(`/api/checks/${checkId}/notes`, {
-        noteId,
-        note: editNoteText,
+      .post(`/api/checks/${checkId}/notes/${editNote.id}`, {
+        note: editNote.note,
         inspectorId,
       })
       .then((res) => {
         if (res.status === 200) {
           toast.success(t('noteUpdated'))
-          setEditNoteId(null)
-          setEditNoteText('')
+          setEditNote(null)
           setError(null)
-          setIsEditing(false)
+          setIsEditingFormOpened(false)
+          setIsMenuOpen(false)
           mutate()
         } else {
           throw new Error(t('errorUpdatingNote'))
@@ -77,13 +75,17 @@ const InspectorNotes = ({
       })
   }
 
-  const deleteNoteById = (noteId) => {
+  const deleteNote = () => {
     axios
-      .delete(`/api/checks/${checkId}/${inspectorId}`, { data: { noteId } })
+      .delete(`/api/checks/${checkId}/${inspectorId}`, { data: { noteId: editNote.id } })
       .then((res) => {
         if (res.status === 200) {
           toast.success(t('noteDeleted'))
           mutate()
+          setEditNote(null)
+          setError(null)
+          setIsEditingFormOpened(false)
+          setIsMenuOpen(false)
         } else {
           throw new Error(t('errorDeletingNote'))
         }
@@ -94,32 +96,16 @@ const InspectorNotes = ({
       })
   }
 
-  const handleMenuToggle = (noteId) => {
-    if (editNoteId === noteId && !isEditing) {
-      setIsEditing(true)
-      setEditNoteId(noteId)
-    } else {
-      setEditNoteId(noteId)
-      setEditNoteText(notes.find((note) => note.id === noteId)?.note || '')
-      setIsEditing(false)
-    }
-  }
-
-  const adjustTextareaHeight = (event) => {
-    event.target.style.height = 'auto'
-    event.target.style.height = `${Math.min(event.target.scrollHeight, 200)}px`
-  }
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target) &&
-        !event.target.classList.contains('editable-note') &&
-        !event.target.closest('.editable-note')
-      ) {
-        setEditNoteId(null)
-        setEditNoteText('')
-        setIsEditing(false)
+      console.log(
+        isMenuOpen,
+        editNote,
+        event.target,
+        event.target.closest('.menu-container')
+      )
+      if (isMenuOpen && !event.target.closest('.menu-container')) {
+        setIsMenuOpen(false)
       }
     }
 
@@ -127,81 +113,99 @@ const InspectorNotes = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [])
+  }, [isMenuOpen, editNote])
 
   return (
     <div className="mt-5">
-      <div className="mb-5">
-        <div>
-          <label htmlFor="notes" className="font-bold text-xl">
-            {t('Комментарии')}
-          </label>
+      <div className="pb-4 border-b">
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          className="w-full h-24 md:h-16 input mt-2"
+          autoFocus
+          placeholder={t('notePlaceholder')}
+        />
+        <div className="flex justify-end mt-2">
+          <button
+            onClick={addNote}
+            disabled={!note}
+            className="button-base button-primary"
+          >
+            {t('save')}
+          </button>
         </div>
-
-        {Array.isArray(notes) &&
-          notes.length > 0 &&
-          notes.map((noteItem, index) => (
+      </div>
+      {Array.isArray(notes) &&
+        notes.length > 0 &&
+        notes.map((noteItem, index) => (
+          <div key={noteItem.id} className="my-2">
             <div
-              key={noteItem.id}
-              className={`flex items-center justify-between ${
-                index !== notes.length - 1 ? 'border-b pb-2 my-2' : ''
+              className={`flex items-start justify-between ${
+                index !== notes.length - 1 ? 'border-b' : ''
               }`}
             >
-              {editNoteId === noteItem.id && isEditing ? (
-                <div className="flex w-full">
+              {editNote?.id === noteItem.id && isEditingFormOpened ? (
+                <div className="w-full mb-4">
                   <textarea
-                    value={editNoteText}
-                    onChange={(e) => setEditNoteText(e.target.value)}
-                    className="w-full border rounded p-1 overflow-hidden resize-vertical"
+                    value={editNote?.note}
+                    onChange={(e) =>
+                      setEditNote((prev) => ({ ...prev, note: e.target.value }))
+                    }
+                    className="w-full h-24 md:h-16 input mt-2"
                     autoFocus
-                    aria-label={t('editNote')}
-                    onInput={adjustTextareaHeight}
-                    style={{
-                      whiteSpace: 'pre-wrap',
-                      wordWrap: 'break-word',
-                      maxHeight: '200px',
-                    }}
+                    placeholder={t('notePlaceholder')}
                   />
-                  <button
-                    onClick={() => updateNote(noteItem.id)}
-                    disabled={!editNoteText}
-                    className="bg-ming-blue hover:bg-deep-space text-white h-10 py-1 px-2 rounded ml-2 my-4 disabled:opacity-50"
-                  >
-                    {t('save')}
-                  </button>
+                  <div className="flex justify-end mt-2">
+                    <button
+                      onClick={() => updateNote()}
+                      disabled={!editNote.note}
+                      className="button-base button-primary"
+                    >
+                      {t('save')}
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <>
-                  <p
-                    className="text-raisin-black"
-                    style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-                  >
-                    {noteItem.note}
-                  </p>
-                  <div className="relative" ref={menuRef}>
+                  <p>{noteItem.note}</p>
+                  <div className="relative menu-container">
                     <button
-                      onClick={() => handleMenuToggle(noteItem.id)}
+                      onClick={() => {
+                        setIsMenuOpen(true)
+                        setEditNote(noteItem)
+                      }}
                       className="text-gray-500 cursor-pointer focus:outline-none"
-                      aria-label={t('menu')}
                     >
-                      ...
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="w-8 h-8 p-1"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
+                        />
+                      </svg>
                     </button>
 
-                    {editNoteId === noteItem.id && !isEditing && (
-                      <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 shadow-lg rounded-md z-10">
+                    {editNote?.id === noteItem.id && isMenuOpen && (
+                      <div className="absolute right-0 mt-1 w-max min-w-32 origin-top-right bg-white divide-y divide-gray-100 rounded-sm overflow-hidden shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                         <button
                           onClick={() => {
-                            setEditNoteId(noteItem.id)
-                            setEditNoteText(noteItem.note)
-                            setIsEditing(true)
+                            // setEditNote(noteItem)
+                            setIsEditingFormOpened(true)
                           }}
-                          className="block w-full text-left px-4 py-2 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
+                          className="block w-full text-left px-2 py-1 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
                         >
                           {t('edit')}
                         </button>
                         <button
-                          onClick={() => deleteNoteById(noteItem.id)}
-                          className="block w-full text-left px-4 py-2 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
+                          onClick={() => deleteNote()}
+                          className="block w-full text-left px-2 py-1 text-sm text-raisin-black hover:bg-gray-100 hover:text-black"
                         >
                           {t('delete')}
                         </button>
@@ -211,33 +215,8 @@ const InspectorNotes = ({
                 </>
               )}
             </div>
-          ))}
-      </div>
-      {showInput && (
-        <div className="flex items-center">
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            className="w-full border rounded p-1 overflow-hidden resize-vertical"
-            autoFocus
-            aria-label={t('newNote')}
-            onInput={adjustTextareaHeight}
-            style={{
-              whiteSpace: 'pre-wrap',
-              wordWrap: 'break-word',
-              minHeight: '60px',
-              maxHeight: '200px',
-            }}
-          />
-          <button
-            onClick={addNote}
-            disabled={!note}
-            className="bg-ming-blue hover:bg-deep-space text-white py-1 px-2 rounded ml-2 disabled:opacity-50"
-          >
-            {t('save')}
-          </button>
-        </div>
-      )}
+          </div>
+        ))}
       {error && <p className="text-red-500">{error}</p>}
     </div>
   )

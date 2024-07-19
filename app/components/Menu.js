@@ -46,7 +46,7 @@ const Menu = ({ children }) => {
           </button>
           {isMenuOpen && (
             <div className="absolute right-0 mt-1 w-max origin-top-right bg-white divide-y divide-gray-100 rounded-sm overflow-hidden shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-              <div className="py-1">{childrenWithClasses}</div>
+              <div>{childrenWithClasses}</div>
             </div>
           )}
         </div>

@@ -13,7 +13,6 @@ const DeleteModal = ({
   message,
   confirmText,
   cancelText,
-  requireTextMatch = false,
   expectedText = '',
   showKeepButton = false,
 }) => {
@@ -33,7 +32,7 @@ const DeleteModal = ({
   return (
     <Modal title={t('delete')}>
       <p className="text-base">{message}</p>
-      {requireTextMatch && (
+      {expectedText != '' && (
         <div className="mt-4 border bg-red-50 border-red-200 p-4 rounded">
           <label className="block mb-2">
             {t('enterConfirm')} <strong>{expectedText}</strong>
@@ -54,7 +53,7 @@ const DeleteModal = ({
         </button>
 
         {showKeepButton && (
-          <button className="button-base button-danger ml-2" onClick={onKeep}>
+          <button className="button-base button-primary ml-2" onClick={onKeep}>
             {defaultKeepText}
           </button>
         )}
@@ -62,7 +61,7 @@ const DeleteModal = ({
         <button
           className={`button-base button-danger ml-2 disabled:cursor-not-allowed`}
           onClick={onConfirm}
-          disabled={requireTextMatch && !isTextMatch()}
+          disabled={expectedText !== '' && !isTextMatch()}
         >
           {defaultConfirmText}
         </button>

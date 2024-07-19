@@ -15,7 +15,6 @@ import Download from '@/public/download.svg'
 import Loader from '@/app/components/Loader'
 import { useTranslation } from '@/app/i18n/client'
 import DeleteModal from '@/app/components/DeleteModal'
-import Image from 'next/image'
 
 const CheckList = ({ projectId, bookId, lng }) => {
   const { t } = useTranslation(lng, 'common')
@@ -182,6 +181,8 @@ const CheckList = ({ projectId, bookId, lng }) => {
         message={t('confirmDeleteCheck')}
         onConfirm={confirmDeleteCheck}
         onCancel={cancelDeleteCheck}
+        expectedText={checkToDelete?.name}
+        requireTextMatch={true}
       />
     </>
   )

@@ -9,16 +9,16 @@
   @apply px-2 py-1 rounded-md text-sm font-normal focus:outline-none border cursor-pointer;
 }
 .button-primary {
-  @apply bg-ming-blue border-ming-blue hover:bg-dark-slate-gray hover:border-dark-slate-gray text-white disabled:bg-ming-blue/50 disabled:border-ming-blue/50 disabled:text-white/50 disabled:cursor-not-allowed;
+  @apply bg-ming-blue border-ming-blue hover:bg-dark-slate-gray hover:border-dark-slate-gray text-white disabled:bg-ming-blue/50 disabled:border-ming-blue/0 disabled:cursor-not-allowed;
 }
 
 .button-secondary {
   @apply bg-smoky-white hover:bg-ghost-white
-  border-smoky-white hover:border-ghost-white text-ming-blue disabled:bg-smoky-white/50 disabled:border-smoky-white/50 disabled:text-ming-blue/50 disabled:cursor-not-allowed;
+  border-smoky-white hover:border-ghost-white text-ming-blue disabled:bg-smoky-white/50 disabled:border-smoky-white/0 disabled:cursor-not-allowed;
 }
 
 .button-danger {
-  @apply bg-red-500 hover:bg-red-600 border-red-500 hover:border-red-600 text-white disabled:bg-red-500/50 disabled:border-red-500/50 disabled:text-white/50 disabled:cursor-not-allowed;
+  @apply bg-red-500 hover:bg-red-600 border-red-500 hover:border-red-600 text-white disabled:bg-red-500/50 disabled:border-red-500/0 disabled:cursor-not-allowed;
 }
 
 .input {
@@ -31,4 +31,13 @@
 
 .link-cell {
   @apply hover:underline text-ming-blue bg-smoky-white px-2 py-1 rounded sm:bg-transparent sm:px-0 sm:py-0 sm:rounded-none;
+}
+
+.notification-button {
+  position: relative;
+}
+
+.notification-button[data-count]::after {
+  @apply absolute -top-1 -right-1 w-5 h-5 font-bold rounded-full text-white bg-deep-space text-xs flex justify-center items-center;
+  content: attr(data-count);
 }

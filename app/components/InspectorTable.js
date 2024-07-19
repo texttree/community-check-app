@@ -1,7 +1,8 @@
-import Link from 'next/link'
-import Copy from '@/public/copy.svg'
-import Image from 'next/image'
 import { useRef } from 'react'
+
+import Link from 'next/link'
+
+import Copy from '@/public/copy.svg'
 
 const InspectorTable = ({
   t,
