@@ -8,7 +8,6 @@ import { useTranslation } from '@/app/i18n/client'
 import { fetcher } from '@/helpers/fetcher'
 
 import CustomError from '@/app/components/CustomError'
-import Loader from '@/app/components/Loader'
 import Notes from '@/app/components/Notes'
 import LoadingBlock from '@/app/components/LoadingBlock'
 
@@ -103,7 +102,13 @@ const CheckDetail = ({ lng }) => {
                       {info.check_name}, {info.book_name}
                     </div>
                     <div className="mt-3 text-xs text-foil-silver">
-                      {info.check_finished_at}
+                      {t('checkUntil', {
+                        date: new Date(info.check_finished_at).toLocaleDateString(lng, {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        }),
+                      })}
                     </div>
                   </div>
                 )}

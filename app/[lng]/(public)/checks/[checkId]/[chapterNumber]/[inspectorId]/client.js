@@ -8,7 +8,6 @@ import { useTranslation } from '@/app/i18n/client'
 import { fetcher } from '@/helpers/fetcher'
 
 import CustomError from '@/app/components/CustomError'
-import Loader from '@/app/components/Loader'
 import InspectorNotes from '@/app/components/InspectorNotes'
 import LoadingBlock from '@/app/components/LoadingBlock'
 
@@ -134,14 +133,20 @@ const CheckInspectorDetail = ({ lng }) => {
                       {info.check_name}, {info.book_name}
                     </div>
                     <div className="mt-3 text-xs text-foil-silver">
-                      {info.check_finished_at}
+                      {t('checkUntil', {
+                        date: new Date(info.check_finished_at).toLocaleDateString(lng, {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        }),
+                      })}
                     </div>
                   </div>
                 )}
               </div>
               {(!isCheckExpired || info?.is_owner) &&
                 chapter?.verseObjects?.length > 0 && (
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-4 md:gap-0">
                     {chapter?.verseObjects
                       .filter((verse) => verse.text !== '')
                       .map((verse) => (

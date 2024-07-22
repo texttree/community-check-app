@@ -93,11 +93,11 @@ const Index = ({ lng }) => {
         </div>
       </div>
 
-      <div className="fixed bottom-8 mx-5 h-auto flex flex-row justify-between items-center bg-ming-blue rounded-lg px-6 py-4 shadow-lg">
+      <div className="fixed bottom-8 mx-5 h-auto flex flex-row justify-between items-center bg-ming-blue rounded-lg px-6 py-4 shadow-lg  left-0 right-0 sm:left-auto sm:right-auto min-w-52 sm:min-w-96">
         <p className="text-white font-medium text-center">{t('startCheсking')}</p>
         <Link
           href="/login"
-          className="px-4 py-1 ml-3 h-8 rounded bg-white hover:bg-bright-gray text-center flex items-center"
+          className="px-4 py-1 ml-3 h-8 rounded bg-white hover:bg-bright-gray text-center flex items-center whitespace-nowrap"
         >
           {t('signIn')}
         </Link>

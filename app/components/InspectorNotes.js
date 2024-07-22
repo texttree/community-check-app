@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import axios from 'axios'
-import { useTranslation } from '../i18n/client'
+import { useTranslation } from '@/app/i18n/client'
 
 const InspectorNotes = ({
   reference,
@@ -117,7 +117,7 @@ const InspectorNotes = ({
 
   return (
     <div className="mt-5">
-      <div className="pb-4 border-b">
+      <div className="pb-4">
         <textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
@@ -137,13 +137,9 @@ const InspectorNotes = ({
       </div>
       {Array.isArray(notes) &&
         notes.length > 0 &&
-        notes.map((noteItem, index) => (
-          <div key={noteItem.id} className="my-2">
-            <div
-              className={`flex items-start justify-between ${
-                index !== notes.length - 1 ? 'border-b' : ''
-              }`}
-            >
+        notes.map((noteItem) => (
+          <div key={noteItem.id} className="border-t pt-2">
+            <div className={`flex items-start justify-between`}>
               {editNote?.id === noteItem.id && isEditingFormOpened ? (
                 <div className="w-full mb-4">
                   <textarea
