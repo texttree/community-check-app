@@ -6,6 +6,7 @@ import { languages } from '@/app/i18n/settings'
 import '@/styles/globals.css'
 import { Montserrat, Roboto } from 'next/font/google'
 import Link from 'next/link'
+import SwitchLanguagePublic from '@/app/components/SwitchLanguagePublic'
 
 const montserrat = Montserrat({
   weight: ['600'],
@@ -39,13 +40,14 @@ export default function RootLayout({ children, params: { lng } }) {
     >
       <body className="bg-bright-gray min-h-screen h-full flex flex-col text-raisin-black">
         <div className="w-full bg-ming-blue py-4 pl-2 pr-4">
-          <header className="max-w-6xl mx-auto pl-4">
+          <header className="max-w-6xl mx-auto px-4 flex flex-row justify-between">
             <Link
               href={'/' + lng}
               className="text-white cursor-pointer text-xl font-[600] font-montserrat"
             >
               Community Check
             </Link>
+            <SwitchLanguagePublic lng={lng} />
           </header>
         </div>
         <main className="px-5 py-8 flex flex-1 w-full max-w-6xl mx-auto">{children}</main>
