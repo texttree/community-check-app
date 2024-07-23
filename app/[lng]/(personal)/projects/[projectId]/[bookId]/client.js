@@ -65,16 +65,17 @@ const BookEditPage = ({ lng }) => {
           const updated = await updateContent(url, checkId)
           if (!updated) {
             throw new Error('Failed to update content')
+          } else {
+            router.push(`/${lng}/projects/${projectId}/${bookId}/${checkId}`)
+            return { error: false }
           }
         } catch (error) {
           console.error(error)
-          toast.error(error.message)
           await axios.delete(
             `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`
           )
+          return { error: error.message }
         }
-        router.push(`/${lng}/projects/${projectId}/${bookId}/${checkId}`)
-        return { error: false }
       }
     } catch (error) {
       return { error: error.message }
