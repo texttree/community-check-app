@@ -5,7 +5,7 @@ import { useTranslation } from '@/app/i18n/client'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
-const Index = ({ lng }) => {
+const Index = ({ lng, user }) => {
   const { t } = useTranslation(lng, 'common')
 
   const [currentDomain, setCurrentDomain] = useState(
@@ -94,13 +94,27 @@ const Index = ({ lng }) => {
       </div>
 
       <div className="fixed bottom-8 mx-5 h-auto flex flex-row justify-between items-center bg-ming-blue rounded-lg px-6 py-4 shadow-lg  left-0 right-0 sm:left-auto sm:right-auto min-w-52 sm:min-w-96">
-        <p className="text-white font-medium text-center">{t('startCheсking')}</p>
-        <Link
-          href="/login"
-          className="px-4 py-1 ml-3 h-8 rounded bg-white hover:bg-bright-gray text-center flex items-center whitespace-nowrap"
-        >
-          {t('signIn')}
-        </Link>
+        {user ? (
+          <>
+            <p className="text-white font-medium text-center">{t('goToProjects')}</p>
+            <Link
+              href="/projects"
+              className="px-4 py-1 ml-3 h-8 rounded bg-white hover:bg-bright-gray text-center flex items-center whitespace-nowrap"
+            >
+              {t('projects')}
+            </Link>
+          </>
+        ) : (
+          <>
+            <p className="text-white font-medium text-center">{t('startCheсking')}</p>
+            <Link
+              href="/login"
+              className="px-4 py-1 ml-3 h-8 rounded bg-white hover:bg-bright-gray text-center flex items-center whitespace-nowrap"
+            >
+              {t('signIn')}
+            </Link>
+          </>
+        )}
       </div>
     </div>
   )

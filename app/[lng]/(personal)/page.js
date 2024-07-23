@@ -3,9 +3,6 @@ import MainPage from './client'
 import { getUser } from './actions'
 
 export default async function Page({ params: { lng } }) {
-  // Fetch data directly in a Server Component
-  // const recentPosts = await getPosts()
-  // Forward fetched data to your Client Component
   const user = await getUser()
   return (
     <>

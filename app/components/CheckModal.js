@@ -5,6 +5,7 @@ import Modal from './Modal'
 const CheckModal = ({ isOpen, onClose, onSubmit, lng }) => {
   const [name, setName] = useState('')
   const [url, setUrl] = useState('')
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [startDate, setStartDate] = useState(() => {
     const currentDate = new Date()
@@ -26,9 +27,11 @@ const CheckModal = ({ isOpen, onClose, onSubmit, lng }) => {
     ) {
       return setError(t('enterCorrectLink'))
     }
+    setLoading(true)
     onSubmit({ name, url, startDate })
       .then((res) => (res.error ? setError(res.error) : onClose()))
       .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
   }
 
   if (!isOpen) return null
@@ -63,10 +66,18 @@ const CheckModal = ({ isOpen, onClose, onSubmit, lng }) => {
         />
       </label>
       <div className="flex justify-end mt-4">
-        <button onClick={onClose} className="button-base button-secondary mr-2">
+        <button
+          onClick={onClose}
+          disabled={loading}
+          className="button-base button-secondary mr-2"
+        >
           {t('cancel')}
         </button>
-        <button onClick={handleSubmit} className="button-base button-primary">
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="button-base button-primary"
+        >
           {t('create')}
         </button>
       </div>

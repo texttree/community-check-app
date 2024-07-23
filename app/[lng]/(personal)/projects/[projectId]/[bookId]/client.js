@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
 import useSWR, { mutate } from 'swr'
+import toast from 'react-hot-toast'
 import axios from 'axios'
 import { fetcher } from '@/helpers/fetcher'
 import LeftArrow from '@/public/left.svg'
@@ -28,6 +29,26 @@ const BookEditPage = ({ lng }) => {
     fetcher
   )
 
+  const updateContent = async (materialLink, checkId) => {
+    if (materialLink) {
+      try {
+        await axios.post('/api/materials/', {
+          materialLink,
+          checkId,
+        })
+        toast.success(t('updatedContent'))
+        return true
+      } catch (error) {
+        console.error(error)
+        toast.error(error.message)
+        return false
+      }
+    } else {
+      toast.error(t('provideLink'))
+      return false
+    }
+  }
+
   const handleCreateCheck = async ({ name, url, startDate }) => {
     if (!name || !url || !startDate) {
       return { error: 'All fields are required' }
@@ -40,6 +61,18 @@ const BookEditPage = ({ lng }) => {
       })
       if (res.status === 201) {
         const checkId = res.data.id
+        try {
+          const updated = await updateContent(url, checkId)
+          if (!updated) {
+            throw new Error('Failed to update content')
+          }
+        } catch (error) {
+          console.error(error)
+          toast.error(error.message)
+          await axios.delete(
+            `/api/projects/${projectId}/books/${bookId}/checks/${checkId}`
+          )
+        }
         router.push(`/${lng}/projects/${projectId}/${bookId}/${checkId}`)
         return { error: false }
       }

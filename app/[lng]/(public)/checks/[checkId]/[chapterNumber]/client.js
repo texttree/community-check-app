@@ -115,7 +115,7 @@ const CheckDetail = ({ lng }) => {
               </div>
               {(!isCheckExpired || info?.is_owner) &&
                 chapter?.verseObjects?.length > 0 && (
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-4 md:gap-0">
                     {chapter?.verseObjects
                       .filter((verse) => verse.text !== '')
                       .map((verse) => (
