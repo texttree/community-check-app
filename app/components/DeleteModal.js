@@ -2,17 +2,17 @@
 
 import { useState } from 'react'
 import { useTranslation } from '@/app/i18n/client'
+import Modal from './Modal'
 
 const DeleteModal = ({
   lng,
-  isVisible,
+  isOpen,
   onConfirm,
   onCancel,
   onKeep,
   message,
   confirmText,
   cancelText,
-  requireTextMatch = false,
   expectedText = '',
   showKeepButton = false,
 }) => {
@@ -23,63 +23,50 @@ const DeleteModal = ({
 
   const [inputText, setInputText] = useState('')
 
-  const isTextMatch = () => {
-    return inputText === expectedText
-  }
+  const isTextMatch = () => inputText === expectedText
 
-  if (!isVisible) {
+  if (!isOpen) {
     return null
   }
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white rounded p-4">
-        <p className="text-lg font-medium">{message}</p>
+    <Modal title={t('delete')}>
+      <p className="text-base">{message}</p>
+      {expectedText != '' && (
+        <div className="mt-4 border bg-red-50 border-red-200 p-4 rounded">
+          <label className="block mb-2">
+            {t('enterConfirm')} <strong>{expectedText}</strong>
+          </label>
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            className="input w-full"
+            placeholder={t('enterName')}
+          />
+        </div>
+      )}
 
-        {requireTextMatch && (
-          <div className="mt-4">
-            <label className="block text-gray-700">
-              {t('enterConfirm')} <strong>{expectedText}</strong>
-            </label>
-            <input
-              type="text"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              className="border border-gray-300 p-2 rounded w-full"
-              placeholder={t('enterName')}
-            />
-          </div>
+      <div className="flex justify-end mt-4">
+        <button className="button-base button-secondary" onClick={onCancel}>
+          {defaultCancelText}
+        </button>
+
+        {showKeepButton && (
+          <button className="button-base button-primary ml-2" onClick={onKeep}>
+            {defaultKeepText}
+          </button>
         )}
 
-        <div className="flex justify-end mt-4">
-          <button
-            className="text-gray-500 hover:text-gray-700 px-3 py-1"
-            onClick={onCancel}
-          >
-            {defaultCancelText}
-          </button>
-
-          {showKeepButton && (
-            <button
-              className="text-orange-600 hover:text-orange-800 px-3 py-1 ml-2"
-              onClick={onKeep}
-            >
-              {defaultKeepText}
-            </button>
-          )}
-
-          <button
-            className={`text-red-600 hover:text-red-800 px-3 py-1 ml-2 ${
-              requireTextMatch && !isTextMatch() ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            onClick={onConfirm}
-            disabled={requireTextMatch && !isTextMatch()}
-          >
-            {defaultConfirmText}
-          </button>
-        </div>
+        <button
+          className={`button-base button-danger ml-2 disabled:cursor-not-allowed`}
+          onClick={onConfirm}
+          disabled={expectedText !== '' && !isTextMatch()}
+        >
+          {defaultConfirmText}
+        </button>
       </div>
-    </div>
+    </Modal>
   )
 }
 

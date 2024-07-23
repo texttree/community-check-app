@@ -4,7 +4,7 @@ import { supabaseService } from '@/app/supabase/service'
  * @swagger
  * components:
  *   schemas:
- * 
+ *
  *     Complex create:
  *       type: object
  *       properties:
@@ -21,7 +21,7 @@ import { supabaseService } from '@/app/supabase/service'
  *         book_id:
  *           type: number
  *           example: 1
- * 
+ *
  *     Project:
  *       type: object
  *       properties:
@@ -31,12 +31,12 @@ import { supabaseService } from '@/app/supabase/service'
  *         name:
  *           type: string
  *           example: RLOB
- * 
+ *
  *     Projects:
  *       type: array
  *       items:
  *         $ref: '#/components/schemas/Project'
- * 
+ *
  *     Book:
  *       type: object
  *       properties:
@@ -50,7 +50,7 @@ import { supabaseService } from '@/app/supabase/service'
  *           type: string
  *           format: date-time
  *           description: Date and time of creation
- * 
+ *
  *     Check:
  *       type: object
  *       properties:
@@ -96,7 +96,7 @@ import { supabaseService } from '@/app/supabase/service'
  *           format: date-time
  *           nullable: true
  *           description: New finish datetime for the check
- * 
+ *
  *     Inspector:
  *       type: object
  *       properties:
@@ -107,12 +107,12 @@ import { supabaseService } from '@/app/supabase/service'
  *         name:
  *           type: string
  *           description: Inspector name
- * 
+ *
  *     Note:
  *       type: object
  *       properties:
  *         id:
- *           type: string
+ *           type: integer
  *         note:
  *           type: string
  *         chapter:
@@ -125,7 +125,7 @@ import { supabaseService } from '@/app/supabase/service'
  *         inspector_id:
  *           type: string
  *           format: uuid
- * 
+ *
  *     NoteResponse:
  *       type: object
  *       properties:
@@ -145,7 +145,7 @@ import { supabaseService } from '@/app/supabase/service'
  *           type: string
  *           nullable: true
  *           description: Inspector name
- * 
+ *
  *     NotesResponse:
  *       type: object
  *       properties:
@@ -178,7 +178,7 @@ import { supabaseService } from '@/app/supabase/service'
  *     description: Checks if the provided token exists and belongs to the user.
  *     tags:
  *       - Token
- 
+
  *     responses:
  *       200:
  *         description: Token is valid.

@@ -61,6 +61,29 @@ import { supabaseService } from '@/app/supabase/service'
  *         description: User is not authorized
  *       500:
  *         description: An error occurred
+
+ *   delete:
+ *     summary: Delete a project by ID
+ *     tags:
+ *       - Projects
+ *     parameters:
+ *       - in: path
+ *         name: projectId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Project ID
+ *     responses:
+ *       200:
+ *         description: Project deleted successfully
+ *       400:
+ *         description: Bad request, project ID is required or unauthorized
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Project not found
+ *       500:
+ *         description: Internal server error
  */
 
 export async function GET(req, { params: { projectId } }) {
@@ -114,5 +137,34 @@ export async function POST(req, { params: { projectId } }) {
     return Response.json(project, { status: 200 })
   } catch (error) {
     return Response.json({ error }, { status: 500 })
+  }
+}
+
+export async function DELETE(req, { params: { projectId } }) {
+  const userId = req.headers.get('x-user-id')
+
+  if (!userId) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  if (!projectId) {
+    return Response.json({ error: 'Project ID is required' }, { status: 400 })
+  }
+
+  try {
+    const { error } = await supabaseService
+      .from('projects')
+      .delete()
+      .eq('id', projectId)
+      .eq('user_id', userId)
+
+    if (error) {
+      return Response.json({ error: error.message }, { status: 500 })
+    }
+
+    return Response.json({ message: 'Project deleted successfully' }, { status: 200 })
+  } catch (catchError) {
+    console.error('Unexpected error:', catchError)
+    return Response.json({ error: catchError.message }, { status: 500 })
   }
 }

@@ -1,84 +1,45 @@
 'use client'
 
 import Link from 'next/link'
-import axios from 'axios'
-import { useState } from 'react'
-import useSWR, { mutate } from 'swr'
 import { useTranslation } from '@/app/i18n/client'
-import { fetcher } from '@/helpers/fetcher'
 import Loader from '@/app/components/Loader'
-import DeleteModal from '@/app/components/DeleteModal'
+import Image from 'next/image'
 
-const Projects = ({ lng }) => {
+const Projects = ({ lng, projects, error }) => {
   const { t } = useTranslation(lng, 'common')
-  const { data: projects, error } = useSWR('/api/projects', fetcher)
-
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [projectToDelete, setProjectToDelete] = useState(null)
-
-  const openDeleteModal = (project) => {
-    setProjectToDelete(project)
-    setShowDeleteModal(true)
-  }
-
-  const confirmDeleteProject = async () => {
-    if (projectToDelete) {
-      try {
-        await axios.delete('/api/projects', {
-          data: { projectId: projectToDelete.id },
-        })
-
-        mutate('/api/projects', (data) => data.filter((p) => p.id !== projectToDelete.id))
-        setShowDeleteModal(false)
-      } catch (error) {
-        console.error('Failed to delete project:', error)
-      }
-    }
-  }
-
-  const cancelDeleteProject = () => {
-    setShowDeleteModal(false)
-  }
 
   return (
-    <>
+    <div className="p-4">
       {error ? (
-        <p className="text-red-600">{t('errorOccurred')}</p>
+        <p className="text-red-600 text-sm">{t('errorOccurred')}</p>
       ) : projects ? (
-        projects.map((project) => (
-          <div key={project.id} className="block">
-            <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105">
-              <Link
-                className="text-3xl font-semibold text-blue-600"
-                href={`projects/${project.id}`}
+        projects.length > 0 ? (
+          <div className="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2.5 mb-2 md:gap-6">
+            {projects.map((project) => (
+              <div
+                key={project.id}
+                className="flex flex-col items-center hover:underline md:w-[112px] w-[76px]"
               >
-                {project.name}
-              </Link>
-              <button
-                className="bg-red-500 block hover:bg-red-600 text-white px-4 py-2 rounded-md"
-                onClick={() => openDeleteModal(project)}
-              >
-                {t('delete')}
-              </button>
-            </div>
+                <Link href={`projects/${project.id}`}>
+                  <Image
+                    src="/folder.svg"
+                    alt="folder icon"
+                    width={112}
+                    height={107}
+                    className=""
+                  />
+                  <p className="text-sm mt-1 text-center">{project.name}</p>
+                </Link>
+              </div>
+            ))}
           </div>
-        ))
+        ) : (
+          <p className="text-sm mt-2 mb-8">{t('noProjects')}</p>
+        )
       ) : (
-        <Loader />
+        <Loader line={['w-[76px] h-2.5', 'w-[112px] h-2.5', 'w-[76px] h-2.5']} />
       )}
-
-      {showDeleteModal && (
-        <DeleteModal
-          lng={lng}
-          isVisible={showDeleteModal}
-          message={`${t('confirmDeleteProject')}`}
-          onConfirm={confirmDeleteProject}
-          onCancel={cancelDeleteProject}
-          expectedText={projectToDelete?.name}
-          requireTextMatch={true}
-        />
-      )}
-    </>
+    </div>
   )
 }
 
