@@ -102,16 +102,16 @@ ALTER TABLE ONLY "public"."users"
 ALTER TABLE ONLY "public"."users"
     ADD CONSTRAINT "users_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
-CREATE OR REPLACE FUNCTION has_notes(inspector_id uuid) 
-  RETURNS BOOLEAN 
-  AS $$ 
-  DECLARE 
+CREATE OR REPLACE FUNCTION has_notes(inspector_id uuid)
+  RETURNS BOOLEAN
+  AS $$
+  DECLARE
     note_count INTEGER;
-  BEGIN 
-    SELECT COUNT(*) INTO note_count 
-    FROM public.notes 
+  BEGIN
+    SELECT COUNT(*) INTO note_count
+    FROM public.notes
     WHERE notes.inspector_id = has_notes.inspector_id;
-    
+
     RETURN note_count > 0;
   END;
 $$
@@ -129,7 +129,7 @@ BEGIN
         JOIN public.projects p ON b.project_id = p.id
         JOIN public.users u ON p.user_id = u.id
         WHERE c.id = is_user_valid_for_check.check_id
-          AND u.id = is_user_valid_for_check.user_id  
+          AND u.id = is_user_valid_for_check.user_id
           AND c.deleted_at IS NULL
           AND u.is_blocked = FALSE
     );
@@ -147,8 +147,8 @@ BEGIN
         SELECT 1
         FROM public.books b
         JOIN public.projects p ON b.project_id = p.id
-        WHERE b.id = is_user_valid_for_book.book_id  
-          AND p.user_id = is_user_valid_for_book.user_id 
+        WHERE b.id = is_user_valid_for_book.book_id
+          AND p.user_id = is_user_valid_for_book.user_id
     );
 END;
 $$ LANGUAGE plpgsql;
@@ -276,7 +276,7 @@ $$;
 CREATE OR REPLACE FUNCTION public.is_user_valid_for_project(
     project_id BIGINT,
     user_id UUID
-) 
+)
 RETURNS BOOLEAN AS $$
 BEGIN
     RETURN EXISTS (
@@ -293,7 +293,7 @@ CREATE OR REPLACE FUNCTION public.create_book(
     project_id BIGINT,
     name TEXT,
     user_id UUID
-) 
+)
 RETURNS JSONB
 LANGUAGE plpgsql
 AS $$
@@ -386,11 +386,11 @@ $$;
 
 
 CREATE OR REPLACE FUNCTION public.create_project_book_check(
-    user_id uuid, 
-    project_name text, 
-    book_name text, 
+    user_id uuid,
+    project_name text,
+    book_name text,
     check_name text
-) 
+)
 RETURNS jsonb
 LANGUAGE plpgsql
 AS $$
@@ -402,7 +402,7 @@ DECLARE
     book_exists boolean;
     result jsonb;
 BEGIN
-    
+
     -- Проверяем существует ли проект
     SELECT EXISTS (
         SELECT 1

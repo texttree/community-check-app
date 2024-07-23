@@ -8,7 +8,7 @@ const downloadNotes = async (check, t, projectId, bookId) => {
     const notes = responseMaterials.data
 
     if (!notes) {
-      throw t('no_notes_found')
+      throw t('noNotesFound')
     }
 
     if (notes.error) {
