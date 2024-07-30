@@ -1,10 +1,10 @@
 'use server'
 
-import { getUser } from '../../actions'
+import { getUser } from '@/app/actions/getUser'
 import Breadcrumbs from './Breadcrumbs'
 import TokenCreate from './TokenCreate'
 import TokenList from './TokenList'
-import { getTokens } from '../lib/data'
+import { getTokens } from '../actions/getTokens'
 
 const TokenGeneration = async ({ lng }) => {
   const user = await getUser()

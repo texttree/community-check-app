@@ -3,7 +3,7 @@
 import { useTranslation } from '@/app/i18n/client'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import { createToken } from '../lib/actions'
+import { createToken } from '../actions/createToken'
 import ButtonCreateToken from './ButtonCreateToken'
 
 function TokenCreate({ lng }) {
@@ -15,20 +15,21 @@ function TokenCreate({ lng }) {
     navigator.clipboard.writeText(token.token)
     toast.success(t('tokenSuccessCopy'))
   }
+  const handleCreateToken = async (formdata) => {
+    const { success, token: tokenData } = await createToken(formdata)
+    if (success) {
+      setToken({ name: tokenName.trim(), token: tokenData.id })
+      setTokenName('')
+      toast.success(t('tokenSuccessCreated'))
+    } else {
+      toast.error(t('tokenErrorCreated'))
+    }
+  }
   return (
     <div className="gap-4 p-4">
       <form
         className="flex flex-col items-start sm:items-center sm:flex-row mb-4 w-full space-y-2 sm:space-y-0 sm:space-x-2"
-        action={async (formdata) => {
-          const { success, token: tokenData } = await createToken(formdata)
-          if (success) {
-            setToken({ name: tokenName.trim(), token: tokenData.id })
-            setTokenName('')
-            toast.success(t('tokenSuccessCreated'))
-          } else {
-            toast.error(t('tokenErrorCreated'))
-          }
-        }}
+        action={handleCreateToken}
       >
         <input
           type="text"

@@ -5,7 +5,7 @@ import Loader from '@/app/components/Loader'
 import { useTranslation } from '@/app/i18n/client'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import { deleteToken } from '../lib/actions'
+import { deleteToken } from '../actions/deleteToken'
 
 function TokenList({ isLoading, tokens, lng }) {
   const { t } = useTranslation(lng, 'common')
@@ -13,8 +13,6 @@ function TokenList({ isLoading, tokens, lng }) {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deletedTokenName, setDeletedTokenName] = useState('')
-
-  const areTokensExist = tokens && tokens.length > 0
 
   const handleDeleteToken = async (tokenName) => {
     try {
@@ -43,7 +41,7 @@ function TokenList({ isLoading, tokens, lng }) {
           className="flex flex-col gap-4 pb-4 px-4"
           line={['h-5 w-full', 'h-5 w-full', 'h-5 w-full']}
         />
-      ) : areTokensExist ? (
+      ) : tokens && tokens.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="min-w-full border-t sm:border-t-0 bg-white text-sm mb-8">
             <thead>
