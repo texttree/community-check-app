@@ -1,11 +1,9 @@
-'use client'
-
 import Link from 'next/link'
 import LeftArrow from '@/public/left.svg'
-import { useTranslation } from '@/app/i18n/client'
+import { useTranslation } from '@/app/i18n'
 
-function Breadcrumbs({ lng }) {
-  const { t } = useTranslation(lng, 'common')
+async function Breadcrumbs({ lng }) {
+  const { t } = await useTranslation(lng, 'common')
   return (
     <div className="p-4 flex justify-start space-x-1 sm:space-x-4 mb-2 border-b">
       <Link

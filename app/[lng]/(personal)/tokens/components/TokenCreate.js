@@ -21,7 +21,6 @@ function TokenCreate({ lng }) {
         className="flex flex-col items-start sm:items-center sm:flex-row mb-4 w-full space-y-2 sm:space-y-0 sm:space-x-2"
         action={async (formdata) => {
           const { success, token: tokenData } = await createToken(formdata)
-          console.log(tokenData)
           if (success) {
             setToken({ name: tokenName.trim(), token: tokenData.id })
             setTokenName('')
